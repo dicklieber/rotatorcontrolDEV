@@ -1,3 +1,5 @@
+import com.wa9nnn.rotorgenius.{RGHeader, ResponseParser}
+
 class ResponseParserTest extends org.specs2.mutable.Specification {
   //  val response = "|h2\u0000999359  0A0   0999999\u0000Tower        44359  0A0   0999999\u0000Rotator 2   "
 
@@ -45,7 +47,7 @@ class ResponseParserTest extends org.specs2.mutable.Specification {
   }
 
   "parse header" >> {
-    val header: Header = Header(response)
+    val header: RGHeader = RGHeader(response)
     header.toString must beEqualTo("Header(0,Rotator(None,359,0,Azimuith,Stopped,0,None,None,false,Tower),Rotator(Some(43),359,0,Azimuith,Stopped,0,None,None,false,Rotator 2))")
   }
 }

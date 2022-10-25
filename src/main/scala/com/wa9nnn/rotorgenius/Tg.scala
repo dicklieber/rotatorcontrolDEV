@@ -1,3 +1,5 @@
+package com.wa9nnn.rotorgenius
+
 import java.io._
 import java.net._
 
@@ -19,7 +21,7 @@ object Tg extends App {
 
     val bytesRead: Int = dataInputStream.read(recBuffer)
     val response = recBuffer.take(bytesRead)
-    val header: Header = Header(response)
+    val header: RGHeader = RGHeader(response)
     println(header)
     Thread.sleep(1000)
   }

@@ -1,3 +1,5 @@
+package com.wa9nnn.rotorgenius
+
 import ResponseParser.{Degree, Offset}
 import com.typesafe.scalalogging.LazyLogging
 

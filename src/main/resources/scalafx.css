@@ -1,0 +1,324 @@
+
+.rotatorPane {
+    -fx-border-width: 1px;
+    -fx-border-color: #00a6ff;
+    -fx-border-radius: 6px;
+    -fx-background-color: lightblue;
+    -fx-collapsible: true;
+    -fx-fit-to-width: true;
+    -fx-padding: 5px;
+}
+
+.topPane {
+    -fx-fit-to-width: true;
+    -fx-border-width: 1px;
+    -fx-border-color: red;
+    -fx-border-radius: 6px;
+    -fx-background-color: pink;
+}
+
+.label {
+    -fx-min-width: 100px;
+}
+
+/*
+below from sample, not used
+*/
+.statPaneTitle {
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+    -fx-background-color: #d04646;
+}
+
+.statPane {
+    -fx-border-width: 1px;
+    -fx-border-color: #00a6ff;
+    -fx-border-radius: 6px;
+    -fx-background-color: #e5fff9;
+}
+
+.oneStatTilePane {
+    -fx-hgap: 4;
+}
+
+.statPaneTitleBox {
+    -fx-alignment: center;
+    -fx-background-color: #00a6ff;
+}
+
+.statPaneTitle {
+    -fx-background-color: #00a6ff;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-font-size: 13pt;
+    -fx-text-alignment: center;
+    /*-fx-pref-width: 500;*/
+    /*-fx-fill-width: true;*/
+
+}
+
+.tooOld {
+    -fx-background-color: red;
+}
+
+.isNew {
+    -fx-background-color: white;
+
+}
+
+.statCell {
+
+}
+
+.fieldLabel {
+    -fx-alignment: center-right;
+    -fx-font-family: Monospaced;
+    -fx-min-width: 32;
+}
+
+.statValue {
+    -fx-font-family: Monospaced;
+    -fx-min-width: 62;
+    -fx-text-alignment: right;
+}
+
+.metrics {
+    -fx-font-family: Monospaced;
+}
+
+.taskAndStatus {
+    -fx-pref-width: 400;
+}
+
+.clusterTable {
+    -fx-padding: 2;
+}
+
+.clusterCornerCell {
+    -fx-border-width: 1;
+    -fx-background-color: green;
+}
+
+.clusterTopRow {
+    -fx-border-width: 1 1 0 0;
+    -fx-background-color: lightGrey;
+}
+
+.clusterRowHeader {
+    -fx-background-color: lightGrey;
+    -fx-border-width: 0 1 1 1;
+    -fx-border-color: black;
+    -fx-padding: 3;
+}
+
+.clusterCell {
+    -fx-border-width: 0 1 1 0;
+    -fx-border-color: black;
+    -fx-padding: 3;
+}
+
+.ageCell {
+    -fx-alignment: center;
+    -fx-border-width: 0 1 1 0;
+    -fx-border-color: black;
+    -fx-padding: 3;
+}
+
+.ourNode {
+    -fx-font-weight: bold;
+    -fx-background-color: lightBlue
+}
+
+.bordered-titled-title {
+    -fx-border-style: dashed;
+    -fx-background-color: #00ffd9
+}
+
+.bordered-titled-border {
+    -fx-border-style: dashed;
+    -fx-background-color: #0800ff
+}
+
+.bordered-titled-content {
+    -fx-border-style: dashed;
+    -fx-background-color: rgba(38, 255, 0, 0.15)
+}
+
+.contestLogo {
+    -fx-text-alignment: left
+}
+
+.happyQso {
+    -fx-text-fill: green;
+}
+
+.sadQso {
+    -fx-text-fill: red;
+}
+
+
+.number {
+    -fx-text-alignment: right;
+    -fx-font-family: monospace;
+}
+
+.ourNode {
+    -fx-text-fill: gray;
+}
+
+.infoPane {
+    -fx-background-color: #d2e8da;
+    -fx-border-color: red;
+    -fx-border-width: 2px;
+}
+
+.sad {
+    -fx-text-fill: red;
+}
+
+.happy {
+    -fx-text-fill: green;
+}
+
+.warning {
+    -fx-text-fill: red;
+    -fx-font-size: larger;
+    -fx-font-weight: bold;
+}
+
+.hiDick {
+    -fx-text-fill: blue;
+    -fx-font-weight: bold;
+    -fx-font-size: 24;
+}
+
+.goodLuckPane {
+    -fx-text-fill: blue;
+    -fx-font-weight: bold;
+    -fx-font-size: 20;
+}
+
+.fdhSameHour {
+    -fx-background-color: lightgreen;
+}
+
+.fdhDiff0 {
+    -fx-background-color: lightcoral;
+}
+
+.fdhDiff1 {
+    -fx-background-color: moccasin;
+}
+
+.fdhDiff2 {
+    -fx-background-color: peachpuff;
+}
+
+.fdhDiff3 {
+    -fx-background-color: orchid;
+}
+
+.fdhDiff4 {
+    -fx-background-color: hotpink;
+}
+
+.fdhDiff5 {
+    -fx-background-color: sandybrown;
+}
+
+.fdhDiff6 {
+    -fx-background-color: chocolate;
+}
+
+.fdhDiff7 {
+    -fx-background-color: tan;
+}
+
+.dup {
+    -fx-text-fill: red;
+}
+
+.actionResult {
+    -fx-font-weight: bold;
+}
+
+.sectionPrompt {
+    -fx-text-fill: blue;
+}
+
+.progress {
+    -fx-pref-width: 300
+}
+
+.title {
+    -fx-font-weight: bold;
+    -fx-font-size: 24;
+}
+
+.dateTime {
+    -fx-font-family: monospace;
+}
+
+.parenthetic {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-text-fill: grey
+}
+
+.helpPane {
+    -fx-label-padding: 5;
+    -fx-background-color: lightGrey;
+    -fx-border-radius: 15
+}
+
+.exchangeDisplay {
+    -fx-alignment: center;
+}
+
+.alignedLine {
+    -fx-alignment: center
+}
+
+.exchangeBlock {
+    -fx-background-color: rgba(17, 255, 0, 0.22);
+    -fx-font-size: large;
+    -fx-font-weight: bold;
+    /*-fx-font: monospace;*/
+}
+
+.example {
+    -fx-background-color: rgba(17, 255, 0, 0.22);
+    -fx-font-size: large;
+    -fx-font-weight: bold;
+    -fx-font-family: monospace;
+}
+
+.ageCurrent {
+    -fx-background-color: #a2f604;
+}
+
+.ageNotCurrent {
+    -fx-background-color: #A6FF0059;
+}
+
+.ageOld {
+    -fx-background-color: yellow
+}
+
+.ageOlder {
+    -fx-background-color: orange;
+}
+
+.ageMax {
+    -fx-background-color: red;
+}
+
+
+TextArea {
+    -fx-font-family: monospace;
+}
+
+TextField {
+    -fx-font-family: monospace;
+}
+

@@ -4,3 +4,4 @@
 /.bsp/
 /.idea/
 /logs/
+git remote -v

@@ -1,31 +1,42 @@
+package com.wa9nnn.rotorgenius
+
 import Configuration.Configuration
 import Moving.Moving
 import ResponseParser.{Degree, Offset}
 import com.typesafe.scalalogging.LazyLogging
+import com.wa9nnn.util.Stamped
 
+/**
+ * Internalized version of message returned via the "|h" request.
+ * based on "4O3A RotorGenius_Protocol_Description_rev4.pdf"
+ * @param panic 0 if ok, otherwise undefined in
+ */
+case class RGHeader(
+                     panic: Int,
+                     rotator1: Rotator,
+                     rotator2: Rotator) extends LazyLogging with Stamped{
+}
+
+/**
+ *  See "4O3A RotorGenius_Protocol_Description_rev4.pdf" section 1.0
+ */
 case class Rotator(
                     currentAzimuth: Option[Degree],
                     limitCW: Degree,
                     limitCCW: Degree,
                     configureation: Configuration,
-                    movingx: Moving,
+                    moving: Moving,
                     offsetx: Offset,
-                    targetAzimuthx: Option[Degree],
-                    startAzimuthx: Option[Degree],
+                    targetAzimuth: Option[Degree],
+                    startAzimuth: Option[Degree],
                     outOfLimits: Boolean,
                     name: String
                   ) extends LazyLogging {
 }
 
-case class Header(
-                   panic: Int,
-                   rotator1: Rotator,
-                   rotator2: Rotator) extends LazyLogging {
-}
 
-
-object Header {
-  def apply(response: Array[Byte]): Header = {
+object RGHeader {
+  def apply(response: Array[Byte]): RGHeader = {
     implicit val parser = new ResponseParser(response)
     if (parser.nextString(2) != "|h")
       throw new IllegalArgumentException("""Response does not start with "|h"!""")
@@ -34,7 +45,7 @@ object Header {
     val panic = parser.nextByte()
     val r1 = Rotator.apply
     val r2 = Rotator.apply
-    new Header(panic, r1, r2)
+    new RGHeader(panic, r1, r2)
   }
 }
 

@@ -1,7 +1,7 @@
 <!-- https://www.playframework.com/documentation/latest/SettingsLogger -->
 <configuration scan="true" scanPeriod="30 seconds">
 
-  <conversionRule conversionWord="coloredLevel" converterClass="play.api.libs.logback.ColoredLevel" />
+<!--  <conversionRule conversionWord="coloredLevel" converterClass="play.api.libs.logback.ColoredLevel" />-->
 
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <file>${application.home:-.}/logs/application.log</file>
@@ -12,7 +12,7 @@
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>%coloredLevel %logger - %message%n%xException{10}</pattern>
+      <pattern>%level %logger - %message%n%xException{10}</pattern>
 <!--      <pattern>%date [%level] from %logger{10} - %message%n%xException</pattern>-->
     </encoder>
   </appender>
