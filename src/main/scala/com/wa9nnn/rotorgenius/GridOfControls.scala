@@ -149,9 +149,9 @@ class GridOfControls(gaps: (Int, Int) = 10 -> 10, insets: Insets = Insets(20, 10
     val row = label(labelText)
     add(pane, 1, row)
   }
-
   def set(p: StringProperty, value: Any): Unit = {
     val cell = com.wa9nnn.util.tableui.Cell(value)
     p.value = cell.value
   }
+
 }
