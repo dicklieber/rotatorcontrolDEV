@@ -6,7 +6,7 @@ import java.io.{DataInputStream, DataOutputStream, InputStream, OutputStream}
 import java.net.Socket
 import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
 
-class DeviceEngine(statusPane: StatusPane) extends Runnable with LazyLogging {
+class DeviceEngine() extends Runnable with LazyLogging {
 
   private var currentHeader: Option[RGHeader] = None
 
@@ -44,7 +44,6 @@ class DeviceEngine(statusPane: StatusPane) extends Runnable with LazyLogging {
     val response = recBuffer.take(bytesRead)
     val header: RGHeader = RGHeader(response)
     currentHeader = Option(header)
-    statusPane.update(header)
 
   }
 }
