@@ -1,11 +1,13 @@
 package com.wa9nnn.rotorgenius
 
 import com.typesafe.scalalogging.LazyLogging
+import com.wa9nnn.rotorgenius.ResponseParser.Degree
 
 import java.io.{InputStreamReader, LineNumberReader}
 import java.net.{ServerSocket, Socket, SocketException}
 
-class RotctldServer extends LazyLogging {
+class RotctldServer(deviceEngine: DeviceEngine) extends LazyLogging {
+  logger.info("starting RotctldServer")
 
   private val serverSocket = new ServerSocket(4534)
 
@@ -17,9 +19,10 @@ class RotctldServer extends LazyLogging {
   val parser = """(\+)?\\?(.+)""".r
 
   def get_pos(implicit extended: Boolean): String = {
+    val maybeCurrentAzumuth: Option[Degree] = deviceEngine.getPosition
     if (extended) {
       s"""get_pos:
-         |Azimuth: 33.3
+         |Azimuth: ${maybeCurrentAzumuth.getOrElse("?")}
          |Elevation: 45.000000
          |RPRT 0""".stripMargin
     } else {
@@ -92,7 +95,19 @@ class RotctldServer extends LazyLogging {
 }
 
 object RotctldServer extends App {
-  private val server = new RotctldServer
+
+  private val deviceEngine = new DeviceEngine()
+
+  private val rotctldThread = new Thread("rotctld") {
+    override def run(): Unit = {
+      new RotctldServer(deviceEngine)
+    }
+  }
+  rotctldThread.setDaemon(true)
+  rotctldThread.start()
+
+
+
 }
 
 

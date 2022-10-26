@@ -1,6 +1,7 @@
 package com.wa9nnn.rotorgenius
 
 import com.typesafe.scalalogging.LazyLogging
+import com.wa9nnn.rotorgenius.ResponseParser.Degree
 
 import java.io.{DataInputStream, DataOutputStream, InputStream, OutputStream}
 import java.net.Socket
@@ -21,8 +22,15 @@ class DeviceEngine() extends Runnable with LazyLogging {
   private val inputStream: InputStream = client.getInputStream
   private val dataInputStream = new DataInputStream(inputStream)
 
-
-
+def getPosition:Option[Degree]= {
+  for {
+    header: RGHeader <- currentHeader
+    rotator: Rotator = header.rotator1
+    d <- rotator.currentAzimuth
+  }yield{
+    d
+  }
+}
 
   //  while (true) {
   //    dataOutputStream.writeBytes("|h")
