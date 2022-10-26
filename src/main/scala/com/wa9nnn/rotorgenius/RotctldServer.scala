@@ -2,9 +2,8 @@ package com.wa9nnn.rotorgenius
 
 import com.typesafe.scalalogging.LazyLogging
 
-import java.io.{BufferedReader, InputStream}
-import java.net.{ServerSocket, Socket}
-import scala.io.Source
+import java.io.{InputStreamReader, LineNumberReader}
+import java.net.{ServerSocket, Socket, SocketException}
 
 class RotctldServer extends LazyLogging {
 
@@ -45,41 +44,47 @@ class RotctldServer extends LazyLogging {
     try {
       val socket: Socket = serverSocket.accept()
 
-      val set = socket.supportedOptions()
-      println(set)
-      logger.debug("accepted connection : {}", socket.getInetAddress)
-
-      val commands = Source.fromInputStream(socket.getInputStream).getLines()
+      logger.info("accepted connection : {}", socket.getInetAddress)
+      val reader: LineNumberReader = new LineNumberReader(new InputStreamReader(socket.getInputStream))
       implicit val outputStream = socket.getOutputStream
 
-      commands.foreach { command =>
-        logger.debug("command: {}", command)
+      try {
+        while (true) {
+          val command = reader.readLine()
+          logger.trace("command: {}", command)
 
-        val result = try {
-          val parser(ex, va) = command
-          implicit val extended: Boolean = ex.nonEmpty
+          val result = try {
+            val parser(ex, va) = command
+            implicit val extended: Boolean = ex.nonEmpty
 
-          va match {
-            case "_" | "get_info" =>
-              get_info
-            case "p" | "get_pos" =>
-              get_pos
-            case x =>
-              logger.info("unexpected: {}", x)
-              s"unexpected: $x"
+            va match {
+              case "_" | "get_info" =>
+                get_info
+              case "p" | "get_pos" =>
+                get_pos
+              case x =>
+                logger.info("unexpected: {}", x)
+                s"unexpected: $x"
+            }
+          } catch {
+            case exception: Exception =>
+              exception.getMessage
           }
-        } catch {
-          case exception: Exception =>
-            exception.getMessage
+          logger.debug("result: {}", result)
+          outputStream.write(result.getBytes)
+          outputStream.flush()
         }
-        logger.debug("result: {}", result)
-        outputStream.write(result.getBytes)
-        outputStream.flush()
+      } catch {
+        case so:SocketException =>
+          logger.error("socket: {} from: {}", so.getMessage, socket.getInetAddress)
       }
       //      socket.close()
     } catch {
       case e: Exception =>
-        e.printStackTrace()
+//        logger.whenDebugEnabled{
+//          logger.trace()
+//        }
+        logger.info("Done with socket")
     }
   }
 
