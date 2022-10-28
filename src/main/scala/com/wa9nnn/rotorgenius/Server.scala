@@ -1,5 +1,7 @@
 package com.wa9nnn.rotorgenius
 
+import com.wa9nnn.rotorgenius.rg.RotatorGeniusInterface
+
 
 class Server(commandLine: CommandLine) {
 

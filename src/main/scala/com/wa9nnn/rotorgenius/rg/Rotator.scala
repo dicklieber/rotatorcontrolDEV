@@ -1,24 +1,25 @@
-package com.wa9nnn.rotorgenius
+package com.wa9nnn.rotorgenius.rg
 
+import com.typesafe.scalalogging.LazyLogging
 import Configuration.Configuration
 import Moving.Moving
 import ResponseParser.{Degree, Offset}
-import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.util.Stamped
 
 /**
  * Internalized version of message returned via the "|h" request.
  * based on "4O3A RotorGenius_Protocol_Description_rev4.pdf"
+ *
  * @param panic 0 if ok, otherwise undefined in
  */
 case class RGHeader(
                      panic: Int,
                      rotator1: Rotator,
-                     rotator2: Rotator) extends LazyLogging with Stamped{
+                     rotator2: Rotator) extends LazyLogging with Stamped {
 }
 
 /**
- *  See "4O3A RotorGenius_Protocol_Description_rev4.pdf" section 1.0
+ * See "4O3A RotorGenius_Protocol_Description_rev4.pdf" section 1.0
  */
 case class Rotator(
                     currentAzimuth: Option[Degree],

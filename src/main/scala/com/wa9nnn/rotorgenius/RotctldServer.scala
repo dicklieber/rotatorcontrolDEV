@@ -1,7 +1,8 @@
 package com.wa9nnn.rotorgenius
 
 import com.typesafe.scalalogging.LazyLogging
-import com.wa9nnn.rotorgenius.ResponseParser.Degree
+import com.wa9nnn.rotorgenius.rg.ResponseParser.Degree
+import com.wa9nnn.rotorgenius.rg.{Move, RotatorGeniusInterface}
 
 import java.io.{InputStreamReader, LineNumberReader}
 import java.net.{ServerSocket, Socket, SocketException}
@@ -11,12 +12,8 @@ class RotctldServer(commandLine: CommandLine, deviceEngine: RotatorGeniusInterfa
 
   private val serverSocket = new ServerSocket(commandLine.rotctldPort)
 
-  //  val long2Short = Seq(
-  //    "get_info" -> "_",
-  //    "get_pos" -> "p",
-  //  )
-
-  private val parser = """(\+)?\\?(.+)""".r
+  private val parser = """(\+)?[\\|]?(.+)""".r
+  private val setPosRegx = """set_pos (\d+\.\d+) (\d+\.\d+)""".r
 
   def get_pos(implicit extended: Boolean): String = {
     val maybeCurrentAzumuth: Option[Degree] = deviceEngine.getPosition
@@ -43,6 +40,21 @@ class RotctldServer(commandLine: CommandLine, deviceEngine: RotatorGeniusInterfa
     }
   }
 
+  def set_pos(azi:String, ele:String)(implicit extended: Boolean):String = {
+    //todo do move
+    val iAzi = azi.toDouble.toInt
+    deviceEngine.move(Move(1, iAzi))
+
+    if (extended) {
+      s"""set_pos: $azi $ele
+         |RPRT 0""".stripMargin
+    } else {
+      s"""None
+         |""".stripMargin
+    }
+
+  }
+
   while (true) {
     try {
       val socket: Socket = serverSocket.accept()
@@ -65,6 +77,10 @@ class RotctldServer(commandLine: CommandLine, deviceEngine: RotatorGeniusInterfa
                 get_info
               case "p" | "get_pos" =>
                 get_pos
+
+              case setPosRegx(azi, ele) =>
+                set_pos(azi, ele)
+
               case x =>
                 logger.info("unexpected: {}", x)
                 s"unexpected: $x"

@@ -32,8 +32,6 @@ This will listen for rotctld command on port 4533. You can change port and other
 
 ###Status
 This the beginning of a work-in-progress.
-- It only reade the Header (|h) from the Rotator Genius 
-- IP addreses and ports are hard coded.
-- It does get the current azimuth to MaxLoggerDX!
+- Works with MacLoggreDX. rotator 1 hardcoded
 
 Source code at https://github.com/dicklieber/rotatorgenius

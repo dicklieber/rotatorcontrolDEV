@@ -1,7 +1,8 @@
-package com.wa9nnn.rotorgenius
+package com.wa9nnn.rotorgenius.rg
 
 import com.typesafe.scalalogging.LazyLogging
-import com.wa9nnn.rotorgenius.ResponseParser.Degree
+import com.wa9nnn.rotorgenius.CommandLine
+import com.wa9nnn.rotorgenius.rg.ResponseParser.Degree
 import com.wa9nnn.util.HostAndPort
 
 import java.io.{DataInputStream, DataOutputStream, InputStream, OutputStream}
@@ -20,19 +21,31 @@ class RotatorGeniusInterface(commandLine: CommandLine) extends Runnable with Laz
   private val outputStream: OutputStream = client.getOutputStream
   private val dataOutputStream = new DataOutputStream(outputStream)
 
-
   private val inputStream: InputStream = client.getInputStream
   private val dataInputStream = new DataInputStream(inputStream)
 
-def getPosition:Option[Degree]= {
-  for {
-    header: RGHeader <- currentHeader
-    rotator: Rotator = header.rotator1
-    d <- rotator.currentAzimuth
-  }yield{
-    d
+  def getPosition: Option[Degree] = {
+    for {
+      header: RGHeader <- currentHeader
+      rotator: Rotator = header.rotator1
+      d <- rotator.currentAzimuth
+    } yield {
+      d
+    }
   }
-}
+
+  /**
+   *
+   * @param move what to do
+   * @return None if command excepted otherwise error message
+   */
+  def move(move: Move): Option[String] = {
+    val recBuffer = new Array[Byte](500)
+    dataOutputStream.write(move.rgCommand)
+    val bytesRead: Int = dataInputStream.read(recBuffer)
+    val response = recBuffer.take(bytesRead)
+    Move.checkResult(response)
+  }
 
   //  while (true) {
   //    dataOutputStream.writeBytes("|h")

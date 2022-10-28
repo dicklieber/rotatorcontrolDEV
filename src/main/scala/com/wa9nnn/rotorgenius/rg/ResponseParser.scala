@@ -1,7 +1,7 @@
-package com.wa9nnn.rotorgenius
+package com.wa9nnn.rotorgenius.rg
 
-import ResponseParser.{Degree, Offset}
 import com.typesafe.scalalogging.LazyLogging
+import com.wa9nnn.rotorgenius.rg.ResponseParser.{Degree, Offset}
 
 import java.nio.ByteBuffer
 
