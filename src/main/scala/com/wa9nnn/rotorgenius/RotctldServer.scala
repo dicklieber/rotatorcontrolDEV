@@ -6,17 +6,17 @@ import com.wa9nnn.rotorgenius.ResponseParser.Degree
 import java.io.{InputStreamReader, LineNumberReader}
 import java.net.{ServerSocket, Socket, SocketException}
 
-class RotctldServer(deviceEngine: DeviceEngine) extends LazyLogging {
+class RotctldServer(commandLine: CommandLine, deviceEngine: RotatorGeniusInterface) extends LazyLogging {
   logger.info("starting RotctldServer")
 
-  private val serverSocket = new ServerSocket(4534)
+  private val serverSocket = new ServerSocket(commandLine.rotctldPort)
 
   //  val long2Short = Seq(
   //    "get_info" -> "_",
   //    "get_pos" -> "p",
   //  )
 
-  val parser = """(\+)?\\?(.+)""".r
+  private val parser = """(\+)?\\?(.+)""".r
 
   def get_pos(implicit extended: Boolean): String = {
     val maybeCurrentAzumuth: Option[Degree] = deviceEngine.getPosition
@@ -90,22 +90,6 @@ class RotctldServer(deviceEngine: DeviceEngine) extends LazyLogging {
         logger.info("Done with socket")
     }
   }
-
-
-}
-
-object RotctldServer extends App {
-
-  private val deviceEngine = new DeviceEngine()
-
-  private val rotctldThread = new Thread("rotctld") {
-    override def run(): Unit = {
-      new RotctldServer(deviceEngine)
-    }
-  }
-  rotctldThread.setDaemon(true)
-  rotctldThread.start()
-
 
 
 }

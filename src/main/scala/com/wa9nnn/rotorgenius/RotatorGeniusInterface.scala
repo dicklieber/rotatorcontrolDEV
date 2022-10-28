@@ -2,18 +2,20 @@ package com.wa9nnn.rotorgenius
 
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.rotorgenius.ResponseParser.Degree
+import com.wa9nnn.util.HostAndPort
 
 import java.io.{DataInputStream, DataOutputStream, InputStream, OutputStream}
 import java.net.Socket
 import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
 
-class DeviceEngine() extends Runnable with LazyLogging {
+class RotatorGeniusInterface(commandLine: CommandLine) extends Runnable with LazyLogging {
 
   private var currentHeader: Option[RGHeader] = None
 
   private val executor = new ScheduledThreadPoolExecutor(1)
   executor.scheduleWithFixedDelay(this, 1000, 250, TimeUnit.MILLISECONDS)
-  val client = new Socket("192.168.0.16", 9006)
+  private val rotatorGenius: HostAndPort = commandLine.rotatorGenius
+  val client: Socket = new Socket(rotatorGenius.toInetAddress, rotatorGenius.port)
 
   private val outputStream: OutputStream = client.getOutputStream
   private val dataOutputStream = new DataOutputStream(outputStream)
