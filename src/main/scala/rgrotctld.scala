@@ -5,9 +5,9 @@ import com.wa9nnn.util.HostAndPort
 
 /**
  * Main
- * Handles command line, if all ok invoke $MainStuff
+ * Handles command line, if all ok invoke $Server
  */
-object Rgrotctld extends App {
+object rgrotctld extends App {
 
   import scopt.OParser
 
