@@ -11,7 +11,9 @@ import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
 
 class RotatorGeniusInterface(commandLine: CommandLine) extends Runnable with LazyLogging {
 
-  private var currentHeader: Option[RGHeader] = None
+  var currentHeader: Option[RGHeader] = None
+  private var listeners: Set[Headerlistener] = Set.empty
+  private var currentRotator = 1
 
   private val executor = new ScheduledThreadPoolExecutor(1)
   executor.scheduleWithFixedDelay(this, 1000, 250, TimeUnit.MILLISECONDS)
@@ -23,6 +25,10 @@ class RotatorGeniusInterface(commandLine: CommandLine) extends Runnable with Laz
 
   private val inputStream: InputStream = client.getInputStream
   private val dataInputStream = new DataInputStream(inputStream)
+
+  def addListener(headerlistener: Headerlistener): Unit = {
+    listeners = listeners + headerlistener
+  }
 
   def getPosition: Option[Degree] = {
     for {
@@ -47,16 +53,6 @@ class RotatorGeniusInterface(commandLine: CommandLine) extends Runnable with Laz
     Move.checkResult(response)
   }
 
-  //  while (true) {
-  //    dataOutputStream.writeBytes("|h")
-  //
-  //    val bytesRead: Int = dataInputStream.read(recBuffer)
-  //    val response = recBuffer.take(bytesRead)
-  //    val header: RGHeader = RGHeader(response)
-  //    println(header)
-  //    Thread.sleep(1000)
-  //  }
-
   override def run(): Unit = {
     //todo handle fail and not initialized,
     val recBuffer = new Array[Byte](500)
@@ -65,8 +61,13 @@ class RotatorGeniusInterface(commandLine: CommandLine) extends Runnable with Laz
 
     val bytesRead: Int = dataInputStream.read(recBuffer)
     val response = recBuffer.take(bytesRead)
-    val header: RGHeader = RGHeader(response)
-    currentHeader = Option(header)
+    val incomingHeader: RGHeader = RGHeader(response)
 
+    currentHeader = Option(incomingHeader)
+    listeners.foreach(_.header(incomingHeader))
   }
+}
+
+trait Headerlistener {
+  def header(RGHeader: RGHeader): Unit
 }
