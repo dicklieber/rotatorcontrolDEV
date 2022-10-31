@@ -13,7 +13,7 @@ class RotatorGeniusInterface(commandLine: CommandLine) extends Runnable with Laz
 
   var currentHeader: Option[RGHeader] = None
   private var listeners: Set[Headerlistener] = Set.empty
-  private var currentRotator = 1
+   var currentRotator = 0
 
   private val executor = new ScheduledThreadPoolExecutor(1)
   executor.scheduleWithFixedDelay(this, 1000, 250, TimeUnit.MILLISECONDS)
@@ -30,10 +30,15 @@ class RotatorGeniusInterface(commandLine: CommandLine) extends Runnable with Laz
     listeners = listeners + headerlistener
   }
 
+  def setCurrentRotato(index:Int) :Unit  = {
+    assert(index < 2, "Current rotator can onlyh be 0 or 1")
+    currentRotator = index
+  }
+
   def getPosition: Option[Degree] = {
     for {
       header: RGHeader <- currentHeader
-      rotator: Rotator = header.rotator1
+      rotator: Rotator = header.rotators(currentRotator)
       d <- rotator.currentAzimuth
     } yield {
       d

@@ -5,6 +5,7 @@ import Configuration.Configuration
 import Moving.Moving
 import ResponseParser.{Degree, Offset}
 import com.wa9nnn.util.Stamped
+import com.wa9nnn.util.tableui.Cell
 
 /**
  * Internalized version of message returned via the "|h" request.
@@ -14,8 +15,8 @@ import com.wa9nnn.util.Stamped
  */
 case class RGHeader(
                      panic: Int,
-                     rotator1: Rotator,
-                     rotator2: Rotator) extends LazyLogging with Stamped {
+                     rotators: List[Rotator] = List.empty
+                   ) extends LazyLogging with Stamped {
 }
 
 /**
@@ -33,10 +34,24 @@ case class Rotator(
                     outOfLimits: Boolean,
                     name: String
                   ) extends LazyLogging {
+
+  def contents: Seq[(String, Cell)] = {
+    (for {
+      i <- 0 to productArity
+    } yield {
+      val name = productElementName(i)
+      val value = Cell(productElement(i))
+      name -> value
+    }).sortBy(_._1)
+  }
+
+
 }
 
 
 object RGHeader {
+  val rowCount = 10
+
   def apply(response: Array[Byte]): RGHeader = {
     implicit val parser = new ResponseParser(response)
     if (parser.nextString(2) != "|h")
@@ -46,7 +61,7 @@ object RGHeader {
     val panic = parser.nextByte()
     val r1 = Rotator.apply
     val r2 = Rotator.apply
-    new RGHeader(panic, r1, r2)
+    new RGHeader(panic, List(r1, r2))
   }
 }
 
