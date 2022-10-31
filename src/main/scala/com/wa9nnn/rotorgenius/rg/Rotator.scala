@@ -1,11 +1,15 @@
 package com.wa9nnn.rotorgenius.rg
 
 import com.typesafe.scalalogging.LazyLogging
-import Configuration.Configuration
-import Moving.Moving
-import ResponseParser.{Degree, Offset}
+import com.wa9nnn.rotorgenius.rg.Configuration.Configuration
+import com.wa9nnn.rotorgenius.rg.Moving.Moving
+import com.wa9nnn.rotorgenius.rg.RGHeader.rowCount
+import com.wa9nnn.rotorgenius.rg.ResponseParser.{Degree, Offset}
 import com.wa9nnn.util.Stamped
 import com.wa9nnn.util.tableui.Cell
+
+import javax.swing.table.AbstractTableModel
+import scala.swing.Table
 
 /**
  * Internalized version of message returned via the "|h" request.
@@ -14,7 +18,7 @@ import com.wa9nnn.util.tableui.Cell
  * @param panic 0 if ok, otherwise undefined in
  */
 case class RGHeader(
-                     panic: Int,
+                     panic: Int = 0,
                      rotators: List[Rotator] = List.empty
                    ) extends LazyLogging with Stamped {
 }
@@ -23,21 +27,57 @@ case class RGHeader(
  * See "4O3A RotorGenius_Protocol_Description_rev4.pdf" section 1.0
  */
 case class Rotator(
-                    currentAzimuth: Option[Degree],
-                    limitCW: Degree,
-                    limitCCW: Degree,
-                    configureation: Configuration,
-                    moving: Moving,
-                    offsetx: Offset,
-                    targetAzimuth: Option[Degree],
-                    startAzimuth: Option[Degree],
-                    outOfLimits: Boolean,
-                    name: String
-                  ) extends LazyLogging {
+                    currentAzimuth: Option[Degree] = None,
+                    limitCW: Degree = -1,
+                    limitCCW: Degree = -1,
+                    configuration: Configuration = Configuration.Azimuith,
+                    moving: Moving = Moving.Stopped,
+                    offsetx: Offset = 0,
+                    targetAzimuth: Option[Degree] = None,
+                    startAzimuth: Option[Degree] = None,
+                    outOfLimits: Boolean = false,
+                    name: String = "???"
+                  ) extends AbstractTableModel with LazyLogging {
+
+
+
+//  def table: Table = {
+//    new Table(this) {
+//
+//    }
+//  }
+
+  lazy val c: Seq[(String, Cell)] = contents
+
+  override def getRowCount: Degree = rowCount
+
+  override def getColumnCount: Degree = 2
+
+
+  override def getColumnName(column: Int): String = {
+    column match {
+      case 0 => "Name"
+      case 1 => "Value"
+      //      case x =>
+      //        throw new IllegalArgumentException()
+    }
+  }
+
+
+  override def getValueAt(rowIndex: Degree, columnIndex: Degree): AnyRef = {
+    val row: (String, Cell) = c(rowIndex)
+    columnIndex match {
+      case 0 =>
+        row._1
+      case 1 =>
+        row._2.toString()
+    }
+  }
+
 
   def contents: Seq[(String, Cell)] = {
     (for {
-      i <- 0 to productArity
+      i <- 0 until  productArity
     } yield {
       val name = productElementName(i)
       val value = Cell(productElement(i))

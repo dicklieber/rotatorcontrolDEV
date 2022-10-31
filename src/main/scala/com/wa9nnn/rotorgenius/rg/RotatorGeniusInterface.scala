@@ -69,10 +69,10 @@ class RotatorGeniusInterface(commandLine: CommandLine) extends Runnable with Laz
     val incomingHeader: RGHeader = RGHeader(response)
 
     currentHeader = Option(incomingHeader)
-    listeners.foreach(_.header(incomingHeader))
+    listeners.foreach(_.newHeader(incomingHeader))
   }
 }
 
 trait Headerlistener {
-  def header(RGHeader: RGHeader): Unit
+  def newHeader(RGHeader: RGHeader): Unit
 }

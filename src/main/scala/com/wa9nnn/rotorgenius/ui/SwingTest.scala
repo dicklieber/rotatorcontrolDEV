@@ -1,67 +1,64 @@
 package com.wa9nnn.rotorgenius.ui
 
 import com.wa9nnn.rotorgenius.rg.ResponseParser.Degree
-import com.wa9nnn.rotorgenius.rg.{Headerlistener, RGHeader, RotatorGeniusInterface}
+import com.wa9nnn.rotorgenius.rg.{Headerlistener, RGHeader, Rotator, RotatorGeniusInterface}
 
-import javax.swing.SpringLayout.Constraints
-import javax.swing.SwingUtilities.invokeAndWait
-import scala.swing.{GridPanel, Label, Table}
+import javax.swing.SwingUtilities
+import scala.swing._
 
 
 class SwingTest(rotatorGeniusInterface: RotatorGeniusInterface) extends Headerlistener {
 
-  import scala.swing._
-
   rotatorGeniusInterface.addListener(this)
   val azimuth = new Label("42")
+  private val rotatorA: Table = new Table(new Rotator())
 
-  val f = new MainFrame {
-    title = "Hello world"
+  private val rotatorB: Table = new Table(new Rotator())
+
+//  private val column: TableColumn = rotatorB.peer.getColumnModel.getColumn(0)
+//  column.setWidth(200)
+//  column.setPreferredWidth(250)
+  private val f: MainFrame = new MainFrame {
+    title = "Rotator Genius"
     menuBar = new MenuBar {
-      contents += new Menu("File") {
-        contents += new MenuItem("XYZZY") {
-        }
+      contents += new Menu("Debug") {
+        contents += new MenuItem(Action("Raw Data") {
+          println("Action '"+ title +"' invoked")
+          val dialog: Dialog = new Dialog(f){
+            size = new Dimension(500, 400)
+            title = "Raw Data from Rotator Controller"
+            modal = false
+            val boxPanel = new BoxPanel(Orientation.Horizontal) {
+              contents += rotatorA
+              contents += rotatorB
+            }
+            contents = boxPanel
+//            pack()
+          }
+          dialog.open()
+        })
       }
     }
 
-    contents = new RgHeaderPanel()
-    size = new Dimension(300, 300)
+    private val boxPanel = new BoxPanel(Orientation.Horizontal) {
+      contents += rotatorA
+      contents += rotatorB
+    }
+    contents = boxPanel
+    size = new Dimension(600, 300)
     centerOnScreen
   }
   f.visible = true
-  /*
-      rotatorGeniusInterface.currentHeader.foreach { rdheader =>
-        rdheader.productIterator.foreach { element =>
-
-          println(element)
-
-        }
-      }
-  */
-
 
   var currentPosition: Degree = -1
 
-  override def header(header: RGHeader): Unit =
-    header.rotators(rotatorGeniusInterface.currentRotator).currentAzimuth.foreach {
-      newAzimuth =>
-        if (currentPosition != newAzimuth) {
-          currentPosition = newAzimuth
-          invokeAndWait(new Runnable {
-            override def run(): Unit = {
-              currentPosition = newAzimuth
-              azimuth.text = currentPosition.toString
-            }
-          })
-        }
-    }
-
+  override def newHeader(header: RGHeader): Unit = {
+    //noinspection ZeroIndexToHead
+    SwingUtilities.invokeLater(() => {
+      rotatorA.model = header.rotators(0)
+      rotatorB.model = header.rotators(1)
+    })
+  }
 }
 
-  class RgHeaderPanel extends GridPanel(2, 2) {
-    private val constraints = new Constraints()
-    contents += new Label("Hello")
-    contents += new Label("123")
-    contents += new Label("r2c0")
-    contents += new Label("r2c2")
-  }
+
