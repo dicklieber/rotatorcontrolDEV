@@ -32,7 +32,7 @@ This will listen for rotctld command on port 4533. You can change port and other
 
 ###Status
 This the beginning of a work-in-progress.
-- Works with MacLoggreDX. rotator 1 hardcoded
+- Works with MacLoggerDX. rotator 1 hardcoded
 
 Source code at https://github.com/dicklieber/rotatorgenius
 
