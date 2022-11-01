@@ -42,5 +42,6 @@ libraryDependencies ++= Seq(
   "org.specs2" %% "specs2-mock" % "4.6.0" % "test",
   "com.github.scopt" %% "scopt" % "4.0.1",
 
-"org.scala-lang.modules" %% "scala-swing" % "3.0.0"
+"org.scala-lang.modules" %% "scala-swing" % "3.0.0",
+  "org.jfree" % "jfreechart" % "1.5.3"
 )

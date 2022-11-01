@@ -35,3 +35,9 @@ This the beginning of a work-in-progress.
 - Works with MacLoggreDX. rotator 1 hardcoded
 
 Source code at https://github.com/dicklieber/rotatorgenius
+
+###Useful Info
+Using JFreeChart with Scala-swing: https://alvinalexander.com/scala/jfreechart-how-create-xy-plot-graph/
+
+JFreeChart Compass: http://www.java2s.com/Code/Java/Chart/JFreeChartCompassChartSample.htm
+
