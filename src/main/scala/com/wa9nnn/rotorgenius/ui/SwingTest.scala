@@ -1,23 +1,23 @@
 package com.wa9nnn.rotorgenius.ui
 
-import com.wa9nnn.rotorgenius.rg.ResponseParser.Degree
 import com.wa9nnn.rotorgenius.rg.{Headerlistener, RGHeader, Rotator, RotatorGeniusInterface}
-import org.jfree.chart.{ChartPanel, JFreeChart}
-import org.jfree.chart.plot.CompassPlot
 import org.jfree.data.general.DefaultValueDataset
 
 import javax.swing.SwingUtilities
 import scala.swing._
 
 
+//noinspection ZeroIndexToHead
 class SwingTest(rotatorGeniusInterface: RotatorGeniusInterface) extends Headerlistener {
 
   rotatorGeniusInterface.addListener(this)
-  val azimuth = new Label("42")
+  private val rotatorPanels = Seq(new RotatorPanel(), new RotatorPanel())
+
   private val rotatorA: Table = new Table(new Rotator())
 
   private val rotatorB: Table = new Table(new Rotator())
-  val compassDataSet = new DefaultValueDataset(92)
+  val compassDataSetA = new DefaultValueDataset(1)
+  val compassDataSetB = new DefaultValueDataset(2)
 
   //  private val column: TableColumn = rotatorB.peer.getColumnModel.getColumn(0)
   //  column.setWidth(200)
@@ -43,47 +43,26 @@ class SwingTest(rotatorGeniusInterface: RotatorGeniusInterface) extends Headerli
         })
       }
     }
-    val compassPlot: CompassPlot = new CompassPlot(compassDataSet)
-    val compassChart: JFreeChart = new JFreeChart(
-      compassPlot
-    )
-    val chartPanel: ChartPanel = new ChartPanel(compassChart)
-    //  val boxPanel = new BoxPanel(Orientation.Horizontal) {
-    //    contents += compassPlot
-    //  }
-    peer.setContentPane(chartPanel)
-    //  contents = boxPanel
 
-    /*
-        private val boxPanel = new BoxPanel(Orientation.Horizontal) {
-          contents += rotatorA
-          contents += rotatorB
-        }
+    private val boxPanel = new BoxPanel(Orientation.Horizontal) {
+      rotatorPanels.foreach { rp =>
+        contents += rp
+      }
+    }
 
+    contents = boxPanel
 
-        contents = boxPanel
-    */
     size = new Dimension(600, 300)
     centerOnScreen
   }
   f.visible = true
 
-  var currentPosition: Degree = -1
-
   override def newHeader(header: RGHeader): Unit = {
     //noinspection ZeroIndexToHead
-
-
-
     SwingUtilities.invokeLater(() => {
-      rotatorA.model = header.rotators(0)
-      rotatorB.model = header.rotators(1)
-      header.rotators(1).currentAzimuth.foreach((azi: Degree) =>
-
-        compassDataSet.setValue(Integer.valueOf(azi)))
-    }
-    )
+      header.rotators.zipWithIndex.foreach { case (rotator, index) =>
+        rotatorPanels(index)(rotator)
+      }
+    })
   }
 }
-
-
