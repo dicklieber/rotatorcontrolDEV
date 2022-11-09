@@ -27,7 +27,7 @@ object rgrotctld extends App {
               failure(e.getMessage)
           }
         )
-        .action((h, c) => c.copy(rotatorGenius = HostAndPort(h, defaultRotatorGeniusPort)))
+        .action((h, c) => c.copy(controllerHostAndPort = HostAndPort(h, defaultRotatorGeniusPort)))
         .required
         .text(s"Host and port of the Rotator Genius. e.g. 192.168.0.16:1234 port default: $defaultRotatorGeniusPort"),
 
