@@ -2,12 +2,11 @@ package com.wa9nnn.rotorgenius
 
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.rotorgenius.rg.ResponseParser.Degree
-import com.wa9nnn.rotorgenius.rg.{Move, RotatorGeniusInterface}
 
 import java.io.{InputStreamReader, LineNumberReader}
 import java.net.{ServerSocket, Socket, SocketException}
 
-class RotctldServer(commandLine: CommandLine, deviceEngine: RotatorGeniusInterface) extends LazyLogging {
+class RotctldServer(commandLine: CommandLine, rotatorInterface: RotatorInterface) extends LazyLogging {
   logger.info("starting RotctldServer")
 
   private val serverSocket = new ServerSocket(commandLine.rotctldPort)
@@ -16,7 +15,7 @@ class RotctldServer(commandLine: CommandLine, deviceEngine: RotatorGeniusInterfa
   private val setPosRegx = """set_pos (\d+\.\d+) (\d+\.\d+)""".r
 
   def get_pos(implicit extended: Boolean): String = {
-    val maybeCurrentAzumuth: Option[Degree] = deviceEngine.getPosition
+    val maybeCurrentAzumuth: Option[Degree] = rotatorInterface.getPosition
     if (extended) {
       s"""get_pos:
          |Azimuth: ${maybeCurrentAzumuth.getOrElse("?")}
@@ -42,8 +41,8 @@ class RotctldServer(commandLine: CommandLine, deviceEngine: RotatorGeniusInterfa
 
   def set_pos(azi:String, ele:String)(implicit extended: Boolean):String = {
     //todo do move
-    val iAzi = azi.toDouble.toInt
-    deviceEngine.move(Move(1, iAzi))
+    val targetAzimuth = azi.toDouble.toInt
+    rotatorInterface.move(targetAzimuth)
 
     if (extended) {
       s"""set_pos: $azi $ele
@@ -103,7 +102,7 @@ class RotctldServer(commandLine: CommandLine, deviceEngine: RotatorGeniusInterfa
 //        logger.whenDebugEnabled{
 //          logger.trace()
 //        }
-        logger.info("Done with socket")
+        logger.info("Done with socket", e.getMessage)
     }
   }
 

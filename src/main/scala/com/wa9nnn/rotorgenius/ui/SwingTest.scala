@@ -1,6 +1,8 @@
 package com.wa9nnn.rotorgenius.ui
 
-import com.wa9nnn.rotorgenius.rg.{Headerlistener, RGHeader, Rotator, RotatorGeniusInterface}
+import com.wa9nnn.rotorgenius.RotatorInterface
+import com.wa9nnn.rotorgenius.arco.Headerlistener
+import com.wa9nnn.rotorgenius.rg.{RGHeader, Rotator}
 import org.jfree.data.general.DefaultValueDataset
 
 import javax.swing.SwingUtilities
@@ -8,9 +10,9 @@ import scala.swing._
 
 
 //noinspection ZeroIndexToHead
-class SwingTest(rotatorGeniusInterface: RotatorGeniusInterface) extends Headerlistener {
+class SwingTest(rotatorInterface: RotatorInterface) extends Headerlistener {
 
-  rotatorGeniusInterface.addListener(this)
+  rotatorInterface.addListener(this)
   private val rotatorPanels = Seq(new RotatorPanel(), new RotatorPanel())
 
   private val rotatorA: Table = new Table(new Rotator())

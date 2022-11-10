@@ -1,18 +1,19 @@
 package com.wa9nnn.rotorgenius
 
-import com.wa9nnn.rotorgenius.rg.RotatorGeniusInterface
+import com.wa9nnn.rotorgenius.arco.ArcoInterface
 import com.wa9nnn.rotorgenius.ui.SwingTest
 
 
 class Server(commandLine: CommandLine) {
 
 
-  private val deviceEngine = new RotatorGeniusInterface(commandLine)
-  new SwingTest(deviceEngine)
+  private val rotatorInterface: RotatorInterface = new ArcoInterface(commandLine)
+//  private val rotatorInterface = new RotatorGeniusInterface(commandLine)
+  new SwingTest(rotatorInterface)
 
   private val rotctldThread = new Thread("rotctld") {
     override def run(): Unit = {
-      new RotctldServer(commandLine, deviceEngine)
+      new RotctldServer(commandLine, rotatorInterface)
     }
   }
   rotctldThread.setDaemon(true)
