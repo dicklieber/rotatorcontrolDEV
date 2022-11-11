@@ -1,15 +1,17 @@
 
-import com.wa9nnn.rotator.{Config, Server}
-import scalafx.application.JFXApp3
-import scalafx.geometry.Insets
+import com.wa9nnn.rotator.{Config, RotatorConfig, Server}
+import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.Scene
-import scalafx.scene.effect.DropShadow
-import scalafx.scene.layout.HBox
-import scalafx.scene.paint.Color.{DarkGray, DarkRed, Red, White}
-import scalafx.scene.paint.{Color, LinearGradient, Stops}
-import scalafx.scene.text.Text
+import scalafx.scene.control.{ButtonType, DConvert, Dialog, Menu, MenuBar, MenuItem}
+import scalafx.scene.layout.BorderPane
+import scalafx.scene.paint.Color
+import javafx.{event => jfxe, scene => jfxs}
+import _root_.scalafx.Includes._
+import com.wa9nnn.rotator.ui.RotatorEditorDialog
+import scalafx.event.ActionEvent
+import scalafx.scene.control.ButtonBar.ButtonData
 
-/**
+/** import _root_.scalafx.event.ActionEvent
  * Main
  * Handles command line, if all ok invoke $Server
  */
@@ -44,37 +46,42 @@ object RotatorManager extends JFXApp3 {
   //    // arguments are bad, error message will have been displayed
   //  }
 
+  private val editRotatorMenuItem = new MenuItem {
+    text = "Rotator Controller"
+    onAction = {ae =>
+       val maybeS = new RotatorEditorDialog(stage, RotatorConfig()).showAndWait()
+      println(maybeS)
+    }
+  }
+
   private val todoConfig: Config = Config()
   private val server = new Server(todoConfig)
+
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
       title = "Rotator Manager"
+      onCloseRequest = { e =>
+        Platform.exit()
+        System.exit(0)
+      }
       scene = new Scene {
+
         fill = Color.rgb(38, 38, 38)
-        content = new HBox {
-          padding = Insets(50, 80, 50, 80)
-          children = Seq(
-            new Text {
-              text = "Scala"
-              style = "-fx-font: normal bold 100pt sans-serif"
-              fill = new LinearGradient(
-                endX = 0,
-                stops = Stops(Red, DarkRed))
-            },
-            new Text {
-              text = "FX"
-              style = "-fx-font: italic bold 100pt sans-serif"
-              fill = new LinearGradient(
-                endX = 0,
-                stops = Stops(White, DarkGray)
-              )
-              effect = new DropShadow {
-                color = DarkGray
-                radius = 15
-                spread = 0.25
-              }
-            }
-          )
+
+        private val menuBar = new MenuBar {
+          useSystemMenuBar = true
+        }
+        val confgMenu = new Menu("Config") {
+          items += editRotatorMenuItem
+        }
+
+
+        menuBar.menus = List(confgMenu)
+        content = new BorderPane {
+          top = menuBar
+          //          center = tabPane
+          //          bottom = bottomPane
+          //          right = injector.instance[NetworkPane]
         }
       }
     }
