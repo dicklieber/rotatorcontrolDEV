@@ -9,7 +9,6 @@ import com.wa9nnn.util.Stamped
 import com.wa9nnn.util.tableui.Cell
 
 import javax.swing.table.AbstractTableModel
-import scala.swing.Table
 
 /**
  * Internalized version of message returned via the "|h" request.

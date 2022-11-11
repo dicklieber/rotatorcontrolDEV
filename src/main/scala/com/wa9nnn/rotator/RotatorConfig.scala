@@ -15,7 +15,7 @@ object RotatorConfig {
   implicit val rcfmt: OFormat[RotatorConfig] = Json.format[RotatorConfig]
 }
 
-case class Config(configs: List[RotatorConfig], rgctldPort:Int = 4553)
+case class Config(configs: List[RotatorConfig] = List.empty, rgctldPort:Int = 4533)
 
 object Config {
 

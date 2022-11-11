@@ -6,10 +6,10 @@ import com.wa9nnn.rotator.rg.ResponseParser.Degree
 import java.io.{InputStreamReader, LineNumberReader}
 import java.net.{ServerSocket, Socket, SocketException}
 
-class RotctldServer(commandLine: CommandLine, rotatorInterface: RotatorInterface) extends LazyLogging {
+class RotctldServer(rotctldPort:Int, rotatorInterface: RotatorInterface) extends LazyLogging {
   logger.info("starting RotctldServer")
 
-  private val serverSocket = new ServerSocket(commandLine.rotctldPort)
+  private val serverSocket = new ServerSocket(rotctldPort)
 
   private val parser = """(\+)?[\\|]?(.+)""".r
   private val setPosRegx = """set_pos (\d+\.\d+) (\d+\.\d+)""".r

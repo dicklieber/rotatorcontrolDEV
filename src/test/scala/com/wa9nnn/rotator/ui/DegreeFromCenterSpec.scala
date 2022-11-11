@@ -3,11 +3,11 @@ package com.wa9nnn.rotator.ui
 import org.specs2.matcher.DataTables
 import org.specs2.mutable.Specification
 import org.specs2.specification.Tables
+import scalafx.scene.shape.Rectangle
 
-import scala.swing.{Point, Rectangle}
 
 
-class DegreeFromCenterSpec extends Specification with DataTables {
+class DegreeFromCenterSpec extends Specification with DataTables /*{
   val rectangle: Rectangle = new Rectangle(100, 100)
   private val angleHelper = new DegreeFromCenter(rectangle)
   val north = new Point(0, 50)
@@ -26,4 +26,4 @@ class DegreeFromCenterSpec extends Specification with DataTables {
     }
   }
 }
-
+*/
