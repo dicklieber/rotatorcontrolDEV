@@ -1,7 +1,7 @@
-package com.wa9nnn.rotorgenius.rg
+package com.wa9nnn.rotator.rg
 
 import com.typesafe.scalalogging.LazyLogging
-import com.wa9nnn.rotorgenius.rg.ResponseParser.{Degree, Offset}
+import com.wa9nnn.rotator.rg.ResponseParser.{Degree, Offset}
 
 import java.nio.ByteBuffer
 

@@ -1,9 +1,9 @@
-package com.wa9nnn.rotorgenius.ui
+package com.wa9nnn.rotator.ui
 
 import com.typesafe.scalalogging.LazyLogging
-import com.wa9nnn.rotorgenius.rg.Moving._
-import com.wa9nnn.rotorgenius.rg.ResponseParser.Degree
-import com.wa9nnn.rotorgenius.rg.Rotator
+import com.wa9nnn.rotator.rg.Moving._
+import com.wa9nnn.rotator.rg.ResponseParser.Degree
+import com.wa9nnn.rotator.rg.Rotator
 import org.jfree.chart.entity.ChartEntity
 import org.jfree.chart.{ChartMouseEvent, ChartMouseListener, ChartPanel, JFreeChart}
 import org.jfree.chart.plot.CompassPlot

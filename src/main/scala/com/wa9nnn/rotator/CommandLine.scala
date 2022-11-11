@@ -1,7 +1,7 @@
-package com.wa9nnn.rotorgenius
+package com.wa9nnn.rotator
 
 import com.typesafe.scalalogging.LazyLogging
-import com.wa9nnn.rotorgenius.CommandLine.{defaultRotatorGeniusPort, defaultRotctldPort}
+import com.wa9nnn.rotator.CommandLine.{defaultRotatorGeniusPort, defaultRotctldPort}
 import com.wa9nnn.util.HostAndPort
 
 /**

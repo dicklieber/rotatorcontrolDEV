@@ -30,8 +30,8 @@
 
   <!-- Off these ones as they are annoying, and anyway we manage configuration ourselves -->
   <logger name="Rotator" level="TRACE" />
-  <logger name="com.wa9nnn.rotorgenius.RotctldServer" level="INFO" />
-  <logger name="com.wa9nnn.rotorgenius.arco.ArcoInterface" level="TRACE" />
+  <logger name="com.wa9nnn.rotator.RotctldServer" level="INFO" />
+  <logger name="com.wa9nnn.rotator.arco.ArcoInterface" level="INFO" />
 
   <root level="INFO">
     <appender-ref ref="ASYNCFILE" />

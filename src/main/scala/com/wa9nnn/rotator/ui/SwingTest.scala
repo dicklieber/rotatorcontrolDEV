@@ -1,8 +1,9 @@
-package com.wa9nnn.rotorgenius.ui
+package com.wa9nnn.rotator.ui
 
-import com.wa9nnn.rotorgenius.RotatorInterface
-import com.wa9nnn.rotorgenius.arco.Headerlistener
-import com.wa9nnn.rotorgenius.rg.{RGHeader, Rotator}
+import com.wa9nnn.rotator.{RotatorConfig, RotatorInterface}
+import com.wa9nnn.rotator.arco.Headerlistener
+import com.wa9nnn.rotator.rg.{RGHeader, Rotator}
+import com.wa9nnn.util.HostAndPort
 import org.jfree.data.general.DefaultValueDataset
 
 import javax.swing.SwingUtilities
@@ -28,7 +29,7 @@ class SwingTest(rotatorInterface: RotatorInterface) extends Headerlistener {
     title = "Rotator Genius"
 
     menuBar = new MenuBar {
-      contents += new Menu("Debug") {
+      contents += new Menu("Config") {
         contents += new MenuItem(Action("Raw Data") {
           println("Action '" + title + "' invoked")
           val dialog: Dialog = new Dialog(f) {
@@ -42,6 +43,9 @@ class SwingTest(rotatorInterface: RotatorInterface) extends Headerlistener {
             contents = boxPanel
           }
           dialog.open()
+        })
+        contents += new MenuItem(Action("Rotator Editor") {
+          new RotatorEditorDialog(RotatorConfig(), f)
         })
       }
     }

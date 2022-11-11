@@ -1,13 +1,14 @@
-package com.wa9nnn.rotorgenius
+package com.wa9nnn.rotator
 
-import com.wa9nnn.rotorgenius.arco.ArcoInterface
-import com.wa9nnn.rotorgenius.ui.SwingTest
+import com.wa9nnn.rotator.arco.ArcoInterface
+import com.wa9nnn.rotator.ui.SwingTest
+import com.wa9nnn.util.HostAndPort
 
 
 class Server(commandLine: CommandLine) {
 
 
-  private val rotatorInterface: RotatorInterface = new ArcoInterface(commandLine)
+  private val rotatorInterface: RotatorInterface = new ArcoInterface(RotatorConfig("default", HostAndPort("192.168.0.123", 4001)))
 //  private val rotatorInterface = new RotatorGeniusInterface(commandLine)
   new SwingTest(rotatorInterface)
 

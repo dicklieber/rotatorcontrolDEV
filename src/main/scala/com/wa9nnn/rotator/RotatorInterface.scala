@@ -1,7 +1,7 @@
-package com.wa9nnn.rotorgenius
+package com.wa9nnn.rotator
 
-import com.wa9nnn.rotorgenius.arco.Headerlistener
-import com.wa9nnn.rotorgenius.rg.ResponseParser.Degree
+import com.wa9nnn.rotator.arco.Headerlistener
+import com.wa9nnn.rotator.rg.ResponseParser.Degree
 
 import scala.util.Try
 

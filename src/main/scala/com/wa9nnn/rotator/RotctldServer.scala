@@ -1,7 +1,7 @@
-package com.wa9nnn.rotorgenius
+package com.wa9nnn.rotator
 
 import com.typesafe.scalalogging.LazyLogging
-import com.wa9nnn.rotorgenius.rg.ResponseParser.Degree
+import com.wa9nnn.rotator.rg.ResponseParser.Degree
 
 import java.io.{InputStreamReader, LineNumberReader}
 import java.net.{ServerSocket, Socket, SocketException}

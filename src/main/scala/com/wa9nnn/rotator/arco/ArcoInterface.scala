@@ -1,9 +1,9 @@
-package com.wa9nnn.rotorgenius.arco
+package com.wa9nnn.rotator.arco
 
 import com.typesafe.scalalogging.LazyLogging
-import com.wa9nnn.rotorgenius.rg.ResponseParser.Degree
-import com.wa9nnn.rotorgenius.rg.{RGHeader, Rotator}
-import com.wa9nnn.rotorgenius.{CommandLine, RotatorInterface}
+import com.wa9nnn.rotator.rg.ResponseParser.Degree
+import com.wa9nnn.rotator.rg.{RGHeader, Rotator}
+import com.wa9nnn.rotator.{CommandLine, RotatorConfig, RotatorInterface}
 import com.wa9nnn.util.HostAndPort
 
 import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
@@ -12,13 +12,13 @@ import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
  * Handles move command and polls current azimuth from an Arco controller
  * @param commandLine
  */
-class ArcoInterface(commandLine: CommandLine) extends ScheduledThreadPoolExecutor(1)
+class ArcoInterface(rotatorConfig: RotatorConfig) extends ScheduledThreadPoolExecutor(1)
   with RotatorInterface with LazyLogging with Runnable {
 
   var currentAzimuth: Option[Degree] = None
   private var listeners: Set[Headerlistener] = Set.empty
 
-  private implicit val arcoExecutor = new ArcoExecutor(commandLine.controllerHostAndPort)
+  private implicit val arcoExecutor = new ArcoExecutor(rotatorConfig)
 
   def addListener(headerlistener: Headerlistener): Unit = {
     listeners = listeners + headerlistener
@@ -65,13 +65,5 @@ trait Headerlistener {
   def newHeader(RGHeader: RGHeader): Unit
 }
 
-object ArcoTest extends App with LazyLogging {
-  private val commandLine = CommandLine(HostAndPort("192.168.0.123", 4001))
-  private val arcoInterface = new ArcoInterface(commandLine)
 
-  while (true) {
-    Thread.sleep(125)
-    logger.info(s"Azimuth: ${arcoInterface.currentAzimuth}")
-  }
-}
 

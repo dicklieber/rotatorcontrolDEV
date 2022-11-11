@@ -1,4 +1,4 @@
-package com.wa9nnn.rotorgenius.arco
+package com.wa9nnn.rotator.arco
 
 import com.typesafe.scalalogging.LazyLogging
 

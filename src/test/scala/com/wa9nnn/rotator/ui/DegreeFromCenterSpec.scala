@@ -1,4 +1,4 @@
-package com.wa9nnn.rotorgenius.ui
+package com.wa9nnn.rotator.ui
 
 import org.specs2.matcher.DataTables
 import org.specs2.mutable.Specification

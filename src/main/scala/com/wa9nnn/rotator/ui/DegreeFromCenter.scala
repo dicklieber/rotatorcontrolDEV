@@ -1,4 +1,4 @@
-package com.wa9nnn.rotorgenius.ui
+package com.wa9nnn.rotator.ui
 
 import scala.swing.{Point, Rectangle}
 

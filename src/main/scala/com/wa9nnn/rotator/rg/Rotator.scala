@@ -1,10 +1,10 @@
-package com.wa9nnn.rotorgenius.rg
+package com.wa9nnn.rotator.rg
 
 import com.typesafe.scalalogging.LazyLogging
-import com.wa9nnn.rotorgenius.rg.Configuration.Configuration
-import com.wa9nnn.rotorgenius.rg.Moving.Moving
-import com.wa9nnn.rotorgenius.rg.RGHeader.rowCount
-import com.wa9nnn.rotorgenius.rg.ResponseParser.{Degree, Offset}
+import com.wa9nnn.rotator.rg.Configuration.Configuration
+import com.wa9nnn.rotator.rg.Moving.Moving
+import com.wa9nnn.rotator.rg.RGHeader.rowCount
+import com.wa9nnn.rotator.rg.ResponseParser.{Degree, Offset}
 import com.wa9nnn.util.Stamped
 import com.wa9nnn.util.tableui.Cell
 

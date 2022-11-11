@@ -1,4 +1,4 @@
-import com.wa9nnn.rotorgenius.rg.{RGHeader, ResponseParser}
+import com.wa9nnn.rotator.rg.{RGHeader, ResponseParser}
 
 class ResponseParserTest extends org.specs2.mutable.Specification {
   //  val response = "|h2\u0000999359  0A0   0999999\u0000Tower        44359  0A0   0999999\u0000Rotator 2   "

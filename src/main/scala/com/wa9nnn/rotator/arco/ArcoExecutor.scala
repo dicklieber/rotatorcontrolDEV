@@ -1,6 +1,7 @@
-package com.wa9nnn.rotorgenius.arco
+package com.wa9nnn.rotator.arco
 
 import com.typesafe.scalalogging.LazyLogging
+import com.wa9nnn.rotator.RotatorConfig
 import com.wa9nnn.util.HostAndPort
 
 import java.io.{DataInputStream, InputStream, OutputStream, PrintWriter}
@@ -12,9 +13,9 @@ import scala.concurrent.ExecutionContext
  * Sends commands and does something with the response.
  * Assumes one line command and a single line returned.
  *
- * @param hostAndPort of an ARCO.
+ * @param rotatorConfig for an Arco.
  */
-class ArcoExecutor(hostAndPort: HostAndPort) extends LazyLogging {
+class ArcoExecutor(val rotatorConfig: RotatorConfig) extends LazyLogging {
   implicit val ec: ExecutionContext = new ExecutionContext {
     val threadPool = Executors.newFixedThreadPool(1)
 
@@ -25,8 +26,7 @@ class ArcoExecutor(hostAndPort: HostAndPort) extends LazyLogging {
     override def reportFailure(t: Throwable): Unit = {}
   }
 
-  //  private val executor = new ScheduledThreadPoolExecutor(1)
-  //  executor.scheduleWithFixedDelay(this, 1000, 250, TimeUnit.MILLISECONDS)
+  private val hostAndPort: HostAndPort = rotatorConfig.hostAndPort
   val client: Socket = new Socket(hostAndPort.toInetAddress, hostAndPort.port)
   client.setSoTimeout(5000)
 

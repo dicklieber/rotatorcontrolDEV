@@ -14,7 +14,7 @@ packageDescription := """Multiplatform Logging Application for ARRL and Winter F
 enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, UniversalPlugin, WindowsPlugin)
 buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, maintainer,
   git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion)
-buildInfoPackage := "com.wa9nnn.rotorgenius"
+buildInfoPackage := "com.wa9nnn.rotator"
 
 buildInfoOptions ++= Seq(
   BuildInfoOption.ToJson,
@@ -22,15 +22,14 @@ buildInfoOptions ++= Seq(
 )
 
 
-resolvers += ("Reposilite" at  "http://194.113.64.105:8080/releases")
+resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
   .withAllowInsecureProtocol(true)
-
 
 
 val logbackVersion = "1.2.3"
 
 libraryDependencies ++= Seq(
-  "com.wa9nnn" %% "util" % "0.1.8",
+  "com.wa9nnn" %% "util" % "0.1.9-SNAPSHOT",
 
 
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
@@ -42,6 +41,8 @@ libraryDependencies ++= Seq(
   "org.specs2" %% "specs2-mock" % "4.6.0" % "test",
   "com.github.scopt" %% "scopt" % "4.0.1",
 
-"org.scala-lang.modules" %% "scala-swing" % "3.0.0",
-  "org.jfree" % "jfreechart" % "1.5.3"
+  "org.scala-lang.modules" %% "scala-swing" % "3.0.0",
+  "org.jfree" % "jfreechart" % "1.5.3",
+  "com.typesafe.play" %% "play-json" % "2.9.3",
+
 )
