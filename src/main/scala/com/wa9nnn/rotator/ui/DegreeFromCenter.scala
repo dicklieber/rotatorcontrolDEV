@@ -1,5 +1,7 @@
 package com.wa9nnn.rotator.ui
 
+import java.awt.{Point, Rectangle}
+
 
 /**
  * For a given [[Rectangle]] calculate the angle from a point at the center.

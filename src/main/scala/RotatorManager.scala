@@ -1,50 +1,18 @@
 
+import com.wa9nnn.rotator.ui.{RotatorEditorDialog, RotatorPanel}
 import com.wa9nnn.rotator.{Config, RotatorConfig, Server}
+import com.wa9nnn.util.HostAndPort
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.Scene
-import scalafx.scene.control.{ButtonType, DConvert, Dialog, Menu, MenuBar, MenuItem}
+import scalafx.scene.control.{Label, Menu, MenuBar, MenuItem}
 import scalafx.scene.layout.BorderPane
 import scalafx.scene.paint.Color
-import javafx.{event => jfxe, scene => jfxs}
-import _root_.scalafx.Includes._
-import com.wa9nnn.rotator.ui.RotatorEditorDialog
-import scalafx.event.ActionEvent
-import scalafx.scene.control.ButtonBar.ButtonData
 
 /** import _root_.scalafx.event.ActionEvent
  * Main
  * Handles command line, if all ok invoke $Server
  */
 object RotatorManager extends JFXApp3 {
-
-  //  val builder = OParser.builder[CommandLine]
-  /*
-    val parser1 = {
-      import builder._
-      OParser.sequence(
-        programName(BuildInfo.name),
-        head(BuildInfo.name, BuildInfo.version),
-
-        opt[Unit]('v', "verbose")
-          .action((_, c) => c.copy(verbose = true))
-          .text("verbose is a flag")
-        ,
-
-        opt[Unit]('d', "debug")
-          .action((_, c) => c.copy(debug = true))
-          .text("this option is hidden in the usage text"),
-
-        help("help").text("prints this usage text")
-        ,
-      )
-    }
-  */
-  //  OParser.parse(parser1, args, CommandLine()) match {
-  //    case Some(config) =>
-  //      new Server(config)
-  //    case _ =>
-  //    // arguments are bad, error message will have been displayed
-  //  }
 
   private val editRotatorMenuItem = new MenuItem {
     text = "Rotator Controller"
@@ -65,8 +33,8 @@ object RotatorManager extends JFXApp3 {
         System.exit(0)
       }
       scene = new Scene {
-
-        fill = Color.rgb(38, 38, 38)
+        val cssUrl: String = getClass.getResource("/rotatormanager.css").toExternalForm
+        stylesheets.add( cssUrl)
 
         private val menuBar = new MenuBar {
           useSystemMenuBar = true
@@ -75,12 +43,14 @@ object RotatorManager extends JFXApp3 {
           items += editRotatorMenuItem
         }
 
-
         menuBar.menus = List(confgMenu)
         content = new BorderPane {
+
           top = menuBar
+          private val rotatorConfig: RotatorConfig = RotatorConfig("XYZZY", HostAndPort("192.168.0.123", 4001))
+          center = new RotatorPanel(rotatorConfig, server.rotatorInterface)
           //          center = tabPane
-          //          bottom = bottomPane
+                  bottom = new Label("bottom")
           //          right = injector.instance[NetworkPane]
         }
       }

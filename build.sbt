@@ -43,6 +43,7 @@ libraryDependencies ++= Seq(
 
 //  "org.scala-lang.modules" %% "scala-swing" % "3.0.0",
   "org.jfree" % "jfreechart" % "1.5.3",
+  "org.jfree" % "jfreechart-fx" % "1.0.1",
   "com.typesafe.play" %% "play-json" % "2.9.3",
 
 )

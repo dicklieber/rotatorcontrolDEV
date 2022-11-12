@@ -32,6 +32,7 @@
   <logger name="Rotator" level="TRACE" />
   <logger name="com.wa9nnn.rotator.RotctldServer" level="INFO" />
   <logger name="com.wa9nnn.rotator.arco.ArcoInterface" level="INFO" />
+  <logger name="com.wa9nnn.rotator.ui.RotatorPanel" level="TRACE" />
 
   <root level="INFO">
     <appender-ref ref="ASYNCFILE" />

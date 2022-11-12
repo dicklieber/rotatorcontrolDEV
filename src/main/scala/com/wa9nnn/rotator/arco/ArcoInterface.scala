@@ -24,6 +24,10 @@ class ArcoInterface(rotatorConfig: RotatorConfig) extends ScheduledThreadPoolExe
     listeners = listeners + headerlistener
   }
 
+  def removeListener(headerlistener: Headerlistener):Unit = {
+    listeners = listeners - headerlistener
+  }
+
   def getPosition: Option[Degree] = {
     currentAzimuth
   }

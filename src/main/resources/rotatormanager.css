@@ -1,0 +1,33 @@
+.rotatorPanel {
+    -fx-text-fill: rgb(49, 89, 23);
+    -fx-border-width: 3;
+    -fx-border-color: rgb(49, 89, 23);
+    -fx-background-color: #11ff00;
+    -fx-border-radius: 5;
+    -fx-padding: 3 6 6 6;
+}
+
+.compass {
+    -fx-text-fill: rgb(49, 89, 23);
+    -fx-border-width: 2;
+    -fx-border-color: rgb(213, 35, 68);
+    -fx-background-color: #11ff00;
+    -fx-border-radius: 15;
+    -fx-padding: 3 6 6 6;
+}
+
+.rotatorName {
+    -fx-font-family: Helvetica
+}
+
+.rotatorName {
+    -fx-font-family: Helvetica;
+    -fx-font-size: 18pt;
+    -fx-text-alignment: left;
+}
+
+.azimuthDisplay {
+    -fx-font-family: Helvetica;
+    -fx-font-size: 18pt;
+    -fx-text-alignment: center;
+}
