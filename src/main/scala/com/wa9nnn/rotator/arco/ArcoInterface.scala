@@ -21,8 +21,7 @@ package com.wa9nnn.rotator.arco
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.rotator.rg.ResponseParser.Degree
 import com.wa9nnn.rotator.rg.{RGHeader, Rotator}
-import com.wa9nnn.rotator.{CommandLine, RotatorConfig, RotatorInterface}
-import com.wa9nnn.util.HostAndPort
+import com.wa9nnn.rotator.{RotatorConfig, RotatorInterface}
 
 import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
 
