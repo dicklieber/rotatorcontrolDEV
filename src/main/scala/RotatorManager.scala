@@ -62,7 +62,7 @@ object RotatorManager extends JFXApp3 {
         }
 
         menuBar.menus = List(confgMenu)
-        content = new BorderPane {
+        root = new BorderPane {
 
           top = menuBar
           private val rotatorConfig: RotatorConfig = RotatorConfig("XYZZY", HostAndPort("192.168.0.123", 4001))
