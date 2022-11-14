@@ -5,6 +5,7 @@ ThisBuild / scalaVersion := "2.13.10"
 lazy val root = (project in file("."))
   .settings(
     name := "Rgrotctld"
+
   )
 
 maintainer := "Dick Lieber <wa9nnn@u505.com>"
@@ -20,7 +21,6 @@ buildInfoOptions ++= Seq(
   BuildInfoOption.ToJson,
   BuildInfoOption.BuildTime
 )
-
 
 resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
   .withAllowInsecureProtocol(true)
@@ -45,5 +45,4 @@ libraryDependencies ++= Seq(
   "org.jfree" % "jfreechart" % "1.5.3",
   "org.jfree" % "jfreechart-fx" % "1.0.1",
   "com.typesafe.play" %% "play-json" % "2.9.3",
-
 )

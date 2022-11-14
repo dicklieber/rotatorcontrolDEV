@@ -30,10 +30,11 @@ import org.jfree.chart.fx.interaction.{ChartMouseEventFX, ChartMouseListenerFX}
 import org.jfree.chart.plot.CompassPlot
 import org.jfree.data.general.DefaultValueDataset
 import org.scalafx.extras.onFX
-import scalafx.geometry.Point2D
+import scalafx.geometry.{Point2D, Pos}
 import scalafx.scene.control.Label
-import scalafx.scene.layout.BorderPane
+import scalafx.scene.layout.{BorderPane, FlowPane, HBox, Pane, Priority}
 import scalafx.scene.text.Text
+import _root_.scalafx.Includes._
 
 import scala.language.implicitConversions
 
@@ -41,16 +42,18 @@ import scala.language.implicitConversions
  * A swing Panel that displays and interacts with an Antenna Genius rotator motor.
  */
 class RotatorPanel(rotatorConfig: RotatorConfig, rotatorInterface: RotatorInterface) extends BorderPane with Headerlistener with LazyLogging {
-  private val compassDataSet = new DefaultValueDataset(1)
+
+  vgrow = Priority.Always
+  hgrow = Priority.Always
   styleClass += "rotatorPanel"
+  private val compassDataSet = new DefaultValueDataset(1)
+  //  styleClass += "rotatorPanel"
   private val nameLabel = new Text(rotatorConfig.name) {
     styleClass += "rotatorName"
   }
   private val azimuthDisplay: Text = new Text("---") {
     styleClass += "azimuthDisplay"
   }
-  top = nameLabel
-  bottom = new Label("Bottom of rotator panel")
 
   val compassPlot: CompassPlot = new CompassPlot(compassDataSet)
 
@@ -58,8 +61,6 @@ class RotatorPanel(rotatorConfig: RotatorConfig, rotatorInterface: RotatorInterf
   val compassChart: JFreeChart = new JFreeChart(
     compassPlot
   )
-
-
   import org.jfree.chart.fx.ChartViewer
 
   val jfxViewer: ChartViewer = new ChartViewer(compassChart)
@@ -80,7 +81,7 @@ class RotatorPanel(rotatorConfig: RotatorConfig, rotatorInterface: RotatorInterf
         angle
 
       logger.debug(s"finalA: $finalA")
-    }//todo use this to move
+    } //todo use this to move
 
     override def chartMouseMoved(event: ChartMouseEventFX): Unit = {
       logger.trace("moved: {}", event.getTrigger)
@@ -88,9 +89,17 @@ class RotatorPanel(rotatorConfig: RotatorConfig, rotatorInterface: RotatorInterf
   })
 
   jfxViewer.setPrefSize(200.0, 200.0)
-
+  top = new FlowPane {
+    children += nameLabel
+    alignment = Pos.Center
+    styleClass += "bigText"
+  }
   center.value = jfxViewer
-  bottom = azimuthDisplay
+  bottom = new FlowPane {
+    children += azimuthDisplay
+    alignment = Pos.Center
+    styleClass += "bigText"
+  }
 
   rotatorInterface.addListener(this)
 
@@ -121,7 +130,7 @@ class RotatorPanel(rotatorConfig: RotatorConfig, rotatorInterface: RotatorInterf
       rotatorInterface.getPosition.foreach {
         azimuth: Degree =>
           compassDataSet.setValue(Integer.valueOf(azimuth))
-          azimuthDisplay.text = f"$azimuth%40d"
+          azimuthDisplay.text = f"$azimuth%03d°"
       }
     }
   }
