@@ -44,8 +44,7 @@ class ArcoExecutor(val rotatorConfig: RotatorConfig) extends LazyLogging {
     override def reportFailure(t: Throwable): Unit = {}
   }
 
-  private val hostAndPort: HostAndPort = rotatorConfig.hostAndPort
-  val client: Socket = new Socket(hostAndPort.toInetAddress, hostAndPort.port)
+  val client: Socket = new Socket(rotatorConfig.host, rotatorConfig.port)
   client.setSoTimeout(5000)
 
   private val outputStream: OutputStream = client.getOutputStream

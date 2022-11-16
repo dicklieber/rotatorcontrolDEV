@@ -1,11 +1,13 @@
 
-import com.wa9nnn.rotator.ui.{RotatorEditorDialog, RotatorPanel}
-import com.wa9nnn.rotator.{Config, RotatorConfig, Server}
+import com.wa9nnn.rotator.ui.RotatorPanel
+import com.wa9nnn.rotator.ui.config.ConfigEditor
+import com.wa9nnn.rotator.{AppConfig, RotatorConfig, Server}
 import com.wa9nnn.util.HostAndPort
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Label, Menu, MenuBar, MenuItem}
 import scalafx.scene.layout.BorderPane
+
 /*
  *   Copyright (C) 2022  Dick Lieber, WA9NNN
  *
@@ -33,14 +35,19 @@ import scalafx.scene.paint.Color
 object RotatorManager extends JFXApp3 {
 
   private val editRotatorMenuItem = new MenuItem {
-    text = "Rotator Controller"
-    onAction = {ae =>
-       val maybeS = new RotatorEditorDialog(stage, RotatorConfig()).showAndWait()
+    text = "Rotator Controllers"
+    onAction = { ae =>
+      val config = AppConfig(List(
+        RotatorConfig("Tower", "10.10.10.10"),
+        RotatorConfig("Log", "10.10.10.120"),
+      )
+      )
+      val maybeS = new ConfigEditor(stage, config).showAndWait()
       println(maybeS)
     }
   }
 
-  private val todoConfig: Config = Config()
+  private val todoConfig: AppConfig = AppConfig()
   private val server = new Server(todoConfig)
 
   override def start(): Unit = {
@@ -52,7 +59,7 @@ object RotatorManager extends JFXApp3 {
       }
       scene = new Scene {
         val cssUrl: String = getClass.getResource("/rotatormanager.css").toExternalForm
-        stylesheets.add( cssUrl)
+        stylesheets.add(cssUrl)
 
         private val menuBar = new MenuBar {
           useSystemMenuBar = true
@@ -68,7 +75,7 @@ object RotatorManager extends JFXApp3 {
           private val rotatorConfig: RotatorConfig = RotatorConfig("XYZZY", HostAndPort("192.168.0.123", 4001))
           center = new RotatorPanel(rotatorConfig, server.rotatorInterface)
           //          center = tabPane
-                  bottom = new Label("bottom")
+          bottom = new Label("bottom")
           //          right = injector.instance[NetworkPane]
         }
       }

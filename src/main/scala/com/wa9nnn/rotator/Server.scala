@@ -19,13 +19,12 @@
 package com.wa9nnn.rotator
 
 import com.wa9nnn.rotator.arco.ArcoInterface
-import com.wa9nnn.util.HostAndPort
 
 
-class Server(config: Config) {
+class Server(config: AppConfig) {
 
 
-   val rotatorInterface: RotatorInterface = new ArcoInterface(RotatorConfig("default", HostAndPort("192.168.0.16", 4001)))
+   val rotatorInterface: RotatorInterface = new ArcoInterface(RotatorConfig("default", "192.168.0.16"))
 //  private val rotatorInterface = new RotatorGeniusInterface(commandLine)
 //  new SwingTest(rotatorInterface)
 

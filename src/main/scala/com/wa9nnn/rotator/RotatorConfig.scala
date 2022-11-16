@@ -23,21 +23,40 @@ import play.api.libs.json.{Json, OFormat}
 
 import java.nio.file.{Files, Path, Paths}
 import scala.util.Try
-
 import com.wa9nnn.rotator.RotatorConfig.rcfmt
-import com.wa9nnn.rotator.Config.configfmt
+import com.wa9nnn.rotator.AppConfig.configfmt
+import scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
+import scalafx.collections.ObservableBuffer
 
-case class RotatorConfig(name: String = "?", hostAndPort: HostAndPort = HostAndPort("192.168.0.123", 4001))
+case class RotatorConfig(name: String = "?", host: String = "192.168.0.123", port: Int = 4001) {
+
+  lazy val nameProperty = new StringProperty(this, "name", name)
+  lazy val hostProperty = new StringProperty(this, "host", host)
+  lazy val portProperty = new IntegerProperty(this, "port", port)
+
+  def collect: RotatorConfig = {
+    RotatorConfig(nameProperty.value, hostProperty.value, portProperty.value.toInt)
+  }
+}
 
 object RotatorConfig {
   implicit val rcfmt: OFormat[RotatorConfig] = Json.format[RotatorConfig]
 }
 
-case class Config(configs: List[RotatorConfig] = List.empty, rgctldPort:Int = 4533)
+case class AppConfig(rotators: List[RotatorConfig] = List.empty, rgctldPort: Int = 4533) {
+  def collect: AppConfig = {
+    new AppConfig(rotators.map {
+      _.collect
+    }, rotctldPortProperty.value.toInt)
+  }
 
-object Config {
+  lazy val rotctldPortProperty: IntegerProperty = IntegerProperty(rgctldPort)
 
-  implicit val configfmt: OFormat[Config] = Json.format[Config]
+}
+
+object AppConfig {
+
+  implicit val configfmt: OFormat[AppConfig] = Json.format[AppConfig]
 }
 
 object ConfigManager {
@@ -52,17 +71,17 @@ object ConfigManager {
   }
   Files.createDirectories(defaultPath.getParent)
 
-  def write(config: Config, path: Path = defaultPath): Try[String] = {
+  def write(config: AppConfig, path: Path = defaultPath): Try[String] = {
     Try {
       Files.writeString(path, Json.prettyPrint(Json.toJson(config)))
       s"Config saved to $path"
     }
   }
 
-  def read(path: Path = defaultPath): Try[Config] = {
+  def read(path: Path = defaultPath): Try[AppConfig] = {
     Try {
       val sJson = Files.readString(path)
-      Json.parse(sJson).as[Config]
+      Json.parse(sJson).as[AppConfig]
     }
   }
 }
