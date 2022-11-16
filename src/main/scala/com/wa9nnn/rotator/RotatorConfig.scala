@@ -28,7 +28,9 @@ import com.wa9nnn.rotator.AppConfig.configfmt
 import scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
 import scalafx.collections.ObservableBuffer
 
-case class RotatorConfig(name: String = "?", host: String = "192.168.0.123", port: Int = 4001) {
+import java.util.UUID
+
+case class RotatorConfig(name: String = "?", host: String = "192.168.0.123", port: Int = 4001, id: UUID = UUID.randomUUID()) {
 
   lazy val nameProperty = new StringProperty(this, "name", name)
   lazy val hostProperty = new StringProperty(this, "host", host)
@@ -44,10 +46,21 @@ object RotatorConfig {
 }
 
 case class AppConfig(rotators: List[RotatorConfig] = List.empty, rgctldPort: Int = 4533) {
+  def addRotator(): AppConfig = {
+    copy(rotators = rotators.appended(RotatorConfig("new")))
+  }
+
   def collect: AppConfig = {
     new AppConfig(rotators.map {
       _.collect
     }, rotctldPortProperty.value.toInt)
+  }
+
+  def remove(uuid: UUID): AppConfig = {
+    val b4 = rotators.size
+    val result = copy(rotators = rotators.filterNot(_.id == uuid))
+    assert(b4 > result.rotators.size, "Didn't remove rotator")
+    result
   }
 
   lazy val rotctldPortProperty: IntegerProperty = IntegerProperty(rgctldPort)

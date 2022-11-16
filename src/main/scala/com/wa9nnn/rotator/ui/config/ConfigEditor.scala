@@ -18,12 +18,15 @@
 
 package com.wa9nnn.rotator.ui.config
 
+import com.wa9nnn.rotator.ui.config.ConfigEditor.deleteImage
 import com.wa9nnn.rotator.{AppConfig, RotatorConfig}
 import org.scalafx.extras.generic_dialog.NumberTextField
 import scalafx.Includes._
 import scalafx.beans.property.{IntegerProperty, StringProperty}
 import scalafx.geometry.Pos
+import scalafx.scene.Node
 import scalafx.scene.control._
+import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.{BorderPane, GridPane}
 import scalafx.stage.Window
 
@@ -34,18 +37,11 @@ class ConfigEditor(owner: Window, appConfig: AppConfig) extends Dialog[AppConfig
   title = "Rotators"
   headerText = "Manager Rotators"
 
-  var currentAppConfig = appConfig
-  val ButtonTypeAdd = new ButtonType("Add")
-
 
   private val dp: DialogPane = dialogPane()
 
-  dp.setContent(new BorderPane {
-    center = buildGridPane(currentAppConfig)
 
-  })
-
-  dp.buttonTypes = Seq(ButtonTypeAdd, ButtonType.Close, ButtonType.OK)
+  dp.buttonTypes = Seq(ButtonType.Close, ButtonType.OK)
 
   resultConverter = {
     case ButtonType.OK =>
@@ -55,14 +51,29 @@ class ConfigEditor(owner: Window, appConfig: AppConfig) extends Dialog[AppConfig
       null
   }
 
-  def buildGridPane(appConfig: AppConfig): GridPane = {
+  //  val addButton: Node = dp.lookupButton(ButtonTypeAdd)
+  //  addButton.clickMouseClicked = e => {
+  //    buildGridPane(currentAppConfig.addRotator())
+  //  }
+
+  buildGridPane(appConfig)
+
+  var currentAppConfig: AppConfig = _
+
+  import scalafx.scene.Node
+
+
+  def buildGridPane(appConfig: AppConfig): Unit = {
+    currentAppConfig = appConfig
     val gridPane = new GridPane()
 
-    def add(propertyField: StringProperty, row: Int, column: Int): Unit = {
+    def add(propertyField: StringProperty, row: Int, column: Int): Node = {
       val textField = new TextField()
       textField.text <==> propertyField
       gridPane.add(textField, column, row)
+      textField
     }
+
     def addIntField(ipf: IntegerProperty, row: Int, column: Int): Unit = {
       val numberTextField = new NumberTextField(0)
       numberTextField.model.value <==> ipf
@@ -76,24 +87,45 @@ class ConfigEditor(owner: Window, appConfig: AppConfig) extends Dialog[AppConfig
 
     appConfig.rotators.foreach { rotatorConfig: RotatorConfig =>
       val r = row.incrementAndGet()
-      add(rotatorConfig.nameProperty, r, 0)
+      add(rotatorConfig.nameProperty, r, 0).requestFocus()
       add(rotatorConfig.hostProperty, r, 1)
       addIntField(rotatorConfig.portProperty, r, 2)
+      val graphic = new ImageView {
+        image = deleteImage
+        onMouseClicked = _ => {
+          val appConfig1 = currentAppConfig.remove(rotatorConfig.id)
+          buildGridPane(appConfig1)
+        }
+      }
+      gridPane.add(graphic, 3, r)
     }
+
+    gridPane.add(new Button {
+      text = "Add Rotator"
+      onAction = a => {
+        buildGridPane(currentAppConfig.addRotator())
+
+      }
+    }, 2, row.incrementAndGet()
+    )
 
     val rotctldPortRow = row.incrementAndGet()
-    gridPane.add(new Label{
+    gridPane.add(new Label {
       text = "rotctld Port:"
-      alignmentInParent  = Pos.CenterRight
+      alignmentInParent = Pos.CenterRight
     }, 1, rotctldPortRow)
 
-    val rf = new NumberTextField(0){
+    val rf = new NumberTextField(0) {
       tooltip = "Will listen on this port for rotctld clients."
     }
-    gridPane.add(rf, 2,rotctldPortRow)
-    rf.model.value  <==> appConfig.rotctldPortProperty
+    gridPane.add(rf, 2, rotctldPortRow)
+    rf.model.value <==> appConfig.rotctldPortProperty
+    dp.setContent(gridPane)
 
-    gridPane
   }
+}
+
+object ConfigEditor {
+  val deleteImage = new Image("images/cancel-20.png")
 }
 
