@@ -45,4 +45,6 @@ libraryDependencies ++= Seq(
   "org.jfree" % "jfreechart" % "1.5.3",
   "org.jfree" % "jfreechart-fx" % "1.0.1",
   "com.typesafe.play" %% "play-json" % "2.9.3",
+  "com.google.inject" % "guice" % "5.1.0",
+  "net.codingwell" %% "scala-guice" % "5.1.0",
 )

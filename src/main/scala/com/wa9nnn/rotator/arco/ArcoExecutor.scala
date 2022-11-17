@@ -20,7 +20,6 @@ package com.wa9nnn.rotator.arco
 
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.rotator.RotatorConfig
-import com.wa9nnn.util.HostAndPort
 
 import java.io.{DataInputStream, InputStream, OutputStream, PrintWriter}
 import java.net.Socket

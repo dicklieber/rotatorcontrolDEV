@@ -19,16 +19,19 @@
 package com.wa9nnn.rotator
 
 import com.wa9nnn.util.HostAndPort
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, OFormat, __}
 
 import java.nio.file.{Files, Path, Paths}
 import scala.util.Try
 import com.wa9nnn.rotator.RotatorConfig.rcfmt
 import com.wa9nnn.rotator.AppConfig.configfmt
+import com.wa9nnn.rotator.ConfigManager.{read, write}
 import scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
 import scalafx.collections.ObservableBuffer
+import _root_.scalafx.Includes._
 
 import java.util.UUID
+import javax.inject.Singleton
 
 case class RotatorConfig(name: String = "?", host: String = "192.168.0.123", port: Int = 4001, id: UUID = UUID.randomUUID()) {
 
@@ -96,5 +99,16 @@ object ConfigManager {
       val sJson = Files.readString(path)
       Json.parse(sJson).as[AppConfig]
     }
+  }
+}
+
+@Singleton
+class ConfigManager extends ObjectProperty[AppConfig]() {
+  value = read().getOrElse(new AppConfig())
+
+
+  def save(appConfig: AppConfig): Unit = {
+    write(appConfig)
+    value = appConfig
   }
 }

@@ -18,25 +18,25 @@
 
 package com.wa9nnn.rotator.ui.config
 
-import com.wa9nnn.rotator.ui.config.ConfigEditor.deleteImage
-import com.wa9nnn.rotator.{AppConfig, RotatorConfig}
+import com.wa9nnn.rotator.ui.config.ConfigEditorDialog.deleteImage
+import com.wa9nnn.rotator.{AppConfig, ConfigManager, RotatorConfig}
 import org.scalafx.extras.generic_dialog.NumberTextField
 import scalafx.Includes._
 import scalafx.beans.property.{IntegerProperty, StringProperty}
 import scalafx.geometry.Pos
-import scalafx.scene.Node
 import scalafx.scene.control._
 import scalafx.scene.image.{Image, ImageView}
-import scalafx.scene.layout.{BorderPane, GridPane}
-import scalafx.stage.Window
+import scalafx.scene.layout.GridPane
 
 import java.util.concurrent.atomic.AtomicInteger
+import javax.inject.Inject
 
-class ConfigEditor(owner: Window, appConfig: AppConfig) extends Dialog[AppConfig] {
-  initOwner(owner)
+class ConfigEditorDialog @Inject()(configManager: ConfigManager) extends Dialog[AppConfig] {
+  //class ConfigEditorDialog(owner: Window, appConfig: AppConfig) extends Dialog[AppConfig] {
+  //  initOwner(owner)
   title = "Rotators"
   headerText = "Manager Rotators"
-
+  resizable = true
 
   private val dp: DialogPane = dialogPane()
 
@@ -46,22 +46,17 @@ class ConfigEditor(owner: Window, appConfig: AppConfig) extends Dialog[AppConfig
   resultConverter = {
     case ButtonType.OK =>
       val updated: AppConfig = currentAppConfig.collect
+      configManager.save( updated)
       updated
     case _ =>
       null
   }
 
-  //  val addButton: Node = dp.lookupButton(ButtonTypeAdd)
-  //  addButton.clickMouseClicked = e => {
-  //    buildGridPane(currentAppConfig.addRotator())
-  //  }
-
-  buildGridPane(appConfig)
+  buildGridPane(configManager.value) // initial.
 
   var currentAppConfig: AppConfig = _
 
   import scalafx.scene.Node
-
 
   def buildGridPane(appConfig: AppConfig): Unit = {
     currentAppConfig = appConfig
@@ -125,7 +120,7 @@ class ConfigEditor(owner: Window, appConfig: AppConfig) extends Dialog[AppConfig
   }
 }
 
-object ConfigEditor {
+object ConfigEditorDialog {
   val deleteImage = new Image("images/cancel-20.png")
 }
 

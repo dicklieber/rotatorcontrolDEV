@@ -1,12 +1,15 @@
 
+import com.google.inject.{Guice, Injector}
 import com.wa9nnn.rotator.ui.RotatorPanel
-import com.wa9nnn.rotator.ui.config.ConfigEditor
-import com.wa9nnn.rotator.{AppConfig, RotatorConfig, Server}
+import com.wa9nnn.rotator.ui.config.ConfigEditorDialog
+import com.wa9nnn.rotator.{AppConfig, ConfigManager, GuiceModule, RotatorConfig, Server}
 import com.wa9nnn.util.HostAndPort
+import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.Scene
-import scalafx.scene.control.{Label, Menu, MenuBar, MenuItem}
+import scalafx.scene.control.{DConvert, Label, Menu, MenuBar, MenuItem}
 import scalafx.scene.layout.BorderPane
+import scalafx.Includes._
 
 /*
  *   Copyright (C) 2022  Dick Lieber, WA9NNN
@@ -34,16 +37,15 @@ import scalafx.scene.paint.Color
  */
 object RotatorManager extends JFXApp3 {
 
+  private val injector: Injector = Guice.createInjector(new GuiceModule())
+
+  private val configManager: ConfigManager = injector.instance[ConfigManager]
+  val v: AppConfig = configManager.value
+
   private val editRotatorMenuItem = new MenuItem {
-    text = "Rotator Controllers"
-    onAction = { ae =>
-      val config = AppConfig(List(
-        RotatorConfig("Tower", "10.10.10.10"),
-        RotatorConfig("Log", "10.10.10.120"),
-      )
-      )
-      val maybeS = new ConfigEditor(stage, config).showAndWait()
-      println(maybeS)
+    text = "Config"
+    onAction = { _ =>
+      injector.instance[ConfigEditorDialog].showAndWait()
     }
   }
 
