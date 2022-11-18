@@ -18,20 +18,15 @@
 
 package com.wa9nnn.rotator
 
-import com.wa9nnn.util.HostAndPort
-import play.api.libs.json.{Json, OFormat, __}
-
-import java.nio.file.{Files, Path, Paths}
-import scala.util.Try
-import com.wa9nnn.rotator.RotatorConfig.rcfmt
 import com.wa9nnn.rotator.AppConfig.configfmt
 import com.wa9nnn.rotator.ConfigManager.{read, write}
+import play.api.libs.json.{Json, OFormat}
 import scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
-import scalafx.collections.ObservableBuffer
-import _root_.scalafx.Includes._
 
+import java.nio.file.{Files, Path, Paths}
 import java.util.UUID
 import javax.inject.Singleton
+import scala.util.Try
 
 case class RotatorConfig(name: String = "?", host: String = "192.168.0.123", port: Int = 4001, id: UUID = UUID.randomUUID()) {
 
@@ -76,9 +71,6 @@ object AppConfig {
 }
 
 object ConfigManager {
-
-  import HostAndPort.hostAndPortFormat
-  import com.wa9nnn.rotator.RotatorConfig.rcfmt
 
   lazy val defaultPath: Path = {
     val home = Paths.get(System.getProperty("user.home"))

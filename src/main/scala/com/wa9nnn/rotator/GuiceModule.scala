@@ -19,10 +19,12 @@
 package com.wa9nnn.rotator
 
 import com.google.inject.AbstractModule
+import com.wa9nnn.rotator.arco.ArcoCoordinator
 import net.codingwell.scalaguice.ScalaModule
 
 class GuiceModule() extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
     bind[ConfigManager].asEagerSingleton()
+    bind[ArcoCoordinator].asEagerSingleton()
   }
 }

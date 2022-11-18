@@ -35,7 +35,7 @@ import scalafx.scene.paint.Color
  * Main
  * Handles command line, if all ok invoke $Server
  */
-object RotatorManager extends JFXApp3 {
+object RotatorControl extends JFXApp3 {
 
   private val injector: Injector = Guice.createInjector(new GuiceModule())
 
@@ -50,7 +50,7 @@ object RotatorManager extends JFXApp3 {
   }
 
   private val todoConfig: AppConfig = AppConfig()
-  private val server = new Server(todoConfig)
+//  private val server = new Server(todoConfig)
 
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
@@ -75,7 +75,7 @@ object RotatorManager extends JFXApp3 {
 
           top = menuBar
           private val rotatorConfig: RotatorConfig = RotatorConfig("XYZZY", HostAndPort("192.168.0.123", 4001))
-          center = new RotatorPanel(rotatorConfig, server.rotatorInterface)
+//          center = new RotatorPanel(rotatorConfig, server.rotatorInterface)
           //          center = tabPane
           bottom = new Label("bottom")
           //          right = injector.instance[NetworkPane]

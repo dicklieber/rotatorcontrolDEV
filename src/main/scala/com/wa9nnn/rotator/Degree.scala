@@ -18,24 +18,28 @@
 
 package com.wa9nnn.rotator
 
-import com.wa9nnn.rotator.arco.ArcoInterface
+/**
+ *
+ * @param degree -1 if unknown
+ */
+case class Degree(degree: Int = -1) {
+assert(degree == -1 || degree >= 0 && degree <= 360, "Degree must be 0-360 or -1")
+  override def toString: String =
+    if (degree == -1)
+      "?"
+    else
+      f"$degree%03d°"
+}
 
-
-class Server(config: AppConfig) {
-
-
-//   val rotatorInterface: RotatorInterface = new ArcoInterface(RotatorConfig("default", "192.168.0.16"))
-//  private val rotatorInterface = new RotatorGeniusInterface(commandLine)
-//  new SwingTest(rotatorInterface)
-
-/*
-  private val rotctldThread = new Thread("rotctld") {
-    override def run(): Unit = {
-      new RotctldServer(config.rgctldPort, rotatorInterface)
+object Degree {
+  def apply(s:String):Degree = {
+    s.toInt match {
+      case 999 =>
+        new Degree()
+      case d =>
+        new Degree(d)
     }
   }
-  rotctldThread.setDaemon(true)
-  rotctldThread.start()
-*/
-
 }
+
+

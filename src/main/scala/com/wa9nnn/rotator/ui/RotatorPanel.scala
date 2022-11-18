@@ -19,10 +19,8 @@
 package com.wa9nnn.rotator.ui
 
 import com.typesafe.scalalogging.LazyLogging
-import com.wa9nnn.rotator.arco.Headerlistener
-import com.wa9nnn.rotator.rg.RGHeader
-import com.wa9nnn.rotator.rg.ResponseParser.Degree
-import com.wa9nnn.rotator.{RotatorConfig, RotatorInterface}
+import com.wa9nnn.rotator.Degree
+import com.wa9nnn.rotator.arco.RotatorState
 import javafx.geometry.Bounds
 import javafx.scene.input.MouseEvent
 import org.jfree.chart.JFreeChart
@@ -30,25 +28,37 @@ import org.jfree.chart.fx.interaction.{ChartMouseEventFX, ChartMouseListenerFX}
 import org.jfree.chart.plot.CompassPlot
 import org.jfree.data.general.DefaultValueDataset
 import org.scalafx.extras.onFX
+import scalafx.beans.property.ObjectProperty
+import scalafx.event.subscriptions.Subscription
 import scalafx.geometry.{Point2D, Pos}
-import scalafx.scene.control.Label
-import scalafx.scene.layout.{BorderPane, FlowPane, HBox, Pane, Priority}
+import scalafx.scene.layout.{BorderPane, FlowPane, Priority}
 import scalafx.scene.text.Text
-import _root_.scalafx.Includes._
 
+import javax.inject.Inject
 import scala.language.implicitConversions
 
 /**
- * A swing Panel that displays and interacts with an Antenna Genius rotator motor.
+ * A Panel that displays and interacts with an ARCO rotator .
  */
-class RotatorPanel(rotatorConfig: RotatorConfig, rotatorInterface: RotatorInterface) extends BorderPane with Headerlistener with LazyLogging {
+class RotatorPanel @Inject()(stateProperty:ObjectProperty[RotatorState] ) extends BorderPane with LazyLogging {
+
+  val subscription: Subscription = stateProperty.onChange{ (_, _, rotatorState) =>
+    val azimuth: Degree = rotatorState.currentAzimuth
+    onFX {
+      compassDataSet.setValue(azimuth.degree)
+      azimuthDisplay.text =azimuth.toString
+      nameLabel.text = rotatorState.name
+    }
+  }
+
+  def stop(): Unit = subscription.cancel()
+
 
   vgrow = Priority.Always
   hgrow = Priority.Always
   styleClass += "rotatorPanel"
   private val compassDataSet = new DefaultValueDataset(1)
-  //  styleClass += "rotatorPanel"
-  private val nameLabel = new Text(rotatorConfig.name) {
+  private val nameLabel = new Text("---") {
     styleClass += "rotatorName"
   }
   private val azimuthDisplay: Text = new Text("---") {
@@ -61,6 +71,7 @@ class RotatorPanel(rotatorConfig: RotatorConfig, rotatorInterface: RotatorInterf
   val compassChart: JFreeChart = new JFreeChart(
     compassPlot
   )
+
   import org.jfree.chart.fx.ChartViewer
 
   val jfxViewer: ChartViewer = new ChartViewer(compassChart)
@@ -100,41 +111,6 @@ class RotatorPanel(rotatorConfig: RotatorConfig, rotatorInterface: RotatorInterf
     alignment = Pos.Center
     styleClass += "bigText"
   }
-
-  rotatorInterface.addListener(this)
-
-  /*  implicit def degRender(maybeDegree:
-
-    implicit def degRender(maybeDegree: Option[Degree]): String = {
-      maybeDegree match {
-        case Some(value) =>
-          s"$value\u00B0"
-        case None =>
-          "?"
-      }
-    }
-
-    def showStopped(maybeDegree: Option[Degree]): String = {
-      maybeDegree
-    }
-
-    def showMoving(rotator: Rotator): String = {
-      val current: String = rotator.currentAzimuth
-      val target: String = rotator.targetAzimuth
-      s"$current ➜ $target"
-    }*/
-
-  override def newHeader(RGHeader: RGHeader): Unit = {
-
-    onFX {
-      rotatorInterface.getPosition.foreach {
-        azimuth: Degree =>
-          compassDataSet.setValue(Integer.valueOf(azimuth))
-          azimuthDisplay.text = f"$azimuth%03d°"
-      }
-    }
-  }
-
 
 }
 

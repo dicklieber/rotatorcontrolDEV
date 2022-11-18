@@ -19,12 +19,12 @@
 package com.wa9nnn.rotator
 
 import com.typesafe.scalalogging.LazyLogging
-import com.wa9nnn.rotator.rg.ResponseParser.Degree
+import com.wa9nnn.rotator.arco.ArcoCoordinator
 
 import java.io.{InputStreamReader, LineNumberReader}
 import java.net.{ServerSocket, Socket, SocketException}
 
-class RotctldServer(rotctldPort:Int, rotatorInterface: RotatorInterface) extends LazyLogging {
+class RotctldServer(rotctldPort:Int, arcoCoordinator: ArcoCoordinator) extends LazyLogging {
   logger.info("starting RotctldServer")
 
   private val serverSocket = new ServerSocket(rotctldPort)
@@ -33,10 +33,10 @@ class RotctldServer(rotctldPort:Int, rotatorInterface: RotatorInterface) extends
   private val setPosRegx = """set_pos (\d+\.\d+) (\d+\.\d+)""".r
 
   def get_pos(implicit extended: Boolean): String = {
-    val maybeCurrentAzumuth: Option[Degree] = rotatorInterface.getPosition
+    val maybeCurrentAzumuth: Degree = arcoCoordinator.currentSelectedState.currentAzimuth
     if (extended) {
       s"""get_pos:
-         |Azimuth: ${maybeCurrentAzumuth.getOrElse("?")}
+         |Azimuth: ${maybeCurrentAzumuth}
          |Elevation: 45.000000
          |RPRT 0""".stripMargin
     } else {
@@ -60,7 +60,7 @@ class RotctldServer(rotctldPort:Int, rotatorInterface: RotatorInterface) extends
   def set_pos(azi:String, ele:String)(implicit extended: Boolean):String = {
     //todo do move
     val targetAzimuth = azi.toDouble.toInt
-    rotatorInterface.move(targetAzimuth)
+    arcoCoordinator.moveSelected(targetAzimuth)
 
     if (extended) {
       s"""set_pos: $azi $ele

@@ -16,26 +16,8 @@
  *
  */
 
-package com.wa9nnn.rotator
+package com.wa9nnn.rotator.arco
 
-import com.wa9nnn.rotator.arco.ArcoInterface
+import com.wa9nnn.rotator.Degree
 
-
-class Server(config: AppConfig) {
-
-
-//   val rotatorInterface: RotatorInterface = new ArcoInterface(RotatorConfig("default", "192.168.0.16"))
-//  private val rotatorInterface = new RotatorGeniusInterface(commandLine)
-//  new SwingTest(rotatorInterface)
-
-/*
-  private val rotctldThread = new Thread("rotctld") {
-    override def run(): Unit = {
-      new RotctldServer(config.rgctldPort, rotatorInterface)
-    }
-  }
-  rotctldThread.setDaemon(true)
-  rotctldThread.start()
-*/
-
-}
+case class RotatorState(name:String = "--", currentAzimuth:Degree = Degree())
