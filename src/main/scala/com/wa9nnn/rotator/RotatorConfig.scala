@@ -37,6 +37,10 @@ case class RotatorConfig(name: String = "?", host: String = "192.168.0.123", por
   def collect: RotatorConfig = {
     RotatorConfig(nameProperty.value, hostProperty.value, portProperty.value.toInt)
   }
+
+  override def toString: String =
+    s"$name@$host:$port"
+
 }
 
 object RotatorConfig {

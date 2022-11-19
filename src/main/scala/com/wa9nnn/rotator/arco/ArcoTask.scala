@@ -19,24 +19,50 @@
 package com.wa9nnn.rotator.arco
 
 import com.typesafe.scalalogging.LazyLogging
+import com.wa9nnn.rotator.arco.ArcoTask.handleLast
+import com.wa9nnn.util.Stamped
+
+import scala.util.{Failure, Success, Try}
+
 
 /**
  * One discrete operation with an Arco controller
- * This is run in a queue so only one can happen at a time.
+ * This is run in a queue so only one can happen one at a time.
  *
- * @param cmd          to send
- * @param f            function that will process the result.
- * @param arcoExecutor what talks to the Arco controller
+ * @param cmd                 to send
+ * @param f                   function that will process the result.
+ * @param arcoExecutor        work gets done.
  */
 case class ArcoTask(cmd: String)(f: String => Unit)(implicit arcoExecutor: ArcoExecutor) extends Runnable with LazyLogging {
   override def run(): Unit = {
-    try {
-      val result = arcoExecutor.sendReceive(cmd)
-      f(result)
-    } catch {
-      case exception: Exception =>
-        logger.error(s"cmd: $cmd", exception)
+    val triedString: Try[String] = arcoExecutor.sendReceive(cmd)
+    handleLast(triedString, arcoExecutor)
+    triedString match {
+      case Failure(_) =>
+      case Success(value) =>
+        f(value)
     }
   }
 }
 
+object ArcoTask extends LazyLogging {
+  var lastFailure: LastFailure = LastFailure()
+
+  def handleLast(triedString: Try[String], arcoExecutor: ArcoExecutor): Unit = {
+    if (lastFailure.newResult(triedString)) {
+      val message = triedString match {
+        case Failure(exception) =>
+          exception.getMessage
+        case Success(_) =>
+          "success"
+      }
+      logger.info(s"${arcoExecutor.name} is now $message")
+    }
+  }
+}
+
+case class LastFailure(triedString: Try[String] = Failure(new IllegalStateException)) extends Stamped {
+  def newResult(candidate: Try[String]): Boolean = {
+    candidate == triedString
+  }
+}

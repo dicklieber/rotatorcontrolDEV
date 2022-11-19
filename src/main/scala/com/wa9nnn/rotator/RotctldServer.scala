@@ -20,112 +20,124 @@ package com.wa9nnn.rotator
 
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.rotator.arco.ArcoCoordinator
+import javafx.concurrent.{Service, Task}
 
 import java.io.{InputStreamReader, LineNumberReader}
 import java.net.{ServerSocket, Socket, SocketException}
+import javax.inject.Inject
 
-class RotctldServer(rotctldPort:Int, arcoCoordinator: ArcoCoordinator) extends LazyLogging {
+class RotctldServer @Inject()(rotctldPort: Int, arcoCoordinator: ArcoCoordinator) extends  LazyLogging {
   logger.info("starting RotctldServer")
 
-  private val serverSocket = new ServerSocket(rotctldPort)
+  object RoctldService extends Service[String] with LazyLogging {
+    logger.info("starting RotctldServer")
 
-  private val parser = """(\+)?[\\|]?(.+)""".r
-  private val setPosRegx = """set_pos (\d+\.\d+) (\d+\.\d+)""".r
-
-  def get_pos(implicit extended: Boolean): String = {
-    val maybeCurrentAzumuth: Degree = arcoCoordinator.currentSelectedState.currentAzimuth
-    if (extended) {
-      s"""get_pos:
-         |Azimuth: ${maybeCurrentAzumuth}
-         |Elevation: 45.000000
-         |RPRT 0""".stripMargin
-    } else {
-      s"""217.80
-         |0.00
-         |""".stripMargin
+    override def createTask(): Task[String] = {
+      new RotctldTask()
     }
   }
 
-  def get_info(implicit extended: Boolean): String = {
-    if (extended) {
-      s"""get_info:
-         |Info: None
-         |RPRT 0""".stripMargin
-    } else {
-      s"""None
-         |""".stripMargin
-    }
-  }
+  class RotctldTask() extends Task[String] with LazyLogging {
+    override def call(): String = {
+      val serverSocket = new ServerSocket(rotctldPort)
 
-  def set_pos(azi:String, ele:String)(implicit extended: Boolean):String = {
-    //todo do move
-    val targetAzimuth = azi.toDouble.toInt
-    arcoCoordinator.moveSelected(targetAzimuth)
+      val parser = """(\+)?[\\|]?(.+)""".r
+      val setPosRegx = """set_pos (\d+\.\d+) (\d+\.\d+)""".r
 
-    if (extended) {
-      s"""set_pos: $azi $ele
-         |RPRT 0""".stripMargin
-    } else {
-      s"""None
-         |""".stripMargin
-    }
+      def get_pos(implicit extended: Boolean): String = {
+        val maybeCurrentAziumuth: Degree = arcoCoordinator.currentSelectedState.currentAzimuth
+        if (extended) {
+          s"""get_pos:
+             |Azimuth: $maybeCurrentAziumuth
+             |Elevation: 45.000000
+             |RPRT 0""".stripMargin
+        } else {
+          s"""217.80
+             |0.00
+             |""".stripMargin
+        }
+      }
 
-  }
+      def get_info(implicit extended: Boolean): String = {
+        if (extended) {
+          s"""get_info:
+             |Info: None
+             |RPRT 0""".stripMargin
+        } else {
+          s"""None
+             |""".stripMargin
+        }
+      }
 
-  while (true) {
-    try {
-      val socket: Socket = serverSocket.accept()
+      def set_pos(azi: String, ele: String)(implicit extended: Boolean): String = {
+        //todo do move
+        val targetAzimuth = azi.toDouble.toInt
+        arcoCoordinator.moveSelected(targetAzimuth)
 
-      logger.info("accepted connection : {}", socket.getInetAddress)
-      val reader: LineNumberReader = new LineNumberReader(new InputStreamReader(socket.getInputStream))
-      implicit val outputStream = socket.getOutputStream
+        if (extended) {
+          s"""set_pos: $azi $ele
+             |RPRT 0""".stripMargin
+        } else {
+          s"""None
+             |""".stripMargin
+        }
 
-      try {
-        while (true) {
-          val command = reader.readLine()
-          logger.trace("command: {}", command)
+      }
 
-          val result = try {
-            val parser(ex, va) = command
-            implicit val extended: Boolean = ex.nonEmpty
+      while (true) {
+        try {
+          val socket: Socket = serverSocket.accept()
 
-            va match {
-              case "_" | "get_info" =>
-                get_info
-              case "p" | "get_pos" =>
-                get_pos
+          logger.info("accepted connection : {}", socket.getInetAddress)
+          val reader: LineNumberReader = new LineNumberReader(new InputStreamReader(socket.getInputStream))
+          implicit val outputStream = socket.getOutputStream
 
-              case setPosRegx(azi, ele) =>
-                set_pos(azi, ele)
+          try {
+            while (true) {
+              val command = reader.readLine()
+              logger.trace("command: {}", command)
 
-              case x =>
-                logger.info("unexpected: {}", x)
-                s"unexpected: $x"
+              val result = try {
+                val parser(ex, va) = command
+                implicit val extended: Boolean = ex.nonEmpty
+
+                va match {
+                  case "_" | "get_info" =>
+                    get_info
+                  case "p" | "get_pos" =>
+                    get_pos
+
+                  case setPosRegx(azi, ele) =>
+                    set_pos(azi, ele)
+
+                  case x =>
+                    logger.info("unexpected: {}", x)
+                    s"unexpected: $x"
+                }
+              } catch {
+                case exception: Exception =>
+                  exception.getMessage
+              }
+              logger.debug("result: {}", result)
+              outputStream.write(result.getBytes)
+              outputStream.flush()
             }
           } catch {
-            case exception: Exception =>
-              exception.getMessage
+            case so: SocketException =>
+              logger.error("socket: {} from: {}", so.getMessage, socket.getInetAddress)
           }
-          logger.debug("result: {}", result)
-          outputStream.write(result.getBytes)
-          outputStream.flush()
+          //      socket.close()
+        } catch {
+          case e: Exception =>
+            //        logger.whenDebugEnabled{
+            //          logger.trace()
+            //        }
+            logger.info("Done with socket", e.getMessage)
         }
-      } catch {
-        case so:SocketException =>
-          logger.error("socket: {} from: {}", so.getMessage, socket.getInetAddress)
       }
-      //      socket.close()
-    } catch {
-      case e: Exception =>
-//        logger.whenDebugEnabled{
-//          logger.trace()
-//        }
-        logger.info("Done with socket", e.getMessage)
+      "Should never get here"
     }
   }
-
-
 }
-
 
 

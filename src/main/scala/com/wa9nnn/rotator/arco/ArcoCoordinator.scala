@@ -39,25 +39,30 @@ class ArcoCoordinator @Inject()(configManager: ConfigManager) {
   val rotatorMap = new TrieMap[UUID, RotatorStuff]()
 
   configManager.onChange { (_, _, is: AppConfig) =>
+    setup(is.rotators)
+  }
+  setup(configManager.value.rotators)
+
+
+  def setup(rotators: Iterable[RotatorConfig]): Unit = {
     rotatorMap.values.foreach(_.stop())
     rotatorMap.clear()
-    is.rotators.map { rc =>
+    rotators.foreach { rc =>
       rotatorMap.put(rc.id, new RotatorStuff(rc))
     }
-
   }
 }
 
-  class RotatorStuff(rotatorConfig: RotatorConfig) extends ObjectProperty[RotatorState]() {
-    value = RotatorState()
+class RotatorStuff(rotatorConfig: RotatorConfig) extends ObjectProperty[RotatorState]() {
+  value = RotatorState()
 
-    private val rotatorPanel = new RotatorPanel(this)
+  private val rotatorPanel = new RotatorPanel(this)
 
-    private val arcoInterface: ArcoInterface = new ArcoInterface(rotatorConfig, this)
+  private val arcoInterface: ArcoInterface = new ArcoInterface(rotatorConfig, this)
 
-    def stop(): Unit = {
-      rotatorPanel.stop()
-      arcoInterface.stop()
-    }
-
+  def stop(): Unit = {
+    rotatorPanel.stop()
+    arcoInterface.stop()
   }
+
+}

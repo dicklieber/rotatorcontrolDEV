@@ -27,7 +27,7 @@ import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
 /**
  * Handles move command and polls current azimuth from an Arco controller updating the rotatorStateProperty
  *
- * @param rotatorConfig deatils about this ARCO.
+ * @param rotatorConfig        deatils about this ARCO.
  * @param rotatorStateProperty where to put ArCO state.
  */
 class ArcoInterface(rotatorConfig: RotatorConfig, rotatorStateProperty: ObjectProperty[RotatorState]) extends ScheduledThreadPoolExecutor(1)
@@ -36,7 +36,7 @@ class ArcoInterface(rotatorConfig: RotatorConfig, rotatorStateProperty: ObjectPr
 
 
   private implicit val arcoExecutor = new ArcoExecutor(rotatorConfig)
-
+  // schedule polling ARCO
   scheduleWithFixedDelay(this, 200, 1370, TimeUnit.MILLISECONDS)
 
   /**
@@ -52,25 +52,18 @@ class ArcoInterface(rotatorConfig: RotatorConfig, rotatorStateProperty: ObjectPr
   }
 
   override def run(): Unit = {
-    //todo handle fail and not initialized
 
     val task = ArcoTask("C") { response =>
       val str = new String(response).trim
       logger.trace(s"""Cmd: C Response: "$str"""")
       str match {
         case s"""+$azi""" =>
-          rotatorStateProperty.value =  RotatorState(rotatorConfig.name, Degree(azi))
+          rotatorStateProperty.value = RotatorState(rotatorConfig.name, Degree(azi))
         case x =>
           logger.error(s"""Bad response got $x expecting something like: "+0123""")
       }
     }
     arcoExecutor.execute(task)
   }
+
 }
-
-//trait Headerlistener {
-//  def newHeader(RGHeader: RGHeader): Unit
-//}
-
-
-

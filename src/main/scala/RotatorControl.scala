@@ -1,15 +1,13 @@
 
 import com.google.inject.{Guice, Injector}
-import com.wa9nnn.rotator.ui.RotatorPanel
 import com.wa9nnn.rotator.ui.config.ConfigEditorDialog
-import com.wa9nnn.rotator.{AppConfig, ConfigManager, GuiceModule, RotatorConfig, Server}
+import com.wa9nnn.rotator.{AppConfig, ConfigManager, GuiceModule, RotatorConfig}
 import com.wa9nnn.util.HostAndPort
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.Scene
-import scalafx.scene.control.{DConvert, Label, Menu, MenuBar, MenuItem}
+import scalafx.scene.control.{Label, Menu, MenuBar, MenuItem}
 import scalafx.scene.layout.BorderPane
-import scalafx.Includes._
 
 /*
  *   Copyright (C) 2022  Dick Lieber, WA9NNN
@@ -29,18 +27,14 @@ import scalafx.Includes._
  *
  */
 
-import scalafx.scene.paint.Color
-
 /** import _root_.scalafx.event.ActionEvent
  * Main
  * Handles command line, if all ok invoke $Server
  */
 object RotatorControl extends JFXApp3 {
 
-  private val injector: Injector = Guice.createInjector(new GuiceModule())
+  private  var injector: Injector  = _
 
-  private val configManager: ConfigManager = injector.instance[ConfigManager]
-  val v: AppConfig = configManager.value
 
   private val editRotatorMenuItem = new MenuItem {
     text = "Config"
@@ -82,5 +76,6 @@ object RotatorControl extends JFXApp3 {
         }
       }
     }
+injector = Guice.createInjector(new GuiceModule())
   }
 }

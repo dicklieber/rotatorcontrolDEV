@@ -19,12 +19,15 @@
 package com.wa9nnn.rotator.arco
 
 import com.typesafe.scalalogging.LazyLogging
-import com.wa9nnn.rotator.RotatorConfig
+import com.wa9nnn.rotator.{RotatorConfig, arco}
+import com.wa9nnn.util.Stamped
 
 import java.io.{DataInputStream, InputStream, OutputStream, PrintWriter}
 import java.net.Socket
-import java.util.concurrent.Executors
+import java.time.Instant
+import java.util.concurrent.{ExecutorService, Executors}
 import scala.concurrent.ExecutionContext
+import scala.util.{Failure, Success, Try}
 
 /**
  * Sends commands and does something with the response.
@@ -33,48 +36,49 @@ import scala.concurrent.ExecutionContext
  * @param rotatorConfig for an Arco.
  */
 class ArcoExecutor(val rotatorConfig: RotatorConfig) extends LazyLogging {
-  implicit val ec: ExecutionContext = new ExecutionContext {
-    val threadPool = Executors.newFixedThreadPool(1)
 
-    override def execute(runnable: Runnable): Unit = {
-      threadPool.submit(runnable)
-    }
+  val name: String = rotatorConfig.name
+  private var socketAndStreams: Try[SocketAndStreams] = Failure(new IllegalStateException())
+  val threadPool: ExecutorService = Executors.newFixedThreadPool(1)
 
-    override def reportFailure(t: Throwable): Unit = {}
+
+  def execute(arcoTask: ArcoTask): Unit = {
+    threadPool.submit(arcoTask)
   }
 
+  /**
+   * Should only be invoked from an [[ArcoTask]]
+   *
+   * @param cmd to be sent to ARCO
+   * @return response from ARCO or a [[Failure]]
+   */
+  def sendReceive(cmd: String): Try[String] = {
+    val r: Try[String] = socketAndStreams.orElse(Try(new SocketAndStreams(rotatorConfig))).map { sas =>
+      socketAndStreams = Success(sas)
+      val writer = sas.writer
+      writer.print(cmd)
+      writer.print("\r")
+      writer.flush()
+
+      val recBuffer = new Array[Byte](500)
+      val bytesRead: Int = sas.dataInputStream.read(recBuffer)
+      val response = recBuffer.take(bytesRead)
+      val str = new String(response).trim
+      str
+
+    }
+    r
+  }
+}
+
+class SocketAndStreams(val rotatorConfig: RotatorConfig) {
   val client: Socket = new Socket(rotatorConfig.host, rotatorConfig.port)
   client.setSoTimeout(5000)
 
   private val outputStream: OutputStream = client.getOutputStream
-  private val writer = new PrintWriter(outputStream)
+  val writer = new PrintWriter(outputStream)
 
   private val inputStream: InputStream = client.getInputStream
-  private val dataInputStream = new DataInputStream(inputStream)
-
-  def execute(arcoTask: ArcoTask): Unit = {
-    ec.execute(arcoTask)
-  }
-
-  def sendReceive(cmd: String): String = {
-    sendCmd(cmd)
-    readResult()
-  }
-
-  private def sendCmd(cmd: String): Unit = {
-    writer.print(cmd)
-    writer.print("\r")
-    writer.flush()
-  }
-
-  private def readResult(): String = {
-    val recBuffer = new Array[Byte](500)
-
-    val bytesRead: Int = dataInputStream.read(recBuffer)
-    val response = recBuffer.take(bytesRead)
-    val str = new String(response).trim
-    str
-  }
-
+  val dataInputStream = new DataInputStream(inputStream)
 
 }
