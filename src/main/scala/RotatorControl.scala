@@ -1,5 +1,6 @@
 
 import com.google.inject.{Guice, Injector}
+import com.wa9nnn.rotator.rotctld.RotctldServer
 import com.wa9nnn.rotator.ui.config.ConfigEditorDialog
 import com.wa9nnn.rotator.{AppConfig, ConfigManager, GuiceModule, RotatorConfig}
 import com.wa9nnn.util.HostAndPort
@@ -77,5 +78,6 @@ object RotatorControl extends JFXApp3 {
       }
     }
 injector = Guice.createInjector(new GuiceModule())
+    val rotctldServer = injector.instance[RotctldServer]
   }
 }

@@ -21,6 +21,7 @@ package com.wa9nnn.rotator.arco
 import com.wa9nnn.rotator.ui.RotatorPanel
 import com.wa9nnn.rotator.{AppConfig, ConfigManager, RotatorConfig}
 import scalafx.beans.property.ObjectProperty
+import scalafx.collections.ObservableHashMap
 
 import java.util.UUID
 import javax.inject.Inject
@@ -28,18 +29,28 @@ import scala.collection.concurrent.TrieMap
 
 
 class ArcoCoordinator @Inject()(configManager: ConfigManager) {
+  val rotatorMap = new TrieMap[UUID, RotatorStuff]()
+
+  val selectedRotator: Option[UUID] = None
+
+  def updateRouterState(rotatorState: RotatorState): Unit = {
+    val state: RotatorStuff = rotatorMap(rotatorState.id)
+    state.value = rotatorState
+  }
+
   def moveSelected(targetAzimuth: Int): Unit = {
     throw new NotImplementedError() //todo
   }
 
   def currentSelectedState: RotatorState = {
-    throw new NotImplementedError() //todo
+    val uuid: UUID = selectedRotator.getOrElse(rotatorMap.head._1)
+    rotatorMap(uuid).value
   }
 
-  val rotatorMap = new TrieMap[UUID, RotatorStuff]()
 
-  configManager.onChange { (_, _, is: AppConfig) =>
-    setup(is.rotators)
+  configManager.onChange {
+    (_, _, is: AppConfig) =>
+      setup(is.rotators)
   }
   setup(configManager.value.rotators)
 
@@ -47,14 +58,17 @@ class ArcoCoordinator @Inject()(configManager: ConfigManager) {
   def setup(rotators: Iterable[RotatorConfig]): Unit = {
     rotatorMap.values.foreach(_.stop())
     rotatorMap.clear()
-    rotators.foreach { rc =>
-      rotatorMap.put(rc.id, new RotatorStuff(rc))
+    rotators.foreach {
+      rc =>
+        rotatorMap.put(rc.id, new RotatorStuff(rc))
     }
   }
 }
 
+/**
+ * Holds everthing we know about aa Rotator
+ */
 class RotatorStuff(rotatorConfig: RotatorConfig) extends ObjectProperty[RotatorState]() {
-  value = RotatorState()
 
   private val rotatorPanel = new RotatorPanel(this)
 

@@ -18,6 +18,17 @@
 
 package com.wa9nnn.rotator.arco
 
-import com.wa9nnn.rotator.Degree
+import com.wa9nnn.rotator.{Degree, RotatorConfig}
 
-case class RotatorState(name:String = "--", currentAzimuth:Degree = Degree())
+import java.util.UUID
+
+/**
+ * What is kbnown about the state of a rotator.
+ * @param currentAzimuth where antenna is pointin g.
+ * @param rotatorConfig from [[com.wa9nnn.rotator.RotatorConfig]]
+ */
+case class RotatorState( currentAzimuth:Degree = Degree(), rotatorConfig: RotatorConfig){
+  def id: UUID = rotatorConfig.id
+
+  val name:String = rotatorConfig.name
+}

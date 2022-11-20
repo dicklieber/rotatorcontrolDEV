@@ -30,8 +30,10 @@ import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
  * @param rotatorConfig        deatils about this ARCO.
  * @param rotatorStateProperty where to put ArCO state.
  */
-class ArcoInterface(rotatorConfig: RotatorConfig, rotatorStateProperty: ObjectProperty[RotatorState]) extends ScheduledThreadPoolExecutor(1)
+class ArcoInterface(rotatorConfig: RotatorConfig, property: ObjectProperty[RotatorState]) extends ScheduledThreadPoolExecutor(1)
   with RotatorInterface with LazyLogging with Runnable {
+
+  property.value = RotatorState(rotatorConfig = rotatorConfig)
   def stop(): Unit = shutdown()
 
 
@@ -58,7 +60,7 @@ class ArcoInterface(rotatorConfig: RotatorConfig, rotatorStateProperty: ObjectPr
       logger.trace(s"""Cmd: C Response: "$str"""")
       str match {
         case s"""+$azi""" =>
-          rotatorStateProperty.value = RotatorState(rotatorConfig.name, Degree(azi))
+          property.value = RotatorState( Degree(azi), rotatorConfig)
         case x =>
           logger.error(s"""Bad response got $x expecting something like: "+0123""")
       }
