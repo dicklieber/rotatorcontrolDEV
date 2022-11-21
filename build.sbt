@@ -47,4 +47,6 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-json" % "2.9.3",
   "com.google.inject" % "guice" % "5.1.0",
   "net.codingwell" %% "scala-guice" % "5.1.0",
+  "nl.grons" %% "metrics4-scala" % "4.2.9",
+  "io.dropwizard.metrics" % "metrics-jmx" % "4.2.13",
 )

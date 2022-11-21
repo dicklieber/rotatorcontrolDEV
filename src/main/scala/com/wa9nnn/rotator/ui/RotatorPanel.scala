@@ -20,18 +20,20 @@ package com.wa9nnn.rotator.ui
 
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.rotator.Degree
-import com.wa9nnn.rotator.arco.RotatorState
+import com.wa9nnn.rotator.arco.{ArcoCoordinator, ArcoTask, RotatorState, RotatorStuff}
 import javafx.geometry.Bounds
 import javafx.scene.input.MouseEvent
 import org.jfree.chart.JFreeChart
 import org.jfree.chart.fx.interaction.{ChartMouseEventFX, ChartMouseListenerFX}
+import org.jfree.chart.fx.overlay.OverlayFX
 import org.jfree.chart.plot.CompassPlot
 import org.jfree.data.general.DefaultValueDataset
 import org.scalafx.extras.onFX
 import scalafx.beans.property.ObjectProperty
 import scalafx.event.subscriptions.Subscription
 import scalafx.geometry.{Point2D, Pos}
-import scalafx.scene.layout.{BorderPane, FlowPane, Priority}
+import scalafx.scene.control.Label
+import scalafx.scene.layout.{BorderPane, FlowPane, Priority, VBox}
 import scalafx.scene.text.Text
 
 import javax.inject.Inject
@@ -40,13 +42,13 @@ import scala.language.implicitConversions
 /**
  * A Panel that displays and interacts with an ARCO rotator .
  */
-class RotatorPanel @Inject()(stateProperty:ObjectProperty[RotatorState] ) extends BorderPane with LazyLogging {
+class RotatorPanel @Inject()(rotatorStuff: RotatorStuff) extends BorderPane with LazyLogging {
 
-  val subscription: Subscription = stateProperty.onChange{ (_, _, rotatorState) =>
+  val subscription: Subscription = rotatorStuff.onChange { (_, _, rotatorState) =>
     val azimuth: Degree = rotatorState.currentAzimuth
     onFX {
       compassDataSet.setValue(azimuth.degree)
-      azimuthDisplay.text =azimuth.toString
+      azimuthDisplay.text = azimuth.toString
       nameLabel.text = rotatorState.name
     }
   }
@@ -68,6 +70,7 @@ class RotatorPanel @Inject()(stateProperty:ObjectProperty[RotatorState] ) extend
   val compassPlot: CompassPlot = new CompassPlot(compassDataSet)
 
   compassPlot.setLabelType(CompassPlot.VALUE_LABELS)
+
   val compassChart: JFreeChart = new JFreeChart(
     compassPlot
   )
@@ -75,24 +78,27 @@ class RotatorPanel @Inject()(stateProperty:ObjectProperty[RotatorState] ) extend
   import org.jfree.chart.fx.ChartViewer
 
   val jfxViewer: ChartViewer = new ChartViewer(compassChart)
+
   jfxViewer.getStyleClass.add("compass")
   jfxViewer.addChartMouseListener(new ChartMouseListenerFX {
     override def chartMouseClicked(event: ChartMouseEventFX): Unit = {
 
       val mouseEvent: MouseEvent = event.getTrigger
+      if (mouseEvent.getClickCount == 2) {
+        val bounds: Bounds = jfxViewer.getCanvas.getBoundsInLocal
+        val center: Point2D = new Point2D(bounds.getCenterX, bounds.getCenterY)
+        val mousePoint: Point2D = new Point2D(mouseEvent.getX.toInt, mouseEvent.getY.toInt)
+        val zeroPoint = new Point2D(bounds.getCenterX, 0)
+        val angle = center.angle(zeroPoint, mousePoint)
+        val finalA: Double = if (mousePoint.x < center.x)
+          360 - angle
+        else
+          angle
 
-      val bounds: Bounds = jfxViewer.getCanvas.getBoundsInLocal
-      val center: Point2D = new Point2D(bounds.getCenterX, bounds.getCenterY)
-      val mousePoint: Point2D = new Point2D(mouseEvent.getX.toInt, mouseEvent.getY.toInt)
-      val zeroPoint = new Point2D(bounds.getCenterX, 0)
-      val angle = center.angle(zeroPoint, mousePoint)
-      val finalA = if (mousePoint.x < center.x)
-        360 - angle
-      else
-        angle
-
-      logger.debug(s"finalA: $finalA")
-    } //todo use this to move
+        logger.debug(s"finalA: $finalA")
+        rotatorStuff.move(Degree(finalA))
+      }
+    }
 
     override def chartMouseMoved(event: ChartMouseEventFX): Unit = {
       logger.trace("moved: {}", event.getTrigger)
@@ -106,12 +112,16 @@ class RotatorPanel @Inject()(stateProperty:ObjectProperty[RotatorState] ) extend
     styleClass += "bigText"
   }
   center.value = jfxViewer
-  bottom = new FlowPane {
-    children += azimuthDisplay
-    alignment = Pos.Center
-    styleClass += "bigText"
-  }
+  bottom = new VBox(
+    new FlowPane {
+      children += azimuthDisplay
+      alignment = Pos.Center
+      styleClass += "bigText"
+    },
+    new Label(s"Rate: ${ArcoTask.pollsPerSeconds}/ sec State: ${ArcoTask.lastFailure} sincw: ${ArcoTask.lastFailure.stamp}")
 
+  )
 }
+
 
 

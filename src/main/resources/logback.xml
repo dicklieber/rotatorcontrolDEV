@@ -33,6 +33,7 @@
   <logger name="com.wa9nnn.rotator.rotctld.RotctldServer" level="INFO" />
   <logger name="com.wa9nnn.rotator.arco.ArcoInterface" level="INFO" />
   <logger name="com.wa9nnn.rotator.ui.RotatorPanel" level="INFO" />
+  <logger name="com.wa9nnn.rotator.arco.ArcoTask" level="DEBUG" />
 
   <root level="INFO">
     <appender-ref ref="ASYNCFILE" />

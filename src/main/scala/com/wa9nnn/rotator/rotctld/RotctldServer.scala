@@ -28,10 +28,10 @@ import java.io.{InputStreamReader, LineNumberReader}
 import java.net.{ServerSocket, Socket, SocketException}
 import javax.inject.Inject
 
-class RotctldServer @Inject()(configManager: ConfigManager, arcoCoordinator: ArcoCoordinator) extends  LazyLogging {
+class RotctldServer @Inject()(configManager: ConfigManager, arcoCoordinator: ArcoCoordinator) extends LazyLogging {
   logger.info("starting RotctldServer")
 
-  val task: Task[String] = Task.apply{
+  val task: Task[String] = Task.apply {
     val serverSocket = new ServerSocket(configManager.value.rgctldPort)
 
     val parser = """(\+)?[\\|]?(.+)""".r
@@ -64,7 +64,7 @@ class RotctldServer @Inject()(configManager: ConfigManager, arcoCoordinator: Arc
 
     def set_pos(azi: String, ele: String)(implicit extended: Boolean): String = {
       //todo do move
-      val targetAzimuth = azi.toDouble.toInt
+      val targetAzimuth: Degree = Degree(azi)
       arcoCoordinator.moveSelected(targetAzimuth)
 
       if (extended) {

@@ -21,6 +21,7 @@ package com.wa9nnn.rotator.arco
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.rotator.arco.ArcoTask.handleLast
 import com.wa9nnn.util.Stamped
+import nl.grons.metrics4.scala.{DefaultInstrumented, Meter}
 
 import scala.util.{Failure, Success, Try}
 
@@ -33,7 +34,8 @@ import scala.util.{Failure, Success, Try}
  * @param f                   function that will process the result.
  * @param arcoExecutor        work gets done.
  */
-case class ArcoTask(cmd: String)(f: String => Unit)(implicit arcoExecutor: ArcoExecutor) extends Runnable with LazyLogging {
+case class ArcoTask(cmd: String)(f: String => Unit)(implicit arcoExecutor: ArcoExecutor) extends Runnable
+  with LazyLogging {
   override def run(): Unit = {
     val triedString: Try[String] = arcoExecutor.sendReceive(cmd)
     handleLast(triedString, arcoExecutor)
@@ -45,10 +47,19 @@ case class ArcoTask(cmd: String)(f: String => Unit)(implicit arcoExecutor: ArcoE
   }
 }
 
-object ArcoTask extends LazyLogging {
+object ArcoTask extends LazyLogging with DefaultInstrumented{
+  private val arcoTaskMeter: Meter = metrics.meter("ArcoTask")
+
+
+  def pollsPerSeconds:Double = {
+    arcoTaskMeter.oneMinuteRate
+  }
   var lastFailure: LastFailure = LastFailure()
 
   def handleLast(triedString: Try[String], arcoExecutor: ArcoExecutor): Unit = {
+    arcoTaskMeter.mark()
+//logger.debug(f"arcoTaskMeter.oneMinuteRate: {}", arcoTaskMeter.oneMinuteRate)
+
     if (lastFailure.newResult(triedString)) {
       val message = triedString match {
         case Failure(exception) =>
@@ -61,8 +72,17 @@ object ArcoTask extends LazyLogging {
   }
 }
 
-case class LastFailure(triedString: Try[String] = Failure(new IllegalStateException)) extends Stamped {
+case class LastFailure(triedString: Try[String] = Failure(new IllegalStateException())) extends Stamped {
   def newResult(candidate: Try[String]): Boolean = {
     candidate == triedString
+  }
+
+  override def toString: String = {
+    triedString match {
+      case Failure(exception) =>
+        exception.getMessage
+      case Success(value) =>
+        value
+    }
   }
 }

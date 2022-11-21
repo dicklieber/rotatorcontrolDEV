@@ -16,17 +16,25 @@
  *
  */
 
-package com.wa9nnn.rotator
+package com.wa9nnn.rotator.metrics
 
-import com.google.inject.AbstractModule
-import com.wa9nnn.rotator.arco.ArcoCoordinator
-import com.wa9nnn.rotator.metrics.Reporter
-import net.codingwell.scalaguice.ScalaModule
+import com.codahale.metrics.jmx.JmxReporter
+import nl.grons.metrics4.scala.DefaultInstrumented
 
-class GuiceModule() extends AbstractModule with ScalaModule {
-  override def configure(): Unit = {
-    bind[ConfigManager].asEagerSingleton()
-    bind[ArcoCoordinator].asEagerSingleton()
-    bind[Reporter].asEagerSingleton()
-  }
+import java.util
+import javax.inject.Singleton
+import javax.management.{MBeanServer, MBeanServerConnection, ObjectInstance, ObjectName}
+import javax.management.remote.JMXConnector
+import javax.naming.InitialContext
+import scala.jdk.CollectionConverters.CollectionHasAsScala
+
+class Reporter extends DefaultInstrumented {
+  private val jmxReporter: JmxReporter = JmxReporter.forRegistry(metricRegistry).build
+  jmxReporter.start()
+
+
+
+
 }
+
+

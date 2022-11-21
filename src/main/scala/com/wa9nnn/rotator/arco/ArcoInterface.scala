@@ -28,7 +28,7 @@ import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
  * Handles move command and polls current azimuth from an Arco controller updating the rotatorStateProperty
  *
  * @param rotatorConfig        deatils about this ARCO.
- * @param rotatorStateProperty where to put ArCO state.
+ * @param rotatorStateProperty where to put ARCO state.
  */
 class ArcoInterface(rotatorConfig: RotatorConfig, property: ObjectProperty[RotatorState]) extends ScheduledThreadPoolExecutor(1)
   with RotatorInterface with LazyLogging with Runnable {
@@ -39,7 +39,7 @@ class ArcoInterface(rotatorConfig: RotatorConfig, property: ObjectProperty[Rotat
 
   private implicit val arcoExecutor = new ArcoExecutor(rotatorConfig)
   // schedule polling ARCO
-  scheduleWithFixedDelay(this, 200, 1370, TimeUnit.MILLISECONDS)
+  scheduleWithFixedDelay(this, 100, 5237, TimeUnit.MILLISECONDS)
 
   /**
    *
@@ -47,7 +47,8 @@ class ArcoInterface(rotatorConfig: RotatorConfig, property: ObjectProperty[Rotat
    * @return "ok" or exception
    */
   def move(targetAzimuth: Degree): Unit = {
-    val cmd = s"M$targetAzimuth"
+    logger.debug(s"Move command: {}}",targetAzimuth.toString)
+    val cmd = s"M${targetAzimuth.threeDigits}"
     arcoExecutor.execute(ArcoTask(cmd) { result: String =>
       logger.trace("Move result: {}", result)
     })
