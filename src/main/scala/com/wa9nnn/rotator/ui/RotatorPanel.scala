@@ -20,35 +20,49 @@ package com.wa9nnn.rotator.ui
 
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.rotator.Degree
-import com.wa9nnn.rotator.arco.{ArcoCoordinator, ArcoTask, RotatorState, RotatorStuff}
+import com.wa9nnn.rotator.arco.{ArcoTask, RotatorStuff}
 import javafx.geometry.Bounds
 import javafx.scene.input.MouseEvent
 import org.jfree.chart.JFreeChart
 import org.jfree.chart.fx.interaction.{ChartMouseEventFX, ChartMouseListenerFX}
-import org.jfree.chart.fx.overlay.OverlayFX
 import org.jfree.chart.plot.CompassPlot
 import org.jfree.data.general.DefaultValueDataset
 import org.scalafx.extras.onFX
-import scalafx.beans.property.ObjectProperty
 import scalafx.event.subscriptions.Subscription
 import scalafx.geometry.{Point2D, Pos}
 import scalafx.scene.control.Label
-import scalafx.scene.layout.{BorderPane, FlowPane, Priority, VBox}
+import scalafx.scene.layout.{BorderPane, FlowPane, Pane, Priority, VBox}
 import scalafx.scene.text.Text
 
+import java.util.UUID
 import javax.inject.Inject
-import scala.language.implicitConversions
+import scala.language.{existentials, implicitConversions}
 
 /**
  * A Panel that displays and interacts with an ARCO rotator .
  */
 class RotatorPanel @Inject()(rotatorStuff: RotatorStuff) extends BorderPane with LazyLogging {
+  val cssUrl: String = getClass.getResource("/rotatormanager.css").toExternalForm
+  stylesheets.add(cssUrl)
+
+  val ourId: UUID = rotatorStuff.rotatorConfig.id
+
+  private val nameLabel = new Label("---") {
+    styleClass += "rotatorName"
+    onMouseClicked = e => {
+      rotatorStuff.selectedRouter.value = ourId
+    }
+  }
+
+  private val azimuthLabel: Text = new Text("---") {
+    styleClass += "azimuthLabel"
+  }
 
   val subscription: Subscription = rotatorStuff.onChange { (_, _, rotatorState) =>
     val azimuth: Degree = rotatorState.currentAzimuth
     onFX {
       compassDataSet.setValue(azimuth.degree)
-      azimuthDisplay.text = azimuth.toString
+      azimuthLabel.text = azimuth.toString
       nameLabel.text = rotatorState.name
     }
   }
@@ -60,12 +74,16 @@ class RotatorPanel @Inject()(rotatorStuff: RotatorStuff) extends BorderPane with
   hgrow = Priority.Always
   styleClass += "rotatorPanel"
   private val compassDataSet = new DefaultValueDataset(1)
-  private val nameLabel = new Text("---") {
-    styleClass += "rotatorName"
+  rotatorStuff.selectedRouter.onChange { (_, _, is) =>
+    if (ourId == is) {
+      nameLabel.styleClass.addOne("selectedRouter")
+nameLabel.tooltip = "This is the rotator used with rotctld."
+    } else {
+      nameLabel.styleClass.subtractOne("selectedRouter")
+      nameLabel.tooltip = "Click to use with rotctld."
+    }
   }
-  private val azimuthDisplay: Text = new Text("---") {
-    styleClass += "azimuthDisplay"
-  }
+
 
   val compassPlot: CompassPlot = new CompassPlot(compassDataSet)
 
@@ -106,6 +124,7 @@ class RotatorPanel @Inject()(rotatorStuff: RotatorStuff) extends BorderPane with
   })
 
   jfxViewer.setPrefSize(200.0, 200.0)
+//  top = nameLabel
   top = new FlowPane {
     children += nameLabel
     alignment = Pos.Center
@@ -114,11 +133,17 @@ class RotatorPanel @Inject()(rotatorStuff: RotatorStuff) extends BorderPane with
   center.value = jfxViewer
   bottom = new VBox(
     new FlowPane {
-      children += azimuthDisplay
+      children += azimuthLabel
       alignment = Pos.Center
       styleClass += "bigText"
     },
-    new Label(s"Rate: ${ArcoTask.pollsPerSeconds}/ sec State: ${ArcoTask.lastFailure} sincw: ${ArcoTask.lastFailure.stamp}")
+    new Label(s"Rate: ${
+      ArcoTask.pollsPerSeconds
+    }/ sec State: ${
+      ArcoTask.lastFailure
+    } since: ${
+      ArcoTask.lastFailure.stamp
+    }")
 
   )
 }

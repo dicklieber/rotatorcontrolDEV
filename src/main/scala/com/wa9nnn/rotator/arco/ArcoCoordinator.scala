@@ -28,9 +28,20 @@ import scala.collection.concurrent.TrieMap
 
 
 class ArcoCoordinator @Inject()(configManager: ConfigManager) {
+  def selectedRotatorAzimuth: Degree = {
+    val r: Option[Degree] = for {
+      id <- Option(selectedRotator.value)
+      rs <- rotatorMap.get(id)
+    } yield {
+      rs.value.currentAzimuth
+    }
+    r.getOrElse(Degree())
+  }
+
+
   val rotatorMap = new TrieMap[UUID, RotatorStuff]()
 
-  val selectedRotator: Option[UUID] = None
+  val selectedRotator: ObjectProperty[UUID] = new ObjectProperty[UUID]()
 
   def updateRouterState(rotatorState: RotatorState): Unit = {
     val state: RotatorStuff = rotatorMap(rotatorState.id)
@@ -50,18 +61,12 @@ class ArcoCoordinator @Inject()(configManager: ConfigManager) {
    */
   def moveSelected(targetAzimuth: Degree): Unit = {
     for {
-      id <- selectedRotator
+      id <- Option(selectedRotator.value)
       rs <- rotatorMap.get(id)
     } {
       rs.move(targetAzimuth)
     }
   }
-
-  def currentSelectedState: RotatorState = {
-    val uuid: UUID = selectedRotator.getOrElse(rotatorMap.head._1)
-    rotatorMap(uuid).value
-  }
-
 
   configManager.onChange {
     (_, _, is: AppConfig) =>
@@ -74,7 +79,7 @@ class ArcoCoordinator @Inject()(configManager: ConfigManager) {
     rotatorMap.clear()
     rotators.foreach {
       rc =>
-        rotatorMap.put(rc.id, new RotatorStuff(rc))
+        rotatorMap.put(rc.id, RotatorStuff(rc, selectedRotator))
     }
   }
 }
@@ -82,8 +87,9 @@ class ArcoCoordinator @Inject()(configManager: ConfigManager) {
 /**
  * Holds everything we know about one Rotator as configured.
  */
-class RotatorStuff(rotatorConfig: RotatorConfig) extends ObjectProperty[RotatorState]() {
+case class RotatorStuff(rotatorConfig: RotatorConfig, selectedRouter: ObjectProperty[UUID]) extends ObjectProperty[RotatorState]() {
   private val arcoInterface: ArcoInterface = new ArcoInterface(rotatorConfig, this)
+
 
   def move(targetAzimuth: Degree): Unit = {
     arcoInterface.move(targetAzimuth)

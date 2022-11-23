@@ -38,7 +38,7 @@ class RotctldServer @Inject()(configManager: ConfigManager, arcoCoordinator: Arc
     val setPosRegx = """set_pos (\d+\.\d+) (\d+\.\d+)""".r
 
     def get_pos(implicit extended: Boolean): String = {
-      val currentAzimuth: Degree = arcoCoordinator.currentSelectedState.currentAzimuth
+      val currentAzimuth: Degree = arcoCoordinator.selectedRotatorAzimuth
       if (extended) {
         s"""get_pos:
            |Azimuth: $currentAzimuth

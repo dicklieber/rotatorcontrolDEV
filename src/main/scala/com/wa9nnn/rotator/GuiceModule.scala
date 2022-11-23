@@ -21,6 +21,7 @@ package com.wa9nnn.rotator
 import com.google.inject.AbstractModule
 import com.wa9nnn.rotator.arco.ArcoCoordinator
 import com.wa9nnn.rotator.metrics.Reporter
+import com.wa9nnn.rotator.rotctld.RotctldServer
 import net.codingwell.scalaguice.ScalaModule
 
 class GuiceModule() extends AbstractModule with ScalaModule {
@@ -28,5 +29,6 @@ class GuiceModule() extends AbstractModule with ScalaModule {
     bind[ConfigManager].asEagerSingleton()
     bind[ArcoCoordinator].asEagerSingleton()
     bind[Reporter].asEagerSingleton()
+    bind[RotctldServer].asEagerSingleton()
   }
 }

@@ -33,7 +33,6 @@
 }
 
 .rotatorName {
-    -fx-font-family: Helvetica;
     -fx-font-size: 20pt;
     -fx-text-alignment: center;
     -fx-fill: #002aff;
@@ -41,13 +40,22 @@
 }
 
 .azimuthDisplay {
-    -fx-font-family: Futura;
     -fx-font-size: 18pt;
     /*-fx-fill: red;*/
     -fx-font-weight: bold;
     -fx-fill: #002aff;
 }
+
 .bigText {
-    -fx-background-color: #eeeeee;
+    /*-fx-background-color: #d52344;*/
+    -fx-row-valignment: center;
+    -fx-font-size: 36pt;
+    -fx-font-family: Arial;
+
 }
 
+.selectedRouter {
+    -fx-font-weight: bold;
+    -fx-font-size: bigger;
+    -fx-background-color: lightblue;
+}

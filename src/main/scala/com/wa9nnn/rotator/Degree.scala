@@ -47,7 +47,7 @@ object Degree {
   }
 
   def apply(s: String): Degree = {
-    s.toInt match {
+    s.toDouble.toInt match {
       case 999 =>
         new Degree()
       case d =>
