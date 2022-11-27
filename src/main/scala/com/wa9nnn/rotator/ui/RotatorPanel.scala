@@ -20,7 +20,7 @@ package com.wa9nnn.rotator.ui
 
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.rotator.Degree
-import com.wa9nnn.rotator.arco.{ArcoTask, RotatorStuff}
+import com.wa9nnn.rotator.arco.{ArcoOperation, RotatorInstance}
 import javafx.geometry.Bounds
 import javafx.scene.input.MouseEvent
 import org.jfree.chart.JFreeChart
@@ -41,7 +41,7 @@ import scala.language.{existentials, implicitConversions}
 /**
  * A Panel that displays and interacts with an ARCO rotator .
  */
-class RotatorPanel @Inject()(rotatorStuff: RotatorStuff) extends BorderPane with LazyLogging {
+class RotatorPanel @Inject()(rotatorStuff: RotatorInstance) extends BorderPane with LazyLogging {
   val cssUrl: String = getClass.getResource("/rotatormanager.css").toExternalForm
   stylesheets.add(cssUrl)
 
@@ -77,7 +77,7 @@ class RotatorPanel @Inject()(rotatorStuff: RotatorStuff) extends BorderPane with
   rotatorStuff.selectedRouter.onChange { (_, _, is) =>
     if (ourId == is) {
       nameLabel.styleClass.addOne("selectedRouter")
-nameLabel.tooltip = "This is the rotator used with rotctld."
+      nameLabel.tooltip = "This is the rotator used with rotctld."
     } else {
       nameLabel.styleClass.subtractOne("selectedRouter")
       nameLabel.tooltip = "Click to use with rotctld."
@@ -124,7 +124,7 @@ nameLabel.tooltip = "This is the rotator used with rotctld."
   })
 
   jfxViewer.setPrefSize(200.0, 200.0)
-//  top = nameLabel
+  //  top = nameLabel
   top = new FlowPane {
     children += nameLabel
     alignment = Pos.Center
@@ -137,13 +137,13 @@ nameLabel.tooltip = "This is the rotator used with rotctld."
       alignment = Pos.Center
       styleClass += "bigText"
     },
-    new Label(s"Rate: ${
-      ArcoTask.pollsPerSeconds
-    }/ sec State: ${
-      ArcoTask.lastFailure
-    } since: ${
-      ArcoTask.lastFailure.stamp
-    }")
+    //    new Label(s"Rate: ${
+    //      ArcoTask.pollsPerSeconds
+    //    }/ sec State: ${
+    //      ArcoTask.lastFailure
+    //    } since: ${
+    //      ArcoTask.lastFailure.stamp
+    //    }")
 
   )
 }

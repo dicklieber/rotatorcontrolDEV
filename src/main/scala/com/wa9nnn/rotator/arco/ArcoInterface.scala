@@ -25,21 +25,29 @@ import scalafx.beans.property.ObjectProperty
 import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
 
 /**
+ *
  * Handles move command and polls current azimuth from an Arco controller updating the rotatorStateProperty
  *
- * @param rotatorConfig        deatils about this ARCO.
+ * Currently only supports move via move (M090 command) and (C command) via ScheduledThreadPoolExecutor.
+ *
+ * Uses the Yaesu GSM-232a protocol over IP see https://www.yaesu.com/downloadFile.cfm?FileID=820&FileCatID=155&FileName=GS232A.pdf&FileContentType=application%2Fpdf
+ *
+ * See [[./docs/GS232A.pdf]]
+ *
+ * @param rotatorConfig        details about this ARCO.
  * @param rotatorStateProperty where to put ARCO state.
  */
-class ArcoInterface(rotatorConfig: RotatorConfig, property: ObjectProperty[RotatorState]) extends ScheduledThreadPoolExecutor(1)
+class ArcoInterface(rotatorConfig: RotatorConfig, rotatorStateProperty: ObjectProperty[RotatorState]) extends ScheduledThreadPoolExecutor(1)
   with RotatorInterface with LazyLogging with Runnable {
 
-  property.value = RotatorState(rotatorConfig = rotatorConfig)
+  rotatorStateProperty.value = RotatorState(rotatorConfig = rotatorConfig)
+
   def stop(): Unit = shutdown()
 
 
-  private implicit val arcoExecutor = new ArcoExecutor(rotatorConfig)
+  private implicit val arcoExecutor = new ArcoQueue(rotatorConfig)
   // schedule polling ARCO
-  scheduleWithFixedDelay(this, 100, 5237, TimeUnit.MILLISECONDS)
+  scheduleWithFixedDelay(this, 100, 1000, TimeUnit.MILLISECONDS)
 
   /**
    *
@@ -47,26 +55,23 @@ class ArcoInterface(rotatorConfig: RotatorConfig, property: ObjectProperty[Rotat
    * @return "ok" or exception
    */
   def move(targetAzimuth: Degree): Unit = {
-    logger.debug(s"Move command: {}}",targetAzimuth.toString)
+    logger.debug(s"Move command: {}}", targetAzimuth.toString)
     val cmd = s"M${targetAzimuth.threeDigits}"
-    arcoExecutor.execute(ArcoTask(cmd) { result: String =>
-      logger.trace("Move result: {}", result)
-    })
+    arcoExecutor.execute(ArcoOperation(cmd, (result: String) =>
+      logger.info("Move target: targetAzimuth:{} result: {}", targetAzimuth, result)
+    ))
   }
 
   override def run(): Unit = {
-
-    val task = ArcoTask("C") { response =>
+    arcoExecutor.execute(ArcoOperation("C", (response: String) => {
       val str = new String(response).trim
       logger.trace(s"""Cmd: C Response: "$str"""")
       str match {
         case s"""+$azi""" =>
-          property.value = RotatorState( Degree(azi), rotatorConfig)
+          rotatorStateProperty.value = RotatorState(Degree(azi), rotatorConfig)
         case x =>
           logger.error(s"""Bad response got $x expecting something like: "+0123""")
       }
-    }
-    arcoExecutor.execute(task)
+    }))
   }
-
 }

@@ -26,8 +26,11 @@ import java.util.UUID
 import javax.inject.Inject
 import scala.collection.concurrent.TrieMap
 
-
-class ArcoCoordinator @Inject()(configManager: ConfigManager) {
+/**
+ * Manages instances of [[RotatorInstance]] based on changes in [[AppConfig]]
+ * @param configManager where to get current or changed configuration.
+ */
+class ArcoManager @Inject()(configManager: ConfigManager) {
   def selectedRotatorAzimuth: Degree = {
     val r: Option[Degree] = for {
       id <- Option(selectedRotator.value)
@@ -39,17 +42,17 @@ class ArcoCoordinator @Inject()(configManager: ConfigManager) {
   }
 
 
-  val rotatorMap = new TrieMap[UUID, RotatorStuff]()
+  val rotatorMap = new TrieMap[UUID, RotatorInstance]()
 
   val selectedRotator: ObjectProperty[UUID] = new ObjectProperty[UUID]()
 
   def updateRouterState(rotatorState: RotatorState): Unit = {
-    val state: RotatorStuff = rotatorMap(rotatorState.id)
+    val state: RotatorInstance = rotatorMap(rotatorState.id)
     state.value = rotatorState
   }
 
   def rotatorPanels: IterableOnce[RotatorPanel] = {
-    rotatorMap.values.map { rotatusStuff: RotatorStuff =>
+    rotatorMap.values.map { rotatusStuff: RotatorInstance =>
       rotatusStuff.rotatorPanel
     }
   }
@@ -79,7 +82,7 @@ class ArcoCoordinator @Inject()(configManager: ConfigManager) {
     rotatorMap.clear()
     rotators.foreach {
       rc =>
-        rotatorMap.put(rc.id, RotatorStuff(rc, selectedRotator))
+        rotatorMap.put(rc.id, RotatorInstance(rc, selectedRotator))
     }
   }
 }
@@ -87,7 +90,7 @@ class ArcoCoordinator @Inject()(configManager: ConfigManager) {
 /**
  * Holds everything we know about one Rotator as configured.
  */
-case class RotatorStuff(rotatorConfig: RotatorConfig, selectedRouter: ObjectProperty[UUID]) extends ObjectProperty[RotatorState]() {
+case class RotatorInstance(rotatorConfig: RotatorConfig, selectedRouter: ObjectProperty[UUID]) extends ObjectProperty[RotatorState]() {
   private val arcoInterface: ArcoInterface = new ArcoInterface(rotatorConfig, this)
 
 

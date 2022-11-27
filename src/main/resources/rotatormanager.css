@@ -56,6 +56,6 @@
 
 .selectedRouter {
     -fx-font-weight: bold;
-    -fx-font-size: bigger;
+    -fx-font-size: 18pt;
     -fx-background-color: lightblue;
 }

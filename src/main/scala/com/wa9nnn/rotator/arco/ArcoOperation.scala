@@ -18,18 +18,13 @@
 
 package com.wa9nnn.rotator.arco
 
-import com.wa9nnn.rotator.{Degree, RotatorConfig}
-
-import java.util.UUID
 
 /**
- * What is known about the state of a rotator.
+ * One discrete operation with an Arco controller
+ * This is run in a queue so only one can happen one at a time.
  *
- * @param currentAzimuth where antenna is pointin g.
- * @param rotatorConfig  from [[com.wa9nnn.rotator.RotatorConfig]]
+ * @param cmd                  to send
+ * @param fn                   function that will process the result string. Will get invoked if result obtained from sending cmd to the controller.
  */
-case class RotatorState(currentAzimuth: Degree = Degree(), rotatorConfig: RotatorConfig) {
-  def id: UUID = rotatorConfig.id
+case class ArcoOperation(cmd: String, fn: String => Unit)
 
-  val name: String = rotatorConfig.name
-}

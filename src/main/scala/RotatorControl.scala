@@ -1,6 +1,6 @@
 
 import com.google.inject.{Guice, Injector}
-import com.wa9nnn.rotator.arco.ArcoCoordinator
+import com.wa9nnn.rotator.arco.ArcoManager
 import com.wa9nnn.rotator.metrics.{MetricsReporter, Reporter}
 import com.wa9nnn.rotator.ui.config.ConfigEditorDialog
 import com.wa9nnn.rotator.{AppConfig, GuiceModule}
@@ -46,7 +46,7 @@ object RotatorControl extends JFXApp3 {
       }
     }
     injector = Guice.createInjector(new GuiceModule())
-    lazy val arcoCoordinator: ArcoCoordinator = injector.instance[ArcoCoordinator]
+    lazy val arcoCoordinator: ArcoManager = injector.instance[ArcoManager]
 
 
     val secne: Scene = new Scene {

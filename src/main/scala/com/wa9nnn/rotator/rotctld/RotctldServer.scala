@@ -20,7 +20,7 @@ package com.wa9nnn.rotator.rotctld
 
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.rotator.{ConfigManager, Degree}
-import com.wa9nnn.rotator.arco.ArcoCoordinator
+import com.wa9nnn.rotator.arco.ArcoManager
 import scalafx.concurrent
 import scalafx.concurrent.Task
 
@@ -28,7 +28,7 @@ import java.io.{InputStreamReader, LineNumberReader}
 import java.net.{ServerSocket, Socket, SocketException}
 import javax.inject.Inject
 
-class RotctldServer @Inject()(configManager: ConfigManager, arcoCoordinator: ArcoCoordinator) extends LazyLogging {
+class RotctldServer @Inject()(configManager: ConfigManager, arcoCoordinator: ArcoManager) extends LazyLogging {
   logger.info("starting RotctldServer")
 
   val task: Task[String] = Task.apply {
