@@ -45,7 +45,7 @@ class ArcoManager @Inject()(configManager: ConfigManager) {
 
   val rotatorMap = new TrieMap[UUID, RotatorInstance]()
 
-  val selectedRotator: ObjectProperty[UUID] = new ObjectProperty[UUID]()
+  val selectedRotator: ObjectProperty[UUID] =  new ObjectProperty[UUID]()
 
   def updateRouterState(rotatorState: RotatorState): Unit = {
     val state: RotatorInstance = rotatorMap(rotatorState.id)
@@ -84,6 +84,9 @@ class ArcoManager @Inject()(configManager: ConfigManager) {
     rotators.foreach {
       rc =>
         rotatorMap.put(rc.id, RotatorInstance(rc, selectedRotator))
+    }
+    rotators.headOption.foreach{ rc=>
+      selectedRotator.value = rc.id
     }
   }
 }
