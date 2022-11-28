@@ -28,6 +28,7 @@ import scala.collection.concurrent.TrieMap
 
 /**
  * Manages instances of [[RotatorInstance]] based on changes in [[AppConfig]]
+ *
  * @param configManager where to get current or changed configuration.
  */
 class ArcoManager @Inject()(configManager: ConfigManager) {

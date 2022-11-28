@@ -20,9 +20,11 @@ package com.wa9nnn.rotator.arco
 
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.rotator.RotatorConfig
+import com.wa9nnn.rotator.arco.ArcoQueue.initialState
 
 import java.util.concurrent.{ExecutorService, Executors}
-import scala.util.{Failure, Try}
+import scala.language.implicitConversions
+import scala.util.{Failure, Success, Try}
 
 /**
  * Coordinates operations with an ARCO Controller.
@@ -30,24 +32,59 @@ import scala.util.{Failure, Try}
  * @param rotatorConfig for an Arco.
  */
 class ArcoQueue(val rotatorConfig: RotatorConfig) extends LazyLogging {
-
-  def execute(arcoOperation: ArcoOperation): Unit = {
-    threadPool.submit(ArcoTask(arcoOperation))
-  }
-
-  private var lastTriedArcoIO: Try[ArcoIO] = Failure(new IllegalStateException())
+  private val name = rotatorConfig.name
+  private var lastTriedArcoIO: Try[ArcoIO] = initialState
   private val threadPool: ExecutorService = Executors.newFixedThreadPool(1,
     (r: Runnable) => {
       new Thread(r, "ArcoExecutor")
     })
 
+
+  def execute(arcoOperation: ArcoOperation): Unit = {
+    threadPool.submit(ArcoTask(arcoOperation))
+  }
+
+
   case class ArcoTask(arcoOperation: ArcoOperation) extends Runnable {
-    override def run(): Unit = {
-      val maybeNow: Try[ArcoIO] = lastTriedArcoIO.orElse(ArcoIO.connect(rotatorConfig))
-      lastTriedArcoIO = maybeNow
-      lastTriedArcoIO.foreach { arcoIO =>
-        arcoIO.doOperation(arcoOperation)
+
+    def handleStateChange(maybeNow: Try[ArcoIO]): Unit = {
+      implicit def t2s(t: Try[ArcoIO]): String =
+        t match {
+          case Failure(exception) =>
+            exception.getMessage
+          case Success(_) =>
+            "Connected"
+        }
+
+      val last: String = lastTriedArcoIO
+      val now: String = maybeNow
+
+      if (last != now) {
+        logger.info(s"$name change from $last to $now")
       }
+      lastTriedArcoIO = maybeNow
+    }
+
+    override def run(): Unit = {
+      var maybeNow: Try[ArcoIO] = lastTriedArcoIO.orElse(ArcoIO.connect(rotatorConfig))
+      try {
+
+        maybeNow.foreach { arcoIO =>
+          arcoIO.doOperation(arcoOperation)
+        }
+      } catch {
+        case a: ArcoException =>
+          logger.error(s"$name: ${a.reason}")
+          maybeNow.foreach(_.socket.close())
+          maybeNow = Failure(a)
+      }
+
+      handleStateChange(maybeNow)
+
     }
   }
+}
+
+object ArcoQueue {
+  val initialState: Failure[Nothing] = Failure(new IllegalArgumentException("Startup"))
 }

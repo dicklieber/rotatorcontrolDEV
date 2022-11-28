@@ -63,15 +63,20 @@ class ArcoInterface(rotatorConfig: RotatorConfig, rotatorStateProperty: ObjectPr
   }
 
   override def run(): Unit = {
-    arcoExecutor.execute(ArcoOperation("C", (response: String) => {
-      val str = new String(response).trim
-      logger.trace(s"""Cmd: C Response: "$str"""")
-      str match {
-        case s"""+$azi""" =>
-          rotatorStateProperty.value = RotatorState(Degree(azi), rotatorConfig)
-        case x =>
-          logger.error(s"""Bad response got $x expecting something like: "+0123""")
-      }
-    }))
+    try {
+      arcoExecutor.execute(ArcoOperation("C", (response: String) => {
+        val str = new String(response).trim
+        logger.trace(s"""Cmd: C Response: "$str"""")
+        str match {
+          case s"""+$azi""" =>
+            rotatorStateProperty.value = RotatorState(Degree(azi), rotatorConfig)
+          case x =>
+            logger.error(s"""Bad response got $x expecting something like: "+0123""")
+        }
+      }))
+    } catch {
+      case e:Throwable =>
+        logger.error("Run level exception ", e)
+    }
   }
 }

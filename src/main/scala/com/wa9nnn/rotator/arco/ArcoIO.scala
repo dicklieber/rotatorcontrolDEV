@@ -28,13 +28,19 @@ import scala.util.{Failure, Success, Try}
 
 
 case class ArcoIO(socket: Socket) {
-  def doOperation(arcoTask: ArcoOperation ): Unit = {
+  def doOperation(arcoTask: ArcoOperation): Unit = {
+    if (socket.isOutputShutdown)
+      throwArco("Socket output shutdown!")
     writer.print(arcoTask.cmd)
     writer.print("\r")
     writer.flush()
 
+    if (socket.isInputShutdown)
+      throwArco("Socket input shutdown!")
     val recBuffer = new Array[Byte](500)
     val bytesRead: Int = inputStream.read(recBuffer)
+    if (bytesRead == -1)
+      throwArco("Lost connection")
     val response = recBuffer.take(bytesRead)
     val str = new String(response).trim
     arcoTask.fn(str)
@@ -45,24 +51,22 @@ case class ArcoIO(socket: Socket) {
   val writer = new PrintWriter(socket.getOutputStream)
 
   val inputStream: InputStream = socket.getInputStream
+
+  def throwArco(reason: String): Unit = {
+    throw ArcoException(reason)
+  }
 }
 
 object ArcoIO extends LazyLogging {
-//  private val arcoTaskMeters: TrieMap[UUID, Meter] = TrieMap[UUID, Meter] ()
-//  metrics.meter("ArcoTask")
-
   def connect(rotatorConfig: RotatorConfig): Try[ArcoIO] = {
-    val name = rotatorConfig.name
-    val r = Try {
+    Try {
 
       val socket = new Socket()
       val inetSocketAddress = new InetSocketAddress(rotatorConfig.host, rotatorConfig.port)
       socket.connect(inetSocketAddress, 100)
       socket.setSoTimeout(1000)
-      logger.info("\t{} Connected", name)
       new ArcoIO(socket)
     }
-    r
   }
 
   case class LastFailure(triedString: Try[String] = Failure(new IllegalStateException())) extends Stamped {
@@ -81,3 +85,4 @@ object ArcoIO extends LazyLogging {
   }
 }
 
+case class ArcoException(reason: String) extends Exception(reason)
