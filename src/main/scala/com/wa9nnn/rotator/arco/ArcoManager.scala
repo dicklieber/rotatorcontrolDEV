@@ -18,6 +18,7 @@
 
 package com.wa9nnn.rotator.arco
 
+import com.typesafe.config.Config
 import com.wa9nnn.rotator.ui.RotatorPanel
 import com.wa9nnn.rotator.{AppConfig, ConfigManager, Degree, RotatorConfig}
 import scalafx.beans.property.ObjectProperty
@@ -31,7 +32,8 @@ import scala.collection.concurrent.TrieMap
  *
  * @param configManager where to get current or changed configuration.
  */
-class ArcoManager @Inject()(configManager: ConfigManager) {
+class ArcoManager @Inject()(configManager: ConfigManager, config: Config) {
+  private val arcoConfig = config.getConfig("arco")
   def selectedRotatorAzimuth: Degree = {
     val r: Option[Degree] = for {
       id <- Option(selectedRotator.value)
@@ -59,7 +61,7 @@ class ArcoManager @Inject()(configManager: ConfigManager) {
   }
 
   /**
-   * Mpve the selected rotator
+   * Move the selected rotator
    *
    * @param targetAzimuth where to point to.
    */
@@ -83,7 +85,7 @@ class ArcoManager @Inject()(configManager: ConfigManager) {
     rotatorMap.clear()
     rotators.foreach {
       rc =>
-        rotatorMap.put(rc.id, RotatorInstance(rc, selectedRotator))
+        rotatorMap.put(rc.id, RotatorInstance(rc, selectedRotator, arcoConfig))
     }
     rotators.headOption.foreach{ rc=>
       selectedRotator.value = rc.id
@@ -94,8 +96,8 @@ class ArcoManager @Inject()(configManager: ConfigManager) {
 /**
  * Holds everything we know about one Rotator as configured.
  */
-case class RotatorInstance(rotatorConfig: RotatorConfig, selectedRouter: ObjectProperty[UUID]) extends ObjectProperty[RotatorState]() {
-  private val arcoInterface: ArcoInterface = new ArcoInterface(rotatorConfig, this)
+case class RotatorInstance(rotatorConfig: RotatorConfig, selectedRouter: ObjectProperty[UUID], arcoConfig:Config) extends ObjectProperty[RotatorState]() {
+  private val arcoInterface: ArcoInterface = new ArcoInterface(rotatorConfig, arcoConfig, this)
 
 
   def move(targetAzimuth: Degree): Unit = {

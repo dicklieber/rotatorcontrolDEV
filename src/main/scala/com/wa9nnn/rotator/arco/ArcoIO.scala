@@ -18,12 +18,14 @@
 
 package com.wa9nnn.rotator.arco
 
+import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.rotator.RotatorConfig
 import com.wa9nnn.util.Stamped
 
 import java.io.{InputStream, PrintWriter}
 import java.net.{InetSocketAddress, Socket}
+import java.util.concurrent.TimeUnit
 import scala.util.{Failure, Success, Try}
 
 
@@ -58,13 +60,13 @@ case class ArcoIO(socket: Socket) {
 }
 
 object ArcoIO extends LazyLogging {
-  def connect(rotatorConfig: RotatorConfig): Try[ArcoIO] = {
+  def connect(rotatorConfig: RotatorConfig, arcoConfig:Config): Try[ArcoIO] = {
     Try {
 
       val socket = new Socket()
       val inetSocketAddress = new InetSocketAddress(rotatorConfig.host, rotatorConfig.port)
-      socket.connect(inetSocketAddress, 100)
-      socket.setSoTimeout(1000)
+      socket.connect(inetSocketAddress, arcoConfig.getDuration("connectTimeout", TimeUnit.MILLISECONDS).toInt)
+      socket.setSoTimeout(arcoConfig.getDuration("socketTimeout", TimeUnit.MILLISECONDS).toInt)
       new ArcoIO(socket)
     }
   }

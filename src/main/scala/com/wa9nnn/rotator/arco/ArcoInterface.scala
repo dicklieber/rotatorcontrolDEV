@@ -18,10 +18,13 @@
 
 package com.wa9nnn.rotator.arco
 
+import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.rotator.{Degree, RotatorConfig, RotatorInterface}
 import scalafx.beans.property.ObjectProperty
 
+import java.time.Duration
+import java.time.temporal.ChronoUnit
 import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
 
 /**
@@ -37,17 +40,17 @@ import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
  * @param rotatorConfig        details about this ARCO.
  * @param rotatorStateProperty where to put ARCO state.
  */
-class ArcoInterface(rotatorConfig: RotatorConfig, rotatorStateProperty: ObjectProperty[RotatorState]) extends ScheduledThreadPoolExecutor(1)
+class ArcoInterface(rotatorConfig: RotatorConfig, arcoConfig:Config, rotatorStateProperty: ObjectProperty[RotatorState]) extends ScheduledThreadPoolExecutor(1)
   with RotatorInterface with LazyLogging with Runnable {
 
   rotatorStateProperty.value = RotatorState(rotatorConfig = rotatorConfig)
 
   def stop(): Unit = shutdown()
 
-
-  private implicit val arcoExecutor = new ArcoQueue(rotatorConfig)
+  private implicit val arcoExecutor = new ArcoQueue(rotatorConfig, arcoConfig)
+  private val pollMs: Long = arcoConfig.getDuration("poll", TimeUnit.MILLISECONDS)
   // schedule polling ARCO
-  scheduleWithFixedDelay(this, 100, 1000, TimeUnit.MILLISECONDS)
+  scheduleWithFixedDelay(this, 100, pollMs.toInt, TimeUnit.MILLISECONDS)
 
   /**
    *

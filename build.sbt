@@ -49,4 +49,5 @@ libraryDependencies ++= Seq(
   "net.codingwell" %% "scala-guice" % "5.1.0",
   "nl.grons" %% "metrics4-scala" % "4.2.9",
   "io.dropwizard.metrics" % "metrics-jmx" % "4.2.13",
+  "com.typesafe" % "config" % "1.4.2",
 )

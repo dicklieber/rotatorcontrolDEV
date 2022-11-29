@@ -18,6 +18,7 @@
 
 package com.wa9nnn.rotator.arco
 
+import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.rotator.RotatorConfig
 import com.wa9nnn.rotator.arco.ArcoQueue.initialState
@@ -30,8 +31,9 @@ import scala.util.{Failure, Success, Try}
  * Coordinates operations with an ARCO Controller.
  *
  * @param rotatorConfig for an Arco.
+ *                      @param application config from [[src/main/resources/reference.conf]]
  */
-class ArcoQueue(val rotatorConfig: RotatorConfig) extends LazyLogging {
+class ArcoQueue(val rotatorConfig: RotatorConfig, arcoConfig:Config) extends LazyLogging {
   private val name = rotatorConfig.name
   private var lastTriedArcoIO: Try[ArcoIO] = initialState
   private val threadPool: ExecutorService = Executors.newFixedThreadPool(1,
@@ -66,7 +68,7 @@ class ArcoQueue(val rotatorConfig: RotatorConfig) extends LazyLogging {
     }
 
     override def run(): Unit = {
-      var maybeNow: Try[ArcoIO] = lastTriedArcoIO.orElse(ArcoIO.connect(rotatorConfig))
+      var maybeNow: Try[ArcoIO] = lastTriedArcoIO.orElse(ArcoIO.connect(rotatorConfig, arcoConfig))
       try {
 
         maybeNow.foreach { arcoIO =>
