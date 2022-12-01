@@ -9,8 +9,8 @@ lazy val root = (project in file("."))
   )
 
 maintainer := "Dick Lieber <wa9nnn@u505.com>"
-packageSummary := "Field Day Cluster Logger"
-packageDescription := """Multiplatform Logging Application for ARRL and Winter Field days"""
+packageSummary := "ARCO to HamLibs rotctld"
+packageDescription := """Adapts ARCO Rotator Controllers to rotctld protocol"""
 
 enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, UniversalPlugin, WindowsPlugin)
 buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, maintainer,

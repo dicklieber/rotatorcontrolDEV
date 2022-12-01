@@ -1,4 +1,4 @@
-# 4O3A Rotator Genius 
+# WinHam ARCO Controller Manager 
 ## rotctld Interface
 Implements the HamLib rotctld network interface.
 
@@ -9,7 +9,10 @@ Written in Scala to allow write-once run anywhere.
 
 ## Building
 ### Requiments
-- java JDK Tested with 11 and 18
+- java JDK with JavaFx Avaialable from bellsoft. https://bell-sw.com/pages/downloads/ 
+  - Select _JDK 11 LTS_
+  - Scroll down for the _Full JDK_ for your operating system.
+  
 - sbt See https://www.scala-sbt.org
 
 ### Build command
@@ -20,24 +23,22 @@ This should produce :
 ### Install via zip file
 1. Unzip the rgrotctld-x.x.x.zip file. 
 2. Navigate to the extracted bin directory.
-3. Invoke comdnd command line:
+3. Invoke command line:
 
-`Mac or Linux:  ./rgrotctld --rgHost 192.168.0.16`
+`Mac or Linux:  ./RotatorControl`
 
-`Windows: rgrotctld --rgHost 192.168.0.16`
-
-This will listen for rotctld command on port 4533. You can change port and other details from the command line. Trye:
-`bin/rgrotctld --help`
-
+`Windows: RotatorControl`
 
 ###Status
 This the beginning of a work-in-progress.
-- Works with MacLoggerDX. rotator 1 hardcoded
+- Works with MacLoggerDX. 
 
-Source code at https://github.com/dicklieber/rotatorgenius
+Source code at https://github.com/dicklieber/RotatorControl
 
 ###Useful Info
-Using JFreeChart with Scala-swing: https://alvinalexander.com/scala/jfreechart-how-create-xy-plot-graph/
+Using
+- ScalaFx https://www.scalafx.org
+- JFreeChart https://www.jfree.org/jfreechart/
 
 JFreeChart Compass: http://www.java2s.com/Code/Java/Chart/JFreeChartCompassChartSample.htm
 
