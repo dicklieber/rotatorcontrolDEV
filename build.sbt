@@ -1,4 +1,4 @@
-
+import NativePackagerHelper._
 
 ThisBuild / scalaVersion := "2.13.10"
 
@@ -22,6 +22,7 @@ buildInfoOptions ++= Seq(
   BuildInfoOption.BuildTime
 )
 
+
 resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
   .withAllowInsecureProtocol(true)
 
@@ -41,7 +42,6 @@ libraryDependencies ++= Seq(
   "org.specs2" %% "specs2-mock" % "4.6.0" % "test",
   "com.github.scopt" %% "scopt" % "4.0.1",
 
-//  "org.scala-lang.modules" %% "scala-swing" % "3.0.0",
   "org.jfree" % "jfreechart" % "1.5.3",
   "org.jfree" % "jfreechart-fx" % "1.0.1",
   "com.typesafe.play" %% "play-json" % "2.9.3",

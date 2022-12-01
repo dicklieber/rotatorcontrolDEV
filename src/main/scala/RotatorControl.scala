@@ -3,12 +3,15 @@ import com.google.inject.{Guice, Injector}
 import com.wa9nnn.rotator.arco.ArcoManager
 import com.wa9nnn.rotator.metrics.MetricsReporter
 import com.wa9nnn.rotator.ui.config.ConfigEditorDialog
-import com.wa9nnn.rotator.{AppConfig, GuiceModule}
+import com.wa9nnn.rotator.{AppConfig, BuildInfo, GuiceModule}
+import com.wa9nnn.util.TimeConverters
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Label, Menu, MenuBar, MenuItem}
 import scalafx.scene.layout.{BorderPane, FlowPane, HBox}
+
+import java.time.Instant
 
 /**
  * Main
@@ -62,7 +65,12 @@ object RotatorControl extends JFXApp3 {
           children =  arcoCoordinator.rotatorPanels
         }
         //          center = tabPane
-        bottom = new Label("bottom")
+
+
+        val builtAt = TimeConverters.instantDisplayUTCLocal(Instant.ofEpochMilli(BuildInfo.builtAtMillis))
+        bottom = new Label{
+          text = s"Version ${BuildInfo.version} Branch: ${BuildInfo.gitCurrentBranch} Built At: $builtAt"
+        }
         //          right = injector.instance[NetworkPane]
       }
     }
