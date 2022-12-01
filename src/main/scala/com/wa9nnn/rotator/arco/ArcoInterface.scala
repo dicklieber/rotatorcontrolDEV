@@ -23,8 +23,7 @@ import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.rotator.{Degree, RotatorConfig, RotatorInterface}
 import scalafx.beans.property.ObjectProperty
 
-import java.time.Duration
-import java.time.temporal.ChronoUnit
+import java.util.UUID
 import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
 
 /**
@@ -42,8 +41,7 @@ import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
  */
 class ArcoInterface(rotatorConfig: RotatorConfig, arcoConfig:Config, rotatorStateProperty: ObjectProperty[RotatorState]) extends ScheduledThreadPoolExecutor(1)
   with RotatorInterface with LazyLogging with Runnable {
-
-  rotatorStateProperty.value = RotatorState(rotatorConfig = rotatorConfig)
+  val id: UUID = rotatorConfig.id
 
   def stop(): Unit = shutdown()
 
@@ -72,7 +70,9 @@ class ArcoInterface(rotatorConfig: RotatorConfig, arcoConfig:Config, rotatorStat
         logger.trace(s"""Cmd: C Response: "$str"""")
         str match {
           case s"""+$azi""" =>
-            rotatorStateProperty.value = RotatorState(Degree(azi), rotatorConfig)
+            val rotatorState = RotatorState(Degree(azi))
+            rotatorStateProperty.value = rotatorState.copy(currentAzimuth = Degree(0))
+            rotatorStateProperty.value = rotatorState
           case x =>
             logger.error(s"""Bad response got $x expecting something like: "+0123""")
         }

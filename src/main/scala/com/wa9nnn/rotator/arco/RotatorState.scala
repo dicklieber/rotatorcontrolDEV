@@ -18,18 +18,13 @@
 
 package com.wa9nnn.rotator.arco
 
-import com.wa9nnn.rotator.{Degree, RotatorConfig}
-
-import java.util.UUID
+import com.wa9nnn.rotator.Degree
 
 /**
  * What is known about the state of a rotator.
+ * With SG-232 we only know the currentAzimuth.
+ * Hopefully know more when ARCO has native protocol.
  *
- * @param currentAzimuth where antenna is pointin g.
- * @param rotatorConfig  from [[com.wa9nnn.rotator.RotatorConfig]]
+ * @param currentAzimuth where antenna is pointing.
  */
-case class RotatorState(currentAzimuth: Degree = Degree(), rotatorConfig: RotatorConfig) {
-  def id: UUID = rotatorConfig.id
-
-  val name: String = rotatorConfig.name
-}
+case class RotatorState(currentAzimuth: Degree = Degree())

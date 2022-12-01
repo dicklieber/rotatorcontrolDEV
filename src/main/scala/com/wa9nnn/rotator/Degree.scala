@@ -23,12 +23,11 @@ package com.wa9nnn.rotator
  * @param degree -1 if unknown
  */
 case class Degree(degree: Int = -1) {
-  def threeDigits:String = {
+  def threeDigits: String = {
     if (degree == -1)
       throw new IllegalArgumentException("Must have a value!")
     else
       f"$degree%03d"
-
   }
 
   assert(degree == -1 || degree >= 0 && degree <= 360, "Degree must be 0-360 or -1")
@@ -41,7 +40,6 @@ case class Degree(degree: Int = -1) {
 }
 
 object Degree {
-
   def apply(angle: Double): Degree = {
     new Degree(angle.toInt)
   }

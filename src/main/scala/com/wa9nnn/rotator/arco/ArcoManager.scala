@@ -22,6 +22,7 @@ import com.typesafe.config.Config
 import com.wa9nnn.rotator.ui.RotatorPanel
 import com.wa9nnn.rotator.{AppConfig, ConfigManager, Degree, RotatorConfig}
 import scalafx.beans.property.ObjectProperty
+import scalafx.collections.ObservableBuffer
 
 import java.util.UUID
 import javax.inject.Inject
@@ -34,31 +35,23 @@ import scala.collection.concurrent.TrieMap
  */
 class ArcoManager @Inject()(configManager: ConfigManager, config: Config) {
   private val arcoConfig = config.getConfig("arco")
-  def selectedRotatorAzimuth: Degree = {
-    val r: Option[Degree] = for {
-      id <- Option(selectedRotator.value)
-      rs <- rotatorMap.get(id)
-    } yield {
-      rs.value.currentAzimuth
-    }
-    r.getOrElse(Degree())
-  }
 
 
   val rotatorMap = new TrieMap[UUID, RotatorInstance]()
 
-  val selectedRotator: ObjectProperty[UUID] =  new ObjectProperty[UUID]()
+  private val selectedRotator: ObjectProperty[UUID] = new ObjectProperty[UUID]()
 
-  def updateRouterState(rotatorState: RotatorState): Unit = {
-    val state: RotatorInstance = rotatorMap(rotatorState.id)
-    state.value = rotatorState
-  }
+  def selectedRotatorAzimuth: Degree = {
 
-  def rotatorPanels: IterableOnce[RotatorPanel] = {
-    rotatorMap.values.map { rotatusStuff: RotatorInstance =>
-      rotatusStuff.rotatorPanel
+    selectedRotator.value match {
+      case null =>
+        throw new IllegalStateException("No selected router!")
+      case id =>
+        rotatorMap(id).rotatorStateProperty.value.currentAzimuth
     }
   }
+
+  val rotatorPanels: ObservableBuffer[RotatorPanel] = ObservableBuffer[RotatorPanel]()
 
   /**
    * Move the selected rotator
@@ -81,34 +74,18 @@ class ArcoManager @Inject()(configManager: ConfigManager, config: Config) {
   setup(configManager.value.rotators)
 
   def setup(rotators: Iterable[RotatorConfig]): Unit = {
+    rotatorPanels.clear()
     rotatorMap.values.foreach(_.stop())
     rotatorMap.clear()
     rotators.foreach {
       rc =>
-        rotatorMap.put(rc.id, RotatorInstance(rc, selectedRotator, arcoConfig))
+        val rotatorInstance = RotatorInstance(rc, selectedRotator, arcoConfig)
+        rotatorMap.put(rc.id, rotatorInstance)
+        rotatorPanels.addOne(rotatorInstance.rotatorPanel)
     }
-    rotators.headOption.foreach{ rc=>
+    rotators.headOption.foreach { rc =>
       selectedRotator.value = rc.id
     }
-  }
-}
-
-/**
- * Holds everything we know about one Rotator as configured.
- */
-case class RotatorInstance(rotatorConfig: RotatorConfig, selectedRouter: ObjectProperty[UUID], arcoConfig:Config) extends ObjectProperty[RotatorState]() {
-  private val arcoInterface: ArcoInterface = new ArcoInterface(rotatorConfig, arcoConfig, this)
-
-
-  def move(targetAzimuth: Degree): Unit = {
-    arcoInterface.move(targetAzimuth)
-  }
-
-  val rotatorPanel = new RotatorPanel(this)
-
-  def stop(): Unit = {
-    rotatorPanel.stop()
-    arcoInterface.stop()
   }
 }
 

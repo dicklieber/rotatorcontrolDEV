@@ -20,7 +20,7 @@ package com.wa9nnn.rotator.ui
 
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.rotator.Degree
-import com.wa9nnn.rotator.arco.{ArcoOperation, RotatorInstance}
+import com.wa9nnn.rotator.arco.RotatorInstance
 import javafx.geometry.Bounds
 import javafx.scene.input.MouseEvent
 import org.jfree.chart.JFreeChart
@@ -31,26 +31,25 @@ import org.scalafx.extras.onFX
 import scalafx.event.subscriptions.Subscription
 import scalafx.geometry.{Point2D, Pos}
 import scalafx.scene.control.Label
-import scalafx.scene.layout.{BorderPane, FlowPane, Pane, Priority, VBox}
+import scalafx.scene.layout.{BorderPane, FlowPane, Priority, VBox}
 import scalafx.scene.text.Text
 
 import java.util.UUID
-import javax.inject.Inject
 import scala.language.{existentials, implicitConversions}
 
 /**
  * A Panel that displays and interacts with an ARCO rotator .
  */
-class RotatorPanel @Inject()(rotatorStuff: RotatorInstance) extends BorderPane with LazyLogging {
-  val cssUrl: String = getClass.getResource("/rotatormanager.css").toExternalForm
-  stylesheets.add(cssUrl)
+class RotatorPanel(rotatorInstance: RotatorInstance) extends BorderPane with LazyLogging {
+//  val cssUrl: String = getClass.getResource("/rotatormanager.css").toExternalForm
+//  stylesheets.add(cssUrl)
 
-  val ourId: UUID = rotatorStuff.rotatorConfig.id
+  val ourId: UUID = rotatorInstance.rotatorConfig.id
 
-  private val nameLabel = new Label("---") {
+  private val nameLabel = new Label(rotatorInstance.name) {
     styleClass += "rotatorName"
-    onMouseClicked = e => {
-      rotatorStuff.selectedRouter.value = ourId
+    onMouseClicked = _ => {
+      rotatorInstance.selectedRouter.value = ourId
     }
   }
 
@@ -58,23 +57,25 @@ class RotatorPanel @Inject()(rotatorStuff: RotatorInstance) extends BorderPane w
     styleClass += "azimuthLabel"
   }
 
-  val subscription: Subscription = rotatorStuff.onChange { (_, _, rotatorState) =>
+
+  val subscription: Subscription = rotatorInstance.rotatorStateProperty.onChange { (_, _, rotatorState) =>
     val azimuth: Degree = rotatorState.currentAzimuth
     onFX {
       compassDataSet.setValue(azimuth.degree)
       azimuthLabel.text = azimuth.toString
-      nameLabel.text = rotatorState.name
     }
   }
 
-  def stop(): Unit = subscription.cancel()
+  def stop(): Unit = {
+    subscription.cancel()
+  }
 
 
   vgrow = Priority.Always
   hgrow = Priority.Always
   styleClass += "rotatorPanel"
   private val compassDataSet = new DefaultValueDataset(1)
-  rotatorStuff.selectedRouter.onChange { (_, _, is) =>
+  rotatorInstance.selectedRouter.onChange { (_, _, is) =>
     if (ourId == is) {
       nameLabel.styleClass.addOne("selectedRouter")
       nameLabel.tooltip = "This is the rotator used with rotctld."
@@ -114,7 +115,7 @@ class RotatorPanel @Inject()(rotatorStuff: RotatorInstance) extends BorderPane w
           angle
 
         logger.debug(s"finalA: $finalA")
-        rotatorStuff.move(Degree(finalA))
+        rotatorInstance.move(Degree(finalA))
       }
     }
 
@@ -137,14 +138,6 @@ class RotatorPanel @Inject()(rotatorStuff: RotatorInstance) extends BorderPane w
       alignment = Pos.Center
       styleClass += "bigText"
     },
-    //    new Label(s"Rate: ${
-    //      ArcoTask.pollsPerSeconds
-    //    }/ sec State: ${
-    //      ArcoTask.lastFailure
-    //    } since: ${
-    //      ArcoTask.lastFailure.stamp
-    //    }")
-
   )
 }
 

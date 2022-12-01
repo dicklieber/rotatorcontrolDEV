@@ -1,25 +1,21 @@
 
 import com.google.inject.{Guice, Injector}
 import com.wa9nnn.rotator.arco.ArcoManager
-import com.wa9nnn.rotator.metrics.{MetricsReporter, Reporter}
+import com.wa9nnn.rotator.metrics.MetricsReporter
 import com.wa9nnn.rotator.ui.config.ConfigEditorDialog
 import com.wa9nnn.rotator.{AppConfig, GuiceModule}
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Label, Menu, MenuBar, MenuItem}
-import scalafx.scene.layout.{BorderPane, HBox}
-
-
+import scalafx.scene.layout.{BorderPane, FlowPane, HBox}
 
 /**
  * Main
- * Handles command line, if all ok invoke $Server
  */
 object RotatorControl extends JFXApp3 {
 
   private var injector: Injector = _
-
 
   private val editRotatorMenuItem = new MenuItem {
     text = "Config"
@@ -33,9 +29,6 @@ object RotatorControl extends JFXApp3 {
       injector.instance[MetricsReporter].report()
     }
   }
-
-  private val todoConfig: AppConfig = AppConfig()
-  //  private val server = new Server(todoConfig)
 
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
@@ -65,8 +58,8 @@ object RotatorControl extends JFXApp3 {
       root = new BorderPane {
 
         top = menuBar
-        center = new HBox {
-          children = arcoCoordinator.rotatorPanels.iterator.toSeq
+        center = new FlowPane() {
+          children =  arcoCoordinator.rotatorPanels
         }
         //          center = tabPane
         bottom = new Label("bottom")
