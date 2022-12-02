@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
 class ConfigEditorDialog @Inject()(configManager: ConfigManager) extends Dialog[AppConfig] {
-  //class ConfigEditorDialog(owner: Window, appConfig: AppConfig) extends Dialog[AppConfig] {
+  //class AboutDialog(owner: Window, appConfig: AppConfig) extends Dialog[AppConfig] {
   //  initOwner(owner)
   title = "Rotators"
   headerText = "Manager Rotators"

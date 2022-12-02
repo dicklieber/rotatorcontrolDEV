@@ -30,22 +30,28 @@ import com.wa9nnn.rotator.ui.InputHelper.{forceAllowed, forceCaps => ForceCaps, 
 
 import java.text.NumberFormat
 import java.time.Duration
+import java.util.Properties
 import java.util.concurrent.atomic.AtomicInteger
 import scala.util.matching.Regex
 
 /**
  * Help to build a GridPane of one column of labeled controls.
  */
-class GridOfControls(gaps: (Int, Int) = 10 -> 10, insets: Insets = Insets(20, 100, 10, 10)) extends GridPane {
+class GridOfControls(gaps: (Int, Int) = 10 -> 10, insets: Insets = Insets(20, 100, 10, 10), cellStyle: String = "") extends GridPane {
+
   hgap = gaps._1
   vgap = gaps._2
   padding = insets
   implicit val row: AtomicInteger = new AtomicInteger()
 
-  private def label(label: String): Int = {
+  protected def label(label: String): Int = {
     style = "-fx-alignment:top-left"
     val r = row.getAndIncrement()
-    add(new Label(label + ":"), 0, r)
+    add(new Label {
+      text = label + ":"
+      styleClass.add(cellStyle)
+    }, 0, r
+    )
     r
   }
 
@@ -57,6 +63,7 @@ class GridOfControls(gaps: (Int, Int) = 10 -> 10, insets: Insets = Insets(20, 10
               tooltip: Option[String] = None): StringProperty = {
     val row = label(labelText)
     val control = new TextField()
+    control.styleClass.add(cellStyle)
     if (forceCaps) {
       ForceCaps(control)
     }
@@ -73,6 +80,7 @@ class GridOfControls(gaps: (Int, Int) = 10 -> 10, insets: Insets = Insets(20, 10
     val row = label(labelText)
 
     val control = new TextField()
+    control.styleClass.add(cellStyle)
     ForceInt(control)
 
     tooltip.foreach(control.tooltip = _)
@@ -80,8 +88,9 @@ class GridOfControls(gaps: (Int, Int) = 10 -> 10, insets: Insets = Insets(20, 10
 
     add(control, 1, row)
     val integerProperty = IntegerProperty(defValue)
-    control.text.onChange { (_, _, nv) =>
-      integerProperty.value = NumberFormat.getNumberInstance.parse(nv)
+    control.text.onChange {
+      (_, _, nv) =>
+        integerProperty.value = NumberFormat.getNumberInstance.parse(nv)
     }
     integerProperty
   }
@@ -89,12 +98,14 @@ class GridOfControls(gaps: (Int, Int) = 10 -> 10, insets: Insets = Insets(20, 10
   def addDuration(labelText: String, defValue: Duration, tooltip: Option[String] = None): ObjectProperty[Duration] = {
     val row = label(labelText)
     val control = new TextField()
+    control.styleClass.add(cellStyle)
     tooltip.foreach(control.tooltip = _)
     control.text = defValue.toString
     add(control, 1, row)
     val durProperty = ObjectProperty(defValue)
-    control.text.onChange { (_, _, nv) =>
-      durProperty.value = Duration.parse(nv)
+    control.text.onChange {
+      (_, _, nv) =>
+        durProperty.value = Duration.parse(nv)
     }
     durProperty
   }
@@ -105,6 +116,7 @@ class GridOfControls(gaps: (Int, Int) = 10 -> 10, insets: Insets = Insets(20, 10
     val control = new TextArea(defValue) {
       prefRowCount = nRows
     }
+    control.styleClass.add(cellStyle)
     tooltip.foreach(control.tooltip = _)
     add(control, 1, row)
     control.text
@@ -117,12 +129,14 @@ class GridOfControls(gaps: (Int, Int) = 10 -> 10, insets: Insets = Insets(20, 10
                   converter: Option[StringConverter[T]] = None): ObjectProperty[T] = {
     val row = label(labelText)
     val control: ComboBox[T] = new ComboBox[T](ObservableBuffer.from(choices.toSeq))
+    control.styleClass.add(cellStyle)
     converter.foreach(control.converter = _)
     tooltip.foreach(control.tooltip = _)
 
     val selectionModel: SingleSelectionModel[T] = control.selectionModel.value
-    defValue.foreach { d: T =>
-      selectionModel.select(d)
+    defValue.foreach {
+      d: T =>
+        selectionModel.select(d)
     }
     add(control, 1, row)
     control.value
@@ -136,23 +150,56 @@ class GridOfControls(gaps: (Int, Int) = 10 -> 10, insets: Insets = Insets(20, 10
    */
   def addControl(labelText: String, control: Region, extraControls: Control*): Region = {
     val row = label(labelText)
+    control.styleClass.add(cellStyle)
     add(control, 1, row)
-    extraControls.zipWithIndex.foreach { case (extra, index) =>
-      add(extra, index + 2, row)
+    extraControls.zipWithIndex.foreach {
+      case (extra, index) =>
+        add(extra, index + 2, row)
     }
     control
   }
 
-  def add(labelText: String, value: Any): StringProperty = {
+  /**
+   * Adds a non-editiable value.
+   *
+   * @param labelText label
+   * @param value     user com.wa9nnn.util.tableui.Cell depend on type.
+   * @param classStyle
+   *
+   */
+  def addLabel(labelText: String, value: Any, classStyle: String*): Unit = {
     val row = label(labelText)
     val cell = com.wa9nnn.util.tableui.Cell(value)
-    val control = Label(cell.value)
+    val control = new Label {
+      text = cell.value
+    }
+    control.styleClass.add(cellStyle)
     add(control, 1, row)
-    control.text
   }
 
   def add(labelText: String, pane: Pane): Unit = {
     val row = label(labelText)
+    pane.styleClass.add(cellStyle)
     add(pane, 1, row)
   }
 }
+
+
+object GridOfControls extends App {
+
+  import scala.jdk.CollectionConverters._
+
+  private val properties: Properties = System.getProperties
+  properties
+    .asScala
+    .keys
+    .toList
+    .sorted
+    .foreach { key: String =>
+      val value: String = properties.getProperty(key)
+      println(s"$key::$value")
+    }
+}
+
+
+

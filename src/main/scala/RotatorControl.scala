@@ -2,6 +2,7 @@
 import com.google.inject.{Guice, Injector}
 import com.wa9nnn.rotator.arco.ArcoManager
 import com.wa9nnn.rotator.metrics.MetricsReporter
+import com.wa9nnn.rotator.ui.AboutDialog
 import com.wa9nnn.rotator.ui.config.ConfigEditorDialog
 import com.wa9nnn.rotator.{AppConfig, BuildInfo, GuiceModule}
 import com.wa9nnn.util.TimeConverters
@@ -32,6 +33,12 @@ object RotatorControl extends JFXApp3 {
       injector.instance[MetricsReporter].report()
     }
   }
+  private val aboutDialogItem = new MenuItem {
+    text = "About"
+    onAction = { _ =>
+      injector.instance[AboutDialog].showAndWait()
+    }
+  }
 
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
@@ -56,8 +63,11 @@ object RotatorControl extends JFXApp3 {
         items += editRotatorMenuItem
         items += metricsMenu
       }
+     val aboutMenu = new Menu("Help") {
+        items += aboutDialogItem
+      }
 
-      menuBar.menus = List(confgMenu)
+      menuBar.menus = List(confgMenu, aboutMenu)
       root = new BorderPane {
 
         top = menuBar
