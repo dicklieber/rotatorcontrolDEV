@@ -1,4 +1,4 @@
-import NativePackagerHelper._
+import sbt.Def
 
 ThisBuild / scalaVersion := "2.13.10"
 
@@ -26,6 +26,20 @@ buildInfoOptions ++= Seq(
 resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
   .withAllowInsecureProtocol(true)
 
+lazy val javaFXModules = {
+  // Determine OS version of JavaFX binaries
+
+  lazy val osName = System.getProperty("os.name") match {
+    case n if n.startsWith("Linux") => "linux"
+    case n if n.startsWith("Mac") => "mac"
+    case n if n.startsWith("Windows") => "win"
+    case _ =>
+      throw new Exception("Unknown platform!")
+  }
+  // Create dependencies for JavaFX modules
+  Seq("base", "controls", "graphics", "media")
+    .map(m => "org.openjfx" % s"javafx-$m" % "15.0.1" classifier osName)
+}
 
 val logbackVersion = "1.2.3"
 
