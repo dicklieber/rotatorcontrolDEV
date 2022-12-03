@@ -8,6 +8,10 @@ lazy val root = (project in file("."))
 
   )
 
+
+mappings in Windows := (mappings in Universal).value
+
+
 maintainer := "Dick Lieber <wa9nnn@u505.com>"
 packageSummary := "ARCO to HamLibs rotctld"
 packageDescription := """Adapts ARCO Rotator Controllers to rotctld protocol"""
