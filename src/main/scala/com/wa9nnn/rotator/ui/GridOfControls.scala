@@ -185,21 +185,7 @@ class GridOfControls(gaps: (Int, Int) = 10 -> 10, insets: Insets = Insets(20, 10
 }
 
 
-object GridOfControls extends App {
 
-  import scala.jdk.CollectionConverters._
-
-  private val properties: Properties = System.getProperties
-  properties
-    .asScala
-    .keys
-    .toList
-    .sorted
-    .foreach { key: String =>
-      val value: String = properties.getProperty(key)
-      println(s"$key::$value")
-    }
-}
 
 
 

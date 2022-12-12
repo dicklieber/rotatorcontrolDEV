@@ -49,7 +49,7 @@ lazy val javaFXModules = {
 val logbackVersion = "1.2.3"
 
 libraryDependencies ++= Seq(
-  "com.wa9nnn" %% "util" % "0.1.9-SNAPSHOT",
+  "com.wa9nnn" %% "util" % "0.1.9",
   "org.scalafx" %% "scalafx" % "19.0.0-R30",
   "org.scalafx" %% "scalafx-extras" % "0.7.0",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
