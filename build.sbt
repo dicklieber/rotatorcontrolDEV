@@ -11,6 +11,10 @@ lazy val root = (project in file("."))
 
 mappings in Windows := (mappings in Universal).value
 
+Universal / javaOptions ++= Seq(
+  "-java-home ${app_home}/../jre"
+)
+
 
 maintainer := "Dick Lieber <wa9nnn@u505.com>"
 packageSummary := "ARCO to HamLibs rotctld"
