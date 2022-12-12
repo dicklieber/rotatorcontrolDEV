@@ -34,7 +34,7 @@ import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
  *
  * Uses the Yaesu GSM-232a protocol over IP see https://www.yaesu.com/downloadFile.cfm?FileID=820&FileCatID=155&FileName=GS232A.pdf&FileContentType=application%2Fpdf
  *
- * See [[./docs/GS232A.pdf]]
+ * See ./docs/GS232A.pdf
  *
  * @param rotatorConfig        details about this ARCO.
  * @param rotatorStateProperty where to put ARCO state.

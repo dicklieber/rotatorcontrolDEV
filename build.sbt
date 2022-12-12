@@ -9,7 +9,9 @@ lazy val root = (project in file("."))
   )
 
 
-mappings in Windows := (mappings in Universal).value
+//mappings in Windows := (mappings in Universal).value
+
+Universal / mappings := (Universal / mappings).value
 
 Universal / javaOptions ++= Seq(
   "-java-home ${app_home}/../jre"
