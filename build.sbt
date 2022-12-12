@@ -16,7 +16,7 @@ maintainer := "Dick Lieber <wa9nnn@u505.com>"
 packageSummary := "ARCO to HamLibs rotctld"
 packageDescription := """Adapts ARCO Rotator Controllers to rotctld protocol"""
 
-enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, UniversalPlugin, WindowsPlugin)
+enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, UniversalPlugin, WindowsPlugin, JlinkPlugin)
 buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, maintainer,
   git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion)
 buildInfoPackage := "com.wa9nnn.rotator"
@@ -26,6 +26,7 @@ buildInfoOptions ++= Seq(
   BuildInfoOption.BuildTime
 )
 
+jlinkIgnoreMissingDependency := JlinkIgnore.everything
 
 resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
   .withAllowInsecureProtocol(true)
