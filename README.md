@@ -1,6 +1,6 @@
 # WinHam ARCO Controller Manager 
 ## rotctld Interface
-Implements the HamLib rotctld network interface.
+Implements the HamLib rotctld network interface. Essentialy a protocol converter between Yaesu GS-232A and HamLibs rotctld.
 
 Written in Scala to allow write-once run anywhere.
 
