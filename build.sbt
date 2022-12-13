@@ -32,6 +32,9 @@ buildInfoOptions ++= Seq(
   BuildInfoOption.BuildTime
 )
 
+// wix build information
+wixProductId := "fc424cc6-73eb-11ed-a8c1-270fc9539747"
+wixProductUpgradeId := "1d67f32e-73ec-11ed-a75e-9b5a53518d4c"
 jlinkIgnoreMissingDependency := JlinkIgnore.everything
 
 resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
