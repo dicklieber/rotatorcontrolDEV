@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Scala CI2
+name: Scala CI
 
 on: workflow_dispatch
 #on:
