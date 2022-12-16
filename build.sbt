@@ -32,6 +32,13 @@ buildInfoOptions ++= Seq(
   BuildInfoOption.BuildTime
 )
 
+
+ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
+ThisBuild / githubWorkflowPublishTargetBranches :=
+  Seq(RefPredicate.StartsWith(Ref.Tag("v")))
+
+ThisBuild / githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("ci-release")))
+
 // wix build information
 wixProductId := "fc424cc6-73eb-11ed-a8c1-270fc9539747"
 wixProductUpgradeId := "1d67f32e-73ec-11ed-a75e-9b5a53518d4c"
