@@ -36,6 +36,6 @@ jobs:
         uses: softprops/action-gh-release@v0.1.15
         with:
           body_path: ${{ github.workspace }}-CHANGELOG.txt
-          tag_name: sometagname
+#          tag_name: sometagname
           files: target/universal/rotatorcontrol-1.0.0-SNAPSHOT.zip
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
