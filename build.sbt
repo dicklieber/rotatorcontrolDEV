@@ -40,6 +40,9 @@ jlinkIgnoreMissingDependency := JlinkIgnore.everything
 resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
   .withAllowInsecureProtocol(true)
 
+
+
+
 lazy val javaFXModules = {
   // Determine OS version of JavaFX binaries
 
@@ -79,3 +82,4 @@ libraryDependencies ++= Seq(
   "io.dropwizard.metrics" % "metrics-jmx" % "4.2.13",
   "com.typesafe" % "config" % "1.4.2",
 )
+
