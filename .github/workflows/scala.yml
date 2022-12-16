@@ -35,17 +35,8 @@ jobs:
     #      uses: scalacenter/sbt-dependency-submission@ab086b50c947c9774b70f39fc7f6e20ca2706c91
       - name: Build snapshot release
         run: sbt universal:packageBin
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+
+      - name: GH Release
+        uses: softprops/action-gh-release@v0.1.15
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
-          draft: false
-          prerelease: false
+          files: target/universal/rotatorcontrol-1.0.0-SNAPSHOT.zip
