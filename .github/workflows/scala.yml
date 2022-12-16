@@ -29,12 +29,7 @@ jobs:
           distribution: 'temurin'
           cache: 'sbt'
       - name: Generate Changelog
-          run: echo "# Good things have arrived" > ${{ github.workspace }}-CHANGELOG.txt
-          #    - name: Run tests
-          #        run: sbt test
-          # Optional: This step uploads information to the GitHub dependency graph and unblocking Dependabot alerts for the repository
-          #    - name: Upload dependency graph
-          #      uses: scalacenter/sbt-dependency-submission@ab086b50c947c9774b70f39fc7f6e20ca2706c91
+        run:  echo "# Good things have arrived" > ${{ github.workspace }}-CHANGELOG.txt
       - name: Build snapshot release
         run: sbt universal:packageBin
       - name: GH Release
