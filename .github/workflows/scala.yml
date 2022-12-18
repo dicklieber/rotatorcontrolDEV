@@ -34,8 +34,9 @@ jobs:
         uses: andstor/file-reader-action@v1
         with:
           path: "version.sbt"
-      - name: File contents
+      - name: File outputs
         run: echo "${ steps.versionSbt.outputs}"
+      - name: File contents
         run: echo "${ steps.versionSbt.outputs.contents}"
       - name: Generate Changelog
         run:  echo "# Good things have arrived" > ${{ github.workspace }}-CHANGELOG.txt
