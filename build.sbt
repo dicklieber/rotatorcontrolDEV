@@ -1,4 +1,5 @@
 import sbt.Def
+import scala.sys.process._
 
 ThisBuild / scalaVersion := "2.13.10"
 
@@ -41,18 +42,16 @@ resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
   .withAllowInsecureProtocol(true)
 
 
-
+lazy val osName = System.getProperty("os.name") match {
+  case n if n.startsWith("Linux") => "linux"
+  case n if n.startsWith("Mac") => "mac"
+  case n if n.startsWith("Windows") => "win"
+  case _ =>
+    throw new Exception("Unknown platform!")
+}
 
 lazy val javaFXModules = {
-  // Determine OS version of JavaFX binaries
 
-  lazy val osName = System.getProperty("os.name") match {
-    case n if n.startsWith("Linux") => "linux"
-    case n if n.startsWith("Mac") => "mac"
-    case n if n.startsWith("Windows") => "win"
-    case _ =>
-      throw new Exception("Unknown platform!")
-  }
   // Create dependencies for JavaFX modules
   Seq("base", "controls", "graphics", "media")
     .map(m => "org.openjfx" % s"javafx-$m" % "15.0.1" classifier osName)
@@ -83,3 +82,9 @@ libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.4.2",
 )
 
+
+val ghRelease = taskKey[Unit]("Determines the current git commit SHA")
+ghRelease := Process(s"gh release create v${version.value}-$osName").run()
+
+val ghReleaseUpload = taskKey[Unit]("Determines the current git commit SHA")
+ghReleaseUpload := Process(s"gh release upload v${version.value}-$osName /Users/dlieber/dev/ham/rotatorcontrol/target/universal/rotatorcontrol-${version.value}.zip -R dicklieber/rotatorcontrol").run()
