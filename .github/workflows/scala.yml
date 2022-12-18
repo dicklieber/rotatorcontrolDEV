@@ -35,6 +35,17 @@ jobs:
           path: ./version.sbt
       - name: Echo package.json
         run: echo "${{ steps.package.outputs.content }}"
+
+      - uses: actions-ecosystem/action-regex-match@v2
+        id: regex-match
+        with:
+          text:${{ steps.package.outputs.content }}
+          regex: '.*\"(.*)\"'
+      - name: Echo parsed version
+          run: echo "${{ steps.package.outputs.group1 }}"
+
+
+
       - name: Generate Changelog
         run:  echo "# Good things have arrived" > ${{ github.workspace }}-CHANGELOG.txt
       - name: Build snapshot release
