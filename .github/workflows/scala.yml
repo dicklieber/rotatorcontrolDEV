@@ -28,6 +28,14 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: 'sbt'
+      - name: Read file contents
+        id: read_file
+        uses: andstor/file-reader-action@v1
+        with:
+          path: "version.sbt"
+
+      - name: File contents
+        run: echo "${ steps.read_file.outputs.contents }"
 
       - name: "Read file contents"
         id: versionSbt
