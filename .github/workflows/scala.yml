@@ -28,6 +28,12 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: 'sbt'
+
+      - name: "Read file contents"
+        uses: andstor/file-reader-action@v1
+        with:
+          path: "version.sbt"
+
       - name: Generate Changelog
         run:  echo "# Good things have arrived" > ${{ github.workspace }}-CHANGELOG.txt
       - name: Build snapshot release
