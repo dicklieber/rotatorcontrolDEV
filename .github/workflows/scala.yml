@@ -36,14 +36,6 @@ jobs:
 
       - name: File contents
         run: echo "${ steps.read_file.outputs.contents }"
-
-      - name: "Read file contents"
-        id: versionSbt
-        uses: andstor/file-reader-action@v1
-        with:
-          path: "version.sbt"
-      - name: File outputs
-        run: echo "${ steps.versionSbt.outputs.contents }"
       - name: Generate Changelog
         run:  echo "# Good things have arrived" > ${{ github.workspace }}-CHANGELOG.txt
       - name: Build snapshot release
