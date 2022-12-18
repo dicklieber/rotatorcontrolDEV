@@ -35,10 +35,9 @@ jobs:
           path: ./version.sbt
       - name: Echo package.json
         run: echo "${{ steps.package.outputs.content }}"
-      -name: parse
-      - uses: actions-ecosystem/action-regex-match@v2
-        id: regex-match
-        with:
+      - name: parse
+        uses: actions-ecosystem/action-regex-match@v2
+         with:
           text:${{ steps.package.outputs.content }}
           regex: '.*\"(.*)\"'
       - name: Echo parsed version
