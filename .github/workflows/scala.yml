@@ -49,10 +49,3 @@ jobs:
         run:  echo "# Good things have arrived" > ${{ github.workspace }}-CHANGELOG.txt
       - name: Build snapshot release
         run: sbt universal:packageBin
-      - name: GH Release
-        uses: softprops/action-gh-release@v0.1.15
-        with:
-          body_path: ${{ github.workspace }}-CHANGELOG.txt
-          name: tbd
-          files: target/universal/rotatorcontrol-1.0.0-SNAPSHOT.zip
-          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}

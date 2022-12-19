@@ -1,4 +1,6 @@
+import com.typesafe.sbt.packager.SettingsHelper.makeDeploymentSettings
 import sbt.Def
+
 import scala.sys.process._
 
 ThisBuild / scalaVersion := "2.13.10"
@@ -6,11 +8,7 @@ ThisBuild / scalaVersion := "2.13.10"
 lazy val root = (project in file("."))
   .settings(
     name := "rotatorcontrol"
-
   )
-
-
-//mappings in Windows := (mappings in Universal).value
 
 Universal / mappings := (Universal / mappings).value
 
@@ -18,12 +16,11 @@ Universal / javaOptions ++= Seq(
   "-java-home ${app_home}/../jre"
 )
 
-
 maintainer := "Dick Lieber <wa9nnn@u505.com>"
 packageSummary := "ARCO to HamLibs rotctld"
 packageDescription := """Adapts ARCO Rotator Controllers to rotctld protocol"""
 
-enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, UniversalPlugin, WindowsPlugin, JlinkPlugin)
+enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, UniversalPlugin, UniversalDeployPlugin, WindowsPlugin, JlinkPlugin)
 buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, maintainer,
   git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion)
 buildInfoPackage := "com.wa9nnn.rotator"
@@ -40,7 +37,6 @@ jlinkIgnoreMissingDependency := JlinkIgnore.everything
 
 resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
   .withAllowInsecureProtocol(true)
-
 
 lazy val osName = System.getProperty("os.name") match {
   case n if n.startsWith("Linux") => "linux"
@@ -82,9 +78,14 @@ libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.4.2",
 )
 
+//makeDeploymentSettings(Universal, Universal / packageBin, "zip")
 
-val ghRelease = taskKey[Unit]("Determines the current git commit SHA")
+val ghRelease = taskKey[Unit]("Create release")
 ghRelease := Process(s"gh release create v${version.value}-$osName").run()
+val ghReleaseUpload: TaskKey[Unit] = taskKey[Unit]("Create release")
 
-val ghReleaseUpload = taskKey[Unit]("Determines the current git commit SHA")
-ghReleaseUpload := Process(s"gh release upload v${version.value}-$osName /Users/dlieber/dev/ham/rotatorcontrol/target/universal/rotatorcontrol-${version.value}.zip -R dicklieber/rotatorcontrol").run()
+
+ghReleaseUpload := {
+  val packageBinFile: File = (Universal / packageBin).value
+  Process(s"gh release upload v${version.value}-$osName $packageBinFile --clobber -R dicklieber/rotatorcontrol").run()
+}
