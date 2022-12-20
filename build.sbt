@@ -99,6 +99,10 @@ val ghReleaseUpload: TaskKey[Unit] = taskKey[Unit]("Create release")
 
 
 ghReleaseUpload := {
+  val ver = s"v${version.value}"
+  println(s"ver: $ver")
   val packageBinFile: File = (Universal / packageBin).value
-  Process(s"gh release upload v${version.value}-$osName $packageBinFile --clobber -R dicklieber/rotatorcontrol").run()
+  val ghCmd = s"gh release upload $ver $packageBinFile --clobber -R dicklieber/rotatorcontrol"
+  println(s"ghCmd: $ghCmd")
+  Process(ghCmd).run()
 }
