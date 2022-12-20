@@ -78,7 +78,7 @@ libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.4.2",
 )
 
-//makeDeploymentSettings(Universal, Universal / packageBin, "zip")
+publish / skip := true
 
 val ghRelease = taskKey[Unit]("Create release")
 
