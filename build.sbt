@@ -1,6 +1,7 @@
 import com.typesafe.sbt.packager.SettingsHelper.makeDeploymentSettings
 import sbt.Def
 
+import scala.math.Equiv.universal
 import scala.sys.process._
 
 ThisBuild / scalaVersion := "2.13.10"
@@ -102,6 +103,9 @@ releaseProcess := Seq[ReleaseStep](
 )
 */
 
+releaseProcess := Seq[ReleaseStep](
+  releaseStepTask(Universal / packageBin),
+)
 
 
 val ghRelease = taskKey[Unit]("Create release")
