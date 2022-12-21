@@ -82,6 +82,7 @@ libraryDependencies ++= Seq(
 
 publish / skip := false
 
+/*
 import ReleaseTransformations._
 
 // ...
@@ -99,6 +100,7 @@ releaseProcess := Seq[ReleaseStep](
   commitNextVersion,                      // : ReleaseStep
   pushChanges                             // : ReleaseStep, also checks that an upstream branch is properly configured
 )
+*/
 
 
 
