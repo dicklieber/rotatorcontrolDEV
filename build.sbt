@@ -96,7 +96,9 @@ releaseProcess := Seq[ReleaseStep](
   commitReleaseVersion,                   // : ReleaseStep, performs the initial git checks
   tagRelease,                             // : ReleaseStep
   releaseStepTask(Universal / packageBin),
-  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
+  releaseStepTask(ghRelease),
+  releaseStepTask(ghReleaseUpload),
+//  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
   setNextVersion,                         // : ReleaseStep
   commitNextVersion,                      // : ReleaseStep
   pushChanges                             // : ReleaseStep, also checks that an upstream branch is properly configured
