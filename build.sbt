@@ -30,7 +30,7 @@ buildInfoOptions ++= Seq(
   BuildInfoOption.BuildTime
 )
 
-//deploymentSettings
+deploymentSettings
 
 // wix build information
 wixProductId := "fc424cc6-73eb-11ed-a8c1-270fc9539747"
