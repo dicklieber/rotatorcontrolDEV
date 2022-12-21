@@ -1,5 +1,6 @@
 import com.typesafe.sbt.packager.SettingsHelper.makeDeploymentSettings
 import sbt.Def
+import sbtrelease.ReleasePlugin.autoImport.releaseStepTask
 
 import scala.math.Equiv.universal
 import scala.sys.process._
@@ -88,20 +89,20 @@ import ReleaseTransformations._
 // ...
 
 releaseProcess := Seq[ReleaseStep](
-  checkSnapshotDependencies,              // : ReleaseStep
-  inquireVersions,                        // : ReleaseStep
-  runClean,                               // : ReleaseStep
-  runTest,                                // : ReleaseStep
-  setReleaseVersion,                      // : ReleaseStep
-  commitReleaseVersion,                   // : ReleaseStep, performs the initial git checks
-  tagRelease,                             // : ReleaseStep
+  checkSnapshotDependencies, // : ReleaseStep
+  inquireVersions, // : ReleaseStep
+  runClean, // : ReleaseStep
+  runTest, // : ReleaseStep
+  setReleaseVersion, // : ReleaseStep
+  commitReleaseVersion, // : ReleaseStep, performs the initial git checks
+  tagRelease, // : ReleaseStep
   releaseStepTask(Universal / packageBin),
+  //  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
+  setNextVersion, // : ReleaseStep
+  commitNextVersion, // : ReleaseStep
+  pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
   releaseStepTask(ghRelease),
   releaseStepTask(ghReleaseUpload),
-//  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
-  setNextVersion,                         // : ReleaseStep
-  commitNextVersion,                      // : ReleaseStep
-  pushChanges                             // : ReleaseStep, also checks that an upstream branch is properly configured
 )
 
 //releaseProcess := Seq[ReleaseStep](
@@ -140,7 +141,7 @@ ghReleaseUpload := {
 }
 
 resolvers +=
-  "ReposiliteXYZZY" at  "http://127.0.0.1:8080/releases"
+  "ReposiliteXYZZY" at "http://127.0.0.1:8080/releases"
 
 //credentials += Credentials("Reposilite", "127.0.0.1", "wa9nnn-deploy", "T/d7hlJWwdYMIj1GxmmVIB3IwuZ4X1FfZq7KDCtgbrjpTvBwLdxT2mSYGkfW025F")
 credentials += Credentials(Path.userHome / ".sbt" / "credentials-reposolite")
