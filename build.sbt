@@ -98,11 +98,12 @@ releaseProcess := Seq[ReleaseStep](
   tagRelease, // : ReleaseStep
   releaseStepTask(Universal / packageBin),
   //  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
-  setNextVersion, // : ReleaseStep
-  commitNextVersion, // : ReleaseStep
   pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
   releaseStepTask(ghRelease),
   releaseStepTask(ghReleaseUpload),
+  setNextVersion, // : ReleaseStep
+  commitNextVersion, // : ReleaseStep
+  pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
 )
 
 //releaseProcess := Seq[ReleaseStep](
