@@ -113,13 +113,14 @@ val ghRelease = taskKey[Unit]("Create release")
 
 
 ghRelease := {
+  val log = streams.value.log
+  log.info("ghRelease")
   val ver = s"v${version.value}"
-  println(s"ver: $ver")
   val gitTagCmd = s"""git tag -a $ver -m "release $ver""""
-  println(s"gitTagCmd: $gitTagCmd")
+  log.info(s"gitTagCmd: $gitTagCmd")
   Process(gitTagCmd).run()
   val ghCmd = s"gh release create $ver"
-  println(s"ghCmd: $ghCmd")
+  log.info(s"ghCmd: $ghCmd")
   Process(ghCmd).run()
 }
 
@@ -128,11 +129,13 @@ val ghReleaseUpload: TaskKey[Unit] = taskKey[Unit]("Create release")
 
 
 ghReleaseUpload := {
+  val log = streams.value.log
+  log.info("ghReleaseUpload")
+
   val ver = s"v${version.value}"
-  println(s"ver: $ver")
   val packageBinFile: File = (Universal / packageBin).value
   val ghCmd = s"gh release upload $ver $packageBinFile --clobber -R dicklieber/rotatorcontrol"
-  println(s"ghCmd: $ghCmd")
+  log.info(s"ghCmd: $ghCmd")
   Process(ghCmd).run()
 }
 
