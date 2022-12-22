@@ -1,8 +1,5 @@
-import com.typesafe.sbt.packager.SettingsHelper.makeDeploymentSettings
-import sbt.Def
 import sbtrelease.ReleasePlugin.autoImport.releaseStepTask
 
-import scala.math.Equiv.universal
 import scala.sys.process._
 
 ThisBuild / scalaVersion := "2.13.10"
@@ -14,15 +11,13 @@ lazy val root = (project in file("."))
 
 Universal / mappings := (Universal / mappings).value
 
-Universal / javaOptions ++= Seq(
-  "-java-home ${app_home}/../jre"
-)
+
 
 maintainer := "Dick Lieber <wa9nnn@u505.com>"
 packageSummary := "ARCO to HamLibs rotctld"
 packageDescription := """Adapts ARCO Rotator Controllers to rotctld protocol"""
 
-enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, UniversalPlugin, UniversalDeployPlugin, WindowsPlugin, JlinkPlugin)
+enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, UniversalPlugin, UniversalDeployPlugin)
 buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, maintainer,
   git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion)
 buildInfoPackage := "com.wa9nnn.rotator"
@@ -34,28 +29,10 @@ buildInfoOptions ++= Seq(
 
 deploymentSettings
 
-// wix build information
-wixProductId := "fc424cc6-73eb-11ed-a8c1-270fc9539747"
-wixProductUpgradeId := "1d67f32e-73ec-11ed-a75e-9b5a53518d4c"
-jlinkIgnoreMissingDependency := JlinkIgnore.everything
 
 resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
   .withAllowInsecureProtocol(true)
 
-lazy val osName = System.getProperty("os.name") match {
-  case n if n.startsWith("Linux") => "linux"
-  case n if n.startsWith("Mac") => "mac"
-  case n if n.startsWith("Windows") => "win"
-  case _ =>
-    throw new Exception("Unknown platform!")
-}
-
-lazy val javaFXModules = {
-
-  // Create dependencies for JavaFX modules
-  Seq("base", "controls", "graphics", "media")
-    .map(m => "org.openjfx" % s"javafx-$m" % "15.0.1" classifier osName)
-}
 
 val logbackVersion = "1.2.3"
 
@@ -84,7 +61,7 @@ libraryDependencies ++= Seq(
 
 publish / skip := false
 
-import ReleaseTransformations._
+import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
 // ...
 
