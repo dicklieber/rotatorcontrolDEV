@@ -28,7 +28,7 @@ import net.codingwell.scalaguice.ScalaModule
 class GuiceModule() extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
     val config: Config = ConfigFactory.load()
-    bind[ConfigManager].asEagerSingleton()
+    bind[ConfigManager].toInstance(new ConfigManager())
     bind[ArcoManager].asEagerSingleton()
     bind[Reporter].asEagerSingleton()
     bind[RotctldServer].asEagerSingleton()

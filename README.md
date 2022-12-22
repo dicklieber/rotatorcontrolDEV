@@ -16,9 +16,13 @@ Written in Scala to allow write-once run anywhere.
 - sbt See https://www.scala-sbt.org
 
 ### Build command
+For a local build:
 `% sbt universal:packageBin`
 This should produce :
 `target/universal/rgrotctld-0.0.1.zip`
+
+To build a release (requires github git permissions):
+`% sbt release`
 
 ### Install via zip file
 1. Unzip the rgrotctld-x.x.x.zip file. 

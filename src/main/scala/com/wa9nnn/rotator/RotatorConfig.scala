@@ -19,13 +19,12 @@
 package com.wa9nnn.rotator
 
 import com.wa9nnn.rotator.AppConfig.configfmt
-import com.wa9nnn.rotator.ConfigManager.{read, write}
 import play.api.libs.json.{Json, OFormat}
 import scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
 
 import java.nio.file.{Files, Path, Paths}
 import java.util.UUID
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 import scala.util.Try
 
 case class RotatorConfig(name: String = "?", host: String = "192.168.0.123", port: Int = 4001, id: UUID = UUID.randomUUID()) {
@@ -35,7 +34,7 @@ case class RotatorConfig(name: String = "?", host: String = "192.168.0.123", por
   lazy val portProperty = new IntegerProperty(this, "port", port)
 
   def collect: RotatorConfig = {
-    RotatorConfig(nameProperty.value, hostProperty.value, portProperty.value.toInt)
+    RotatorConfig(nameProperty.value, hostProperty.value, portProperty.value)
   }
 
   override def toString: String =
@@ -55,7 +54,7 @@ case class AppConfig(rotators: List[RotatorConfig] = List.empty, rgctldPort: Int
   def collect: AppConfig = {
     new AppConfig(rotators.map {
       _.collect
-    }, rotctldPortProperty.value.toInt)
+    }, rotctldPortProperty.value)
   }
 
   def remove(uuid: UUID): AppConfig = {
@@ -74,10 +73,11 @@ object AppConfig {
   implicit val configfmt: OFormat[AppConfig] = Json.format[AppConfig]
 }
 
-object ConfigManager {
 
-  lazy val defaultPath: Path = {
-    val home = Paths.get(System.getProperty("user.home"))
+
+class ConfigManager (home: Path = Paths.get(System.getProperty("user.home"))) extends ObjectProperty[AppConfig]() {
+
+  val defaultPath: Path = {
     home.resolve("rotatorcontrol")
       .resolve("config.json")
   }
@@ -96,12 +96,8 @@ object ConfigManager {
       Json.parse(sJson).as[AppConfig]
     }
   }
-}
 
-@Singleton
-class ConfigManager extends ObjectProperty[AppConfig]() {
   value = read().getOrElse(new AppConfig())
-
 
   def save(appConfig: AppConfig): Unit = {
     write(appConfig)

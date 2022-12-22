@@ -18,6 +18,7 @@
 
 package com.wa9nnn.rotator.ui.config
 
+import com.wa9nnn.rotator.arco.ArcoManager
 import com.wa9nnn.rotator.ui.config.ConfigEditorDialog.deleteImage
 import com.wa9nnn.rotator.{AppConfig, ConfigManager, RotatorConfig}
 import org.scalafx.extras.generic_dialog.NumberTextField

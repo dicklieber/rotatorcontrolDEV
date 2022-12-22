@@ -19,10 +19,9 @@
 package com.wa9nnn.rotator.arco
 
 import com.typesafe.config.Config
-import com.wa9nnn.rotator.ui.RotatorPanel
-import com.wa9nnn.rotator.{AppConfig, ConfigManager, Degree, RotatorConfig}
+import com.wa9nnn.rotator.{AppConfig, ConfigManager, Degree}
 import scalafx.beans.property.ObjectProperty
-import scalafx.collections.ObservableBuffer
+import scalafx.scene.layout.FlowPane
 
 import java.util.UUID
 import javax.inject.Inject
@@ -33,9 +32,9 @@ import scala.collection.concurrent.TrieMap
  *
  * @param configManager where to get current or changed configuration.
  */
-class ArcoManager @Inject()(configManager: ConfigManager, config: Config) {
+class ArcoManager @Inject()(configManager: ConfigManager, config: Config) extends FlowPane{
   private val arcoConfig = config.getConfig("arco")
-
+//  val rotatorPanels: ObservableBuffer[RotatorPanel] = ObservableBuffer[RotatorPanel]()
 
   val rotatorMap = new TrieMap[UUID, RotatorInstance]()
 
@@ -51,7 +50,6 @@ class ArcoManager @Inject()(configManager: ConfigManager, config: Config) {
     }
   }
 
-  val rotatorPanels: ObservableBuffer[RotatorPanel] = ObservableBuffer[RotatorPanel]()
 
   /**
    * Move the selected rotator
@@ -69,23 +67,26 @@ class ArcoManager @Inject()(configManager: ConfigManager, config: Config) {
 
   configManager.onChange {
     (_, _, is: AppConfig) =>
-      setup(is.rotators)
+      setup(is)
   }
-  setup(configManager.value.rotators)
+  setup(configManager.value)
 
-  def setup(rotators: Iterable[RotatorConfig]): Unit = {
-    rotatorPanels.clear()
+  def setup(appConfig: AppConfig): Unit = {
+    children.clear()
     rotatorMap.values.foreach(_.stop())
     rotatorMap.clear()
+    val rotators = appConfig.rotators
     rotators.foreach {
       rc =>
         val rotatorInstance = RotatorInstance(rc, selectedRotator, arcoConfig)
         rotatorMap.put(rc.id, rotatorInstance)
-        rotatorPanels.addOne(rotatorInstance.rotatorPanel)
+        children.addOne(rotatorInstance.rotatorPanel)
     }
     rotators.headOption.foreach { rc =>
       selectedRotator.value = rc.id
     }
   }
 }
+
+
 

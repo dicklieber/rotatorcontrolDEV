@@ -56,7 +56,7 @@ class AboutDialog @Inject()(configManager: ConfigManager) extends Dialog[String]
   goc.addLabel("Version", BuildInfo.version)
   goc.addLabel("Built at", builtAt)
   goc.addLabel("Git Branch", BuildInfo.gitCurrentBranch)
-  goc.addLabel("Config Location", ConfigManager.defaultPath)
+  goc.addLabel("Config Location", configManager.defaultPath)
 
   gocProperty("file.separator")
   gocPath("java.class.path")

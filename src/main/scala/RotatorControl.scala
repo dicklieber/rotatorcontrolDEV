@@ -4,13 +4,13 @@ import com.wa9nnn.rotator.arco.ArcoManager
 import com.wa9nnn.rotator.metrics.MetricsReporter
 import com.wa9nnn.rotator.ui.AboutDialog
 import com.wa9nnn.rotator.ui.config.ConfigEditorDialog
-import com.wa9nnn.rotator.{AppConfig, BuildInfo, GuiceModule}
+import com.wa9nnn.rotator.{BuildInfo, GuiceModule}
 import com.wa9nnn.util.TimeConverters
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Label, Menu, MenuBar, MenuItem}
-import scalafx.scene.layout.{BorderPane, FlowPane, HBox}
+import scalafx.scene.layout.BorderPane
 
 import java.time.Instant
 
@@ -43,13 +43,13 @@ object RotatorControl extends JFXApp3 {
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
       title = "Rotator Manager"
-      onCloseRequest = { e =>
+      onCloseRequest = { _ =>
         Platform.exit()
         System.exit(0)
       }
     }
     injector = Guice.createInjector(new GuiceModule())
-    lazy val arcoCoordinator: ArcoManager = injector.instance[ArcoManager]
+     val arcoManager: ArcoManager = injector.instance[ArcoManager]
 
 
     val secne: Scene = new Scene {
@@ -71,11 +71,8 @@ object RotatorControl extends JFXApp3 {
       root = new BorderPane {
 
         top = menuBar
-        center = new FlowPane() {
-          children =  arcoCoordinator.rotatorPanels
-        }
+        center = arcoManager
         //          center = tabPane
-
 
         val builtAt = TimeConverters.instantDisplayUTCLocal(Instant.ofEpochMilli(BuildInfo.builtAtMillis))
         bottom = new Label{
@@ -87,3 +84,4 @@ object RotatorControl extends JFXApp3 {
     stage.scene = secne
   }
 }
+
