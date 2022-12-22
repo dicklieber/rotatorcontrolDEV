@@ -76,9 +76,8 @@ object RotatorControl extends JFXApp3 {
 
         val builtAt = TimeConverters.instantDisplayUTCLocal(Instant.ofEpochMilli(BuildInfo.builtAtMillis))
         bottom = new Label{
-          text = s"Version ${BuildInfo.version} Branch: ${BuildInfo.gitCurrentBranch} Built At: $builtAt"
+          text = s"Version ${BuildInfo.version}"
         }
-        //          right = injector.instance[NetworkPane]
       }
     }
     stage.scene = secne
