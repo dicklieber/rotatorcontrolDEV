@@ -13,7 +13,6 @@ lazy val root = (project in file("."))
 Universal / mappings := (Universal / mappings).value
 
 
-
 maintainer := "Dick Lieber <wa9nnn@u505.com>"
 packageSummary := "ARCO to HamLibs rotctld"
 packageDescription := """Adapts ARCO Rotator Controllers to rotctld protocol"""
@@ -85,10 +84,9 @@ releaseProcess := Seq[ReleaseStep](
   releaseStepTask(Universal / packageBin),
   //  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
   pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
-  releaseStepTask(ghRelease),
-  releaseStepTask(ghReleaseUpload),
   setNextVersion, // : ReleaseStep
   commitNextVersion, // : ReleaseStep
+  releaseStepTask(ghRelease),
   pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
 )
 
@@ -97,37 +95,40 @@ Universal / javaOptions ++= Seq(
   "-java-home ${app_home}/../jre"
 )
 
+/*val ghVersion = settingKey[String]("ver")
+ghVersion := s"v${version.value}-$osName"
 
-val ver = s"v$version-$osName}"
+val gitTagCmd = settingKey[String]("git tag command")
+gitTagCmd := s"""git tag -a ${ghVersion.value} -m "release ${ghVersion.value}""""
 
+//val gitTagCmd = s"""git tag -a $ver -m "release $ver""""
+val ghCreateRelease = settingKey[String]("Create release")
+ghCreateRelease := c
 
-val ghRelease = taskKey[Unit]("Create release")
+val ghUploadRelease = SettingKey[String]("Upload release")
+ghUploadRelease := s"gh release upload ${ghVersion.value} ${(Universal / packageBin).value} --clobber -R dicklieber/rotatorcontrol"
+*/
 
+val ghRelease = taskKey[Unit]("send stuff to github")
 
 ghRelease := {
   val log = streams.value.log
   log.info("ghRelease")
-  val gitTagCmd = s"""git tag -a $ver -m "release $ver""""
-  log.info(s"gitTagCmd: $gitTagCmd")
-  Process(gitTagCmd).run()
-  val ghCmd = s"gh release create $ver"
-  log.info(s"ghCmd: $ghCmd")
-  Process(ghCmd).run()
+
+  val relVersion = s"v${version.value}-$osName"
+  val cmds = Seq(
+    s"""git tag -a $relVersion -m "release $relVersion"""",
+    s"git push",
+    s"gh release create $relVersion",
+    s"gh release upload $relVersion ${(Universal / packageBin).value} --clobber -R dicklieber/rotatorcontrol"
+  )
+  cmds.foreach { cmd =>
+    log.info(s"cmd: $cmd")
+    Process(cmd).run()
+  }
 }
 
 
-val ghReleaseUpload: TaskKey[Unit] = taskKey[Unit]("Create release")
-
-
-ghReleaseUpload := {
-  val log = streams.value.log
-  log.info("ghReleaseUpload")
-
-  val packageBinFile: File = (Universal / packageBin).value
-  val ghCmd = s"gh release upload $ver $packageBinFile --clobber -R dicklieber/rotatorcontrol"
-  log.info(s"ghCmd: $ghCmd")
-  Process(ghCmd).run()
-}
 
 resolvers +=
   "ReposiliteXYZZY" at "http://127.0.0.1:8080/releases"
