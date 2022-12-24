@@ -3,6 +3,8 @@ import sbtrelease.ReleasePlugin.autoImport.releaseStepTask
 import scala.sys.process._
 import NativePackagerHelper._
 
+import scala.language.postfixOps
+
 ThisBuild / scalaVersion := "2.13.10"
 
 lazy val root = (project in file("."))
@@ -103,7 +105,7 @@ gitTagCmd := s"""git tag -a ${ghVersion.value} -m "release ${ghVersion.value}"""
 
 //val gitTagCmd = s"""git tag -a $ver -m "release $ver""""
 val ghCreateRelease = settingKey[String]("Create release")
-ghCreateRelease := c
+ghCreateRelease := s"gh release create $$ghVersion.value}"
 
 val ghUploadRelease = SettingKey[String]("Upload release")
 ghUploadRelease := s"gh release upload ${ghVersion.value} ${(Universal / packageBin).value} --clobber -R dicklieber/rotatorcontrol"
@@ -113,21 +115,22 @@ val ghRelease = taskKey[Unit]("send stuff to github")
 
 ghRelease := {
   val log = streams.value.log
-  log.info("ghRelease")
+  log.info("=========ghRelease=========")
 
   val relVersion = s"v${version.value}-$osName"
   val cmds = Seq(
     s"""git tag -a $relVersion -m "release $relVersion"""",
-    s"git push",
+    s"git push --tags",
     s"gh release create $relVersion",
     s"gh release upload $relVersion ${(Universal / packageBin).value} --clobber -R dicklieber/rotatorcontrol"
   )
-  cmds.foreach { cmd =>
+  cmds.foreach { cmd: String =>
     log.info(s"cmd: $cmd")
-    Process(cmd).run()
+    Process(cmd).lineStream ! log
+    log.info(s"\tcmd: $cmd done")
+
   }
 }
-
 
 
 resolvers +=
