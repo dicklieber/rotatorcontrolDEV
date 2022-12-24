@@ -1,6 +1,7 @@
 import sbtrelease.ReleasePlugin.autoImport.releaseStepTask
 
 import scala.sys.process._
+import NativePackagerHelper._
 
 ThisBuild / scalaVersion := "2.13.10"
 
@@ -17,7 +18,7 @@ maintainer := "Dick Lieber <wa9nnn@u505.com>"
 packageSummary := "ARCO to HamLibs rotctld"
 packageDescription := """Adapts ARCO Rotator Controllers to rotctld protocol"""
 
-enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, UniversalPlugin, UniversalDeployPlugin)
+enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, UniversalPlugin, UniversalDeployPlugin, WindowsPlugin, JlinkPlugin)
 buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, maintainer,
   git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion)
 buildInfoPackage := "com.wa9nnn.rotator"
@@ -29,12 +30,20 @@ buildInfoOptions ++= Seq(
 
 deploymentSettings
 
+jlinkIgnoreMissingDependency := JlinkIgnore.everything
 
 resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
   .withAllowInsecureProtocol(true)
 
 
 val logbackVersion = "1.2.3"
+lazy val osName = System.getProperty("os.name") match {
+  case n if n.startsWith("Linux") => "linux"
+  case n if n.startsWith("Mac") => "mac"
+  case n if n.startsWith("Windows") => "win"
+  case _ => throw new Exception("Unknown platform!")
+}
+
 
 libraryDependencies ++= Seq(
   "com.wa9nnn" %% "util" % "0.1.9",
@@ -63,7 +72,7 @@ publish / skip := false
 
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
-// ...
+bashScriptExtraDefines += "umask 077"
 
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies, // : ReleaseStep
@@ -83,9 +92,13 @@ releaseProcess := Seq[ReleaseStep](
   pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
 )
 
-//releaseProcess := Seq[ReleaseStep](
-//  releaseStepTask(Universal / packageBin),
-//)
+
+Universal / javaOptions ++= Seq(
+  "-java-home ${app_home}/../jre"
+)
+
+
+val ver = s"v$version-$osName}"
 
 
 val ghRelease = taskKey[Unit]("Create release")
@@ -94,7 +107,6 @@ val ghRelease = taskKey[Unit]("Create release")
 ghRelease := {
   val log = streams.value.log
   log.info("ghRelease")
-  val ver = s"v${version.value}"
   val gitTagCmd = s"""git tag -a $ver -m "release $ver""""
   log.info(s"gitTagCmd: $gitTagCmd")
   Process(gitTagCmd).run()
@@ -111,7 +123,6 @@ ghReleaseUpload := {
   val log = streams.value.log
   log.info("ghReleaseUpload")
 
-  val ver = s"v${version.value}"
   val packageBinFile: File = (Universal / packageBin).value
   val ghCmd = s"gh release upload $ver $packageBinFile --clobber -R dicklieber/rotatorcontrol"
   log.info(s"ghCmd: $ghCmd")
