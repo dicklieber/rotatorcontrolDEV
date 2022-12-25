@@ -118,8 +118,9 @@ ghRelease := {
   log.info("=========ghRelease=========")
 
   val relVersion = s"v${version.value}-$osName"
+  val pubArtifact = (Universal/artifact).value
   val cmds = Seq(
-    s"./github.sh $relVersion ${(Universal / packageBin).value""
+    s"./github.sh $relVersion $pubArtifact"
 //    s"git push --tags",
 //    s"gh release create $relVersion",
 //    s"gh release upload $relVersion ${(Universal / packageBin).value} --clobber -R dicklieber/rotatorcontrol"
