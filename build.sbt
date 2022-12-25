@@ -2,6 +2,7 @@ import sbtrelease.ReleasePlugin.autoImport.releaseStepTask
 
 import scala.sys.process._
 import NativePackagerHelper._
+import sbt.Keys.{logLevel, streams}
 
 import scala.language.postfixOps
 
@@ -11,6 +12,7 @@ lazy val root = (project in file("."))
   .settings(
     name := "rotatorcontrol"
   )
+
 
 Universal / mappings := (Universal / mappings).value
 
