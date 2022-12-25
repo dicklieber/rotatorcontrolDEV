@@ -119,10 +119,10 @@ ghRelease := {
 
   val relVersion = s"v${version.value}-$osName"
   val cmds = Seq(
-    s"git tag -a $relVersion -m $relVersion",
-    s"git push --tags",
-    s"gh release create $relVersion",
-    s"gh release upload $relVersion ${(Universal / packageBin).value} --clobber -R dicklieber/rotatorcontrol"
+    s"./github.sh $relVersion ${(Universal / packageBin).value""
+//    s"git push --tags",
+//    s"gh release create $relVersion",
+//    s"gh release upload $relVersion ${(Universal / packageBin).value} --clobber -R dicklieber/rotatorcontrol"
   )
   cmds.foreach { cmd: String =>
     log.info(s"cmd: $cmd")
