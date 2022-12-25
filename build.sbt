@@ -88,8 +88,8 @@ releaseProcess := Seq[ReleaseStep](
   pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
   setNextVersion, // : ReleaseStep
   commitNextVersion, // : ReleaseStep
-  releaseStepTask(ghRelease),
   pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
+  releaseStepTask(ghRelease),
 )
 
 
