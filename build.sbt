@@ -127,7 +127,7 @@ releaseProcess := Seq[ReleaseStep](
 
 
 Universal / javaOptions ++= Seq(
-  "-java-home ${app_home}/jre"
+  "-java-home ${app_home}/../jre"
 )
 
 
