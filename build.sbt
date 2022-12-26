@@ -96,7 +96,7 @@ ghRelease := {
   log.debug(s"relVersion: $relVersion")
   log.debug(s"pubArtifact: $pubArtifact")
 
-  val cmd = s"gh release create --generate-notes $relVersion $pubArtifact"
+  val cmd = s"""gh release create --notes "XYZZY" $relVersion $pubArtifact"""
   log.debug((s"cmd: $cmd"))
   Process(cmd).lineStream ! log
   log.info(s"\tcmd: $cmd done")
@@ -110,7 +110,7 @@ releaseProcess := Seq[ReleaseStep](
   runTest, // : ReleaseStep
   setReleaseVersion, // : ReleaseStep
   commitReleaseVersion, // : ReleaseStep, performs the initial git checks
-//  tagRelease, // : ReleaseStep
+  tagRelease, // : ReleaseStep
   releaseStepTask(ghRelease),
   //  releaseStepTask(Universal / packageBin),
   //  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
