@@ -1,11 +1,9 @@
+import sbt.Keys.streams
 import sbtrelease.ReleasePlugin.autoImport.releaseStepTask
-
-import scala.sys.process._
-import NativePackagerHelper._
-import sbt.Keys.{logLevel, streams}
 
 import java.nio.file.Paths
 import scala.language.postfixOps
+import scala.sys.process._
 
 ThisBuild / scalaVersion := "2.13.10"
 
@@ -115,6 +113,7 @@ val ghUploadRelease = SettingKey[String]("Upload release")
 ghUploadRelease := s"gh release upload ${ghVersion.value} ${(Universal / packageBin).value} --clobber -R dicklieber/rotatorcontrol"
 */
 
+
 val ghRelease = taskKey[Unit]("send stuff to github")
 
 ghRelease := {
@@ -122,7 +121,7 @@ ghRelease := {
   log.info("=========ghRelease=========")
 
   val relVersion = s"v${version.value}-$osName"
-  val pubArtifact = (Universal/artifact).value
+  val pubArtifact = (Universal/publishArtifact).value
   val github = Paths.get("github.sh")
   log.debug(s"github path: $github")
   val abs = github.toAbsolutePath
