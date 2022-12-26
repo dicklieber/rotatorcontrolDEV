@@ -99,7 +99,7 @@ ghRelease := {
 
     val cmd = s"""gh release create --notes "XYZZY" $relVersion $pubArtifact"""
     log.debug((s"cmd: $cmd"))
-    Process(cmd).lineStream ! log
+    Process(cmd) !
     log.info(s"\tcmd: $cmd done")
   } catch {
     case e:Exception =>
