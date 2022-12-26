@@ -85,7 +85,8 @@ ghRelease := {
     log.info("=========ghRelease=========")
 
     val relVersion = s"v${version.value}-$osName"
-    val pubArtifact: File = (Universal / packageBin).value
+    val pubArtifact: File = (Universal / packageOsxDmg).value
+//    val pubArtifact: File = (Universal / packageBin).value
 
     val github: java.nio.file.Path = Paths.get("github.sh")
     log.debug(s"github path: $github Executable: ${Files.isExecutable(github)}")
