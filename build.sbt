@@ -128,9 +128,13 @@ ghRelease := {
   val abs = github.toAbsolutePath
   log.debug(s"github abs: $abs")
 
+  log.debug(s"relVersion: $relVersion")
+  log.debug(s"pubArtifact: $pubArtifact")
+
+
 
   val cmds = Seq(
-    s"github.sh $relVersion $pubArtifact"
+    s"$abs $relVersion $pubArtifact"
 //    s"git push --tags",
 //    s"gh release create $relVersion",
 //    s"gh release upload $relVersion ${(Universal / packageBin).value} --clobber -R dicklieber/rotatorcontrol"
