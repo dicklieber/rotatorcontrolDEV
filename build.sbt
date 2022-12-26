@@ -132,7 +132,7 @@ ghRelease := {
   log.debug(s"relVersion: $relVersion")
   log.debug(s"pubArtifact: $pubArtifact")
 
-  val cmd = s"$abs $relVersion $pubArtifact"
+  val cmd = s"gh release create --generate-notes $relVersion $pubArtifact"
   log.debug((s"cmd: $cmd"))
   Process(cmd).lineStream ! log
   log.info(s"\tcmd: $cmd done")
