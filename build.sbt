@@ -8,22 +8,13 @@ import NativePackagerHelper._
 
 ThisBuild / scalaVersion := "2.13.10"
 
-lazy val root = (project in file("."))
-  .settings(
-    name := "rotatorcontrol"
-  )
+//lazy val root = (project in file("."))
+//  .settings(
+//    name := "rotatorcontrol"
+//  )
 
 fork := false
 
-//Universal / mappings := (Universal / mappings).value
-//
-//mappings in Universal ++= {
-//  val jresDir = Path.userHome / ".jre"
-//  val linux64Jre = jresDir.toPath.resolve("linux64")
-//  directory(linux64Jre.toFile).map { j =>
-//    j._1 -> j._2.replace(jreLink, "jre")
-//  }
-//}
 
 maintainer := "Dick Lieber <wa9nnn@u505.com>"
 packageSummary := "ARCO to HamLibs rotctld"
@@ -134,9 +125,9 @@ releaseProcess := Seq[ReleaseStep](
 )
 
 
-Universal / javaOptions ++= Seq(
-  "-java-home ${app_home}/../jre"
-)
+//Universal / javaOptions ++= Seq(
+//  "-java-home ${app_home}/../jre"
+//)
 
 
 
