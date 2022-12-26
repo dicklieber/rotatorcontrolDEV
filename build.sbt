@@ -4,6 +4,7 @@ import scala.sys.process._
 import NativePackagerHelper._
 import sbt.Keys.{logLevel, streams}
 
+import java.nio.file.Paths
 import scala.language.postfixOps
 
 ThisBuild / scalaVersion := "2.13.10"
@@ -121,6 +122,12 @@ ghRelease := {
 
   val relVersion = s"v${version.value}-$osName"
   val pubArtifact = (Universal/artifact).value
+  val github = Paths.get("github.sh")
+  log.debug(s"github path: $github")
+  val abs = github.toAbsolutePath
+  log.debug(s"github abs: $abs")
+
+
   val cmds = Seq(
     s"./github.sh $relVersion $pubArtifact"
 //    s"git push --tags",
