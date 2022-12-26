@@ -4,6 +4,7 @@ import sbtrelease.ReleasePlugin.autoImport.releaseStepTask
 import java.nio.file.{Files, Paths}
 import scala.language.postfixOps
 import scala.sys.process._
+import NativePackagerHelper._
 
 ThisBuild / scalaVersion := "2.13.10"
 
@@ -14,8 +15,15 @@ lazy val root = (project in file("."))
 
 fork := false
 
-Universal / mappings := (Universal / mappings).value
-
+//Universal / mappings := (Universal / mappings).value
+//
+//mappings in Universal ++= {
+//  val jresDir = Path.userHome / ".jre"
+//  val linux64Jre = jresDir.toPath.resolve("linux64")
+//  directory(linux64Jre.toFile).map { j =>
+//    j._1 -> j._2.replace(jreLink, "jre")
+//  }
+//}
 
 maintainer := "Dick Lieber <wa9nnn@u505.com>"
 packageSummary := "ARCO to HamLibs rotctld"
