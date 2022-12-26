@@ -1,7 +1,7 @@
 import sbt.Keys.streams
 import sbtrelease.ReleasePlugin.autoImport.releaseStepTask
 
-import java.nio.file.Paths
+import java.nio.file.{Files, Paths}
 import scala.language.postfixOps
 import scala.sys.process._
 
@@ -113,7 +113,6 @@ val ghUploadRelease = SettingKey[String]("Upload release")
 ghUploadRelease := s"gh release upload ${ghVersion.value} ${(Universal / packageBin).value} --clobber -R dicklieber/rotatorcontrol"
 */
 
-
 val ghRelease = taskKey[Unit]("send stuff to github")
 
 ghRelease := {
@@ -123,8 +122,9 @@ ghRelease := {
   val relVersion = s"v${version.value}-$osName"
   val pubArtifact: File = (Universal / packageBin).value
 
-  val github = Paths.get("github.sh")
-  log.debug(s"github path: $github")
+  val github:java.nio.file.Path = Paths.get("github.sh")
+  log.debug(s"github path: $github Executable: ${Files.isExecutable(github)}" )
+
   val abs: File = github.toAbsolutePath.toFile
   log.debug(s"github abs: $abs")
 
