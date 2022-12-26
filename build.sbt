@@ -87,7 +87,7 @@ releaseProcess := Seq[ReleaseStep](
   tagRelease, // : ReleaseStep
   releaseStepTask(Universal / packageBin),
   //  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
-  pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
+//  pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
   setNextVersion, // : ReleaseStep
   commitNextVersion, // : ReleaseStep
   pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
