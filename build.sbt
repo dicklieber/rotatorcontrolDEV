@@ -121,9 +121,7 @@ ghRelease := {
   log.info("=========ghRelease=========")
 
   val relVersion = s"v${version.value}-$osName"
-  val rp: File = artifactPath.value
-  log.debug(s"rp: $rp")
-  val pubArtifact: File = (Universal / remoteCachePom / artifactPath).value
+  val pubArtifact: File = (Universal / packageBin).value
 
   val github = Paths.get("github.sh")
   log.debug(s"github path: $github")
