@@ -1,7 +1,7 @@
 import sbt.Keys.streams
 import sbtrelease.ReleasePlugin.autoImport.releaseStepTask
 
-import java.nio.file.Paths
+import java.nio.file.{Path, Paths}
 import scala.language.postfixOps
 import scala.sys.process._
 
@@ -125,7 +125,7 @@ ghRelease := {
 
   val github = Paths.get("github.sh")
   log.debug(s"github path: $github")
-  val abs = github.toAbsolutePath
+  val abs: File = github.toAbsolutePath.toFile
   log.debug(s"github abs: $abs")
 
   log.debug(s"relVersion: $relVersion")
