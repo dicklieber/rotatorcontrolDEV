@@ -78,42 +78,6 @@ import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
 bashScriptExtraDefines += "umask 077"
 
-releaseProcess := Seq[ReleaseStep](
-  checkSnapshotDependencies, // : ReleaseStep
-  inquireVersions, // : ReleaseStep
-  runClean, // : ReleaseStep
-  runTest, // : ReleaseStep
-  setReleaseVersion, // : ReleaseStep
-  commitReleaseVersion, // : ReleaseStep, performs the initial git checks
-  tagRelease, // : ReleaseStep
-  releaseStepTask(Universal / packageBin),
-  //  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
-//  pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
-  setNextVersion, // : ReleaseStep
-  commitNextVersion, // : ReleaseStep
-  pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
-  releaseStepTask(ghRelease),
-)
-
-
-Universal / javaOptions ++= Seq(
-  "-java-home ${app_home}/../jre"
-)
-
-/*val ghVersion = settingKey[String]("ver")
-ghVersion := s"v${version.value}-$osName"
-
-val gitTagCmd = settingKey[String]("git tag command")
-gitTagCmd := s"""git tag -a ${ghVersion.value} -m "release ${ghVersion.value}""""
-
-//val gitTagCmd = s"""git tag -a $ver -m "release $ver""""
-val ghCreateRelease = settingKey[String]("Create release")
-ghCreateRelease := s"gh release create $$ghVersion.value}"
-
-val ghUploadRelease = SettingKey[String]("Upload release")
-ghUploadRelease := s"gh release upload ${ghVersion.value} ${(Universal / packageBin).value} --clobber -R dicklieber/rotatorcontrol"
-*/
-
 val ghRelease = taskKey[Unit]("send stuff to github")
 
 ghRelease := {
@@ -137,8 +101,32 @@ ghRelease := {
   Process(cmd).lineStream ! log
   log.info(s"\tcmd: $cmd done")
 
-
 }
+
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies, // : ReleaseStep
+  inquireVersions, // : ReleaseStep
+  runClean, // : ReleaseStep
+  runTest, // : ReleaseStep
+  setReleaseVersion, // : ReleaseStep
+  commitReleaseVersion, // : ReleaseStep, performs the initial git checks
+  tagRelease, // : ReleaseStep
+  releaseStepTask(ghRelease),
+  //  releaseStepTask(Universal / packageBin),
+  //  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
+//  pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
+  setNextVersion, // : ReleaseStep
+  commitNextVersion, // : ReleaseStep
+  pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
+)
+
+
+Universal / javaOptions ++= Seq(
+  "-java-home ${app_home}/../jre"
+)
+
+
+
 
 
 resolvers +=
