@@ -131,20 +131,12 @@ ghRelease := {
   log.debug(s"relVersion: $relVersion")
   log.debug(s"pubArtifact: $pubArtifact")
 
+  val cmd = s"$abs $relVersion $pubArtifact"
+  log.debug((s"cmd: $cmd"))
+  Process(cmd).lineStream ! log
+  log.info(s"\tcmd: $cmd done")
 
 
-  val cmds = Seq(
-    s"$abs $relVersion $pubArtifact"
-//    s"git push --tags",
-//    s"gh release create $relVersion",
-//    s"gh release upload $relVersion ${(Universal / packageBin).value} --clobber -R dicklieber/rotatorcontrol"
-  )
-  cmds.foreach { cmd: String =>
-    log.info(s"cmd: $cmd")
-    Process(cmd).lineStream ! log
-    log.info(s"\tcmd: $cmd done")
-
-  }
 }
 
 
