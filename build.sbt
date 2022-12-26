@@ -1,7 +1,7 @@
 import sbt.Keys.streams
 import sbtrelease.ReleasePlugin.autoImport.releaseStepTask
 
-import java.nio.file.{Path, Paths}
+import java.nio.file.Paths
 import scala.language.postfixOps
 import scala.sys.process._
 
