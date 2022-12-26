@@ -82,24 +82,29 @@ val ghRelease = taskKey[Unit]("send stuff to github")
 
 ghRelease := {
   val log = streams.value.log
-  log.info("=========ghRelease=========")
+  try {
+    log.info("=========ghRelease=========")
 
-  val relVersion = s"v${version.value}-$osName"
-  val pubArtifact: File = (Universal / packageBin).value
+    val relVersion = s"v${version.value}-$osName"
+    val pubArtifact: File = (Universal / packageBin).value
 
-  val github:java.nio.file.Path = Paths.get("github.sh")
-  log.debug(s"github path: $github Executable: ${Files.isExecutable(github)}" )
+    val github: java.nio.file.Path = Paths.get("github.sh")
+    log.debug(s"github path: $github Executable: ${Files.isExecutable(github)}")
 
-  val abs: File = github.toAbsolutePath.toFile
-  log.debug(s"github abs: $abs")
+    val abs: File = github.toAbsolutePath.toFile
+    log.debug(s"github abs: $abs")
 
-  log.debug(s"relVersion: $relVersion")
-  log.debug(s"pubArtifact: $pubArtifact")
+    log.debug(s"relVersion: $relVersion")
+    log.debug(s"pubArtifact: $pubArtifact")
 
-  val cmd = s"""gh release create --notes "XYZZY" $relVersion $pubArtifact"""
-  log.debug((s"cmd: $cmd"))
-  Process(cmd).lineStream ! log
-  log.info(s"\tcmd: $cmd done")
+    val cmd = s"""gh release create --notes "XYZZY" $relVersion $pubArtifact"""
+    log.debug((s"cmd: $cmd"))
+    Process(cmd).lineStream ! log
+    log.info(s"\tcmd: $cmd done")
+  } catch {
+    case e:Exception =>
+      e.printStackTrace()
+  }
 
 }
 
