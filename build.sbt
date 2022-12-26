@@ -71,7 +71,8 @@ libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.4.2",
 )
 
-publish / skip := false
+publish / skip := true
+
 
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
