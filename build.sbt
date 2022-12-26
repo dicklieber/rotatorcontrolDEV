@@ -14,6 +14,7 @@ lazy val root = (project in file("."))
     name := "rotatorcontrol"
   )
 
+fork := false
 
 Universal / mappings := (Universal / mappings).value
 
