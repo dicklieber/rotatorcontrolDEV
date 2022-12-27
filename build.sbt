@@ -4,7 +4,6 @@ import sbtrelease.ReleasePlugin.autoImport.releaseStepTask
 import java.nio.file.{Files, Paths}
 import scala.language.postfixOps
 import scala.sys.process._
-import NativePackagerHelper._
 
 ThisBuild / scalaVersion := "2.13.10"
 
@@ -39,12 +38,7 @@ resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
 
 
 val logbackVersion = "1.2.3"
-lazy val osName = System.getProperty("os.name") match {
-  case n if n.startsWith("Linux") => "linux"
-  case n if n.startsWith("Mac") => "mac"
-  case n if n.startsWith("Windows") => "win"
-  case _ => throw new Exception("Unknown platform!")
-}
+ val osName = System.getProperty("os.name")
 
 
 libraryDependencies ++= Seq(
@@ -85,8 +79,13 @@ ghRelease := {
     log.info("=========ghRelease=========")
 
     val relVersion = s"v${version.value}-$osName"
-    val pubArtifact: File = (Universal / packageOsxDmg).value
-//    val pubArtifact: File = (Universal / packageBin).value
+
+    val pubArtifact: File =  osName match {
+      case "Mac" =>
+        (Universal / packageOsxDmg).value
+      case x =>
+        (Universal / packageBin).value
+    }
 
     val github: java.nio.file.Path = Paths.get("github.sh")
     log.debug(s"github path: $github Executable: ${Files.isExecutable(github)}")
@@ -136,10 +135,4 @@ releaseProcess := Seq[ReleaseStep](
 
 resolvers +=
   "ReposiliteXYZZY" at "http://127.0.0.1:8080/releases"
-
-//credentials += Credentials("Reposilite", "127.0.0.1", "wa9nnn-deploy", "T/d7hlJWwdYMIj1GxmmVIB3IwuZ4X1FfZq7KDCtgbrjpTvBwLdxT2mSYGkfW025F")
-credentials += Credentials(Path.userHome / ".sbt" / "credentials-reposolite")
-
-publishTo := Some(("ReposilitePLUGH" at "http://194.113.64.105:8080/releases").withAllowInsecureProtocol(true))
-//publishTo := Some(("ReposilitePLUGH" at "http://127.0.0.1:8080/releases").withAllowInsecureProtocol(true))
 
