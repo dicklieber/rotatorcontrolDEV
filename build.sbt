@@ -38,7 +38,12 @@ resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
 
 
 val logbackVersion = "1.2.3"
- val osName = System.getProperty("os.name")
+lazy val osName = System.getProperty("os.name") match {
+  case n if n.startsWith("Linux") => "linux"
+  case n if n.startsWith("Mac") => "mac"
+  case n if n.startsWith("Windows") => "win"
+  case _ => throw new Exception("Unknown platform!")
+}
 
 
 libraryDependencies ++= Seq(
@@ -81,7 +86,7 @@ ghRelease := {
     val relVersion = s"v${version.value}-$osName"
 
     val pubArtifact: File =  osName match {
-      case "Mac" =>
+      case "mac" =>
         (Universal / packageOsxDmg).value
       case x =>
         (Universal / packageBin).value
