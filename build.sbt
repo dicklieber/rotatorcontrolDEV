@@ -19,7 +19,7 @@ maintainer := "Dick Lieber <wa9nnn@u505.com>"
 packageSummary := "ARCO to HamLibs rotctld"
 packageDescription := """Adapts ARCO Rotator Controllers to rotctld protocol"""
 
-enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, UniversalPlugin, UniversalDeployPlugin, WindowsPlugin, JlinkPlugin)
+enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, UniversalPlugin, UniversalDeployPlugin)
 buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, maintainer,
   git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion)
 buildInfoPackage := "com.wa9nnn.rotator"
@@ -29,7 +29,7 @@ buildInfoOptions ++= Seq(
   BuildInfoOption.BuildTime
 )
 
-deploymentSettings
+//deploymentSettings
 
 jlinkIgnoreMissingDependency := JlinkIgnore.everything
 
