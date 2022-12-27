@@ -95,6 +95,7 @@ ghRelease := {
         log.info("Using: packageBin")
         (Universal / packageBin).value
     }
+    log.info(s"pubArtifact: $pubArtifact")
 
     val github: java.nio.file.Path = Paths.get("github.sh")
     log.info(s"github path: $github Executable: ${Files.isExecutable(github)}")
