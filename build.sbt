@@ -82,31 +82,31 @@ ghRelease := {
       case n if n.startsWith("Windows") => "win"
       case _ => throw new Exception("Unknown platform!")
     }
-    log.debug(s"osName: $osName")
+    log.info(s"osName: $osName")
 
     val relVersion = s"v${version.value}-$osName"
-    log.debug(s"relVersion: $relVersion")
+    log.info(s"relVersion: $relVersion")
 
     val pubArtifact: File =  osName match {
       case "mac" =>
-        log.debug("Using: packageOsxDmg")
+        log.info("Using: packageOsxDmg")
         (Universal / packageOsxDmg).value
       case x =>
-        log.debug("Using: packageBin")
+        log.info("Using: packageBin")
         (Universal / packageBin).value
     }
 
     val github: java.nio.file.Path = Paths.get("github.sh")
-    log.debug(s"github path: $github Executable: ${Files.isExecutable(github)}")
+    log.info(s"github path: $github Executable: ${Files.isExecutable(github)}")
 
     val abs: File = github.toAbsolutePath.toFile
-    log.debug(s"github abs: $abs")
+    log.info(s"github abs: $abs")
 
-    log.debug(s"relVersion: $relVersion")
-    log.debug(s"pubArtifact: $pubArtifact")
+    log.info(s"relVersion: $relVersion")
+    log.info(s"pubArtifact: $pubArtifact")
 
     val cmd = s"""gh release create --generate-notes $relVersion $pubArtifact"""
-    log.debug((s"cmd: $cmd"))
+    log.info((s"cmd: $cmd"))
     Process(cmd) ! log
     log.info(s"\tcmd: $cmd done")
   } catch {
