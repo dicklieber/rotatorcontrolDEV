@@ -38,12 +38,6 @@ resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
 
 
 val logbackVersion = "1.2.3"
-lazy val osName = System.getProperty("os.name") match {
-  case n if n.startsWith("Linux") => "linux"
-  case n if n.startsWith("Mac") => "mac"
-  case n if n.startsWith("Windows") => "win"
-  case _ => throw new Exception("Unknown platform!")
-}
 
 
 libraryDependencies ++= Seq(
@@ -82,13 +76,23 @@ ghRelease := {
   val log = streams.value.log
   try {
     log.info("=========ghRelease=========")
+    lazy val osName = System.getProperty("os.name") match {
+      case n if n.startsWith("Linux") => "linux"
+      case n if n.startsWith("Mac") => "mac"
+      case n if n.startsWith("Windows") => "win"
+      case _ => throw new Exception("Unknown platform!")
+    }
+    log.debug(s"osName: $osName")
 
     val relVersion = s"v${version.value}-$osName"
+    log.debug(s"relVersion: $relVersion")
 
     val pubArtifact: File =  osName match {
       case "mac" =>
+        log.debug("Using: packageOsxDmg")
         (Universal / packageOsxDmg).value
       case x =>
+        log.debug("Using: packageBin")
         (Universal / packageBin).value
     }
 
