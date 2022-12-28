@@ -87,14 +87,7 @@ ghRelease := {
     val relVersion = s"v${version.value}-$osName"
     log.info(s"relVersion: $relVersion")
 
-    val pubArtifact: File =  osName match {
-      case "mac" =>
-        log.info("Using: packageOsxDmg")
-        (Universal / packageOsxDmg).value
-      case x =>
-        log.info("Using: packageBin")
-        (Universal / packageBin).value
-    }
+    val pubArtifact: File = (Universal / packageBin).value
     log.info(s"pubArtifact: $pubArtifact")
 
     val github: java.nio.file.Path = Paths.get("github.sh")
