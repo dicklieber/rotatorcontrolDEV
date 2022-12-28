@@ -29,8 +29,6 @@ buildInfoOptions ++= Seq(
   BuildInfoOption.BuildTime
 )
 
-//deploymentSettings
-
 jlinkIgnoreMissingDependency := JlinkIgnore.everything
 
 resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
