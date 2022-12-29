@@ -1,16 +1,16 @@
+package com.wa9nnn.rotator
 
 import com.google.inject.{Guice, Injector}
 import com.wa9nnn.rotator.arco.ArcoManager
 import com.wa9nnn.rotator.metrics.MetricsReporter
 import com.wa9nnn.rotator.ui.AboutDialog
 import com.wa9nnn.rotator.ui.config.ConfigEditorDialog
-import com.wa9nnn.rotator.{BuildInfo, GuiceModule}
 import com.wa9nnn.util.TimeConverters
-import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Label, Menu, MenuBar, MenuItem}
 import scalafx.scene.layout.BorderPane
+import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 
 import java.time.Instant
 
@@ -49,7 +49,7 @@ object RotatorControl extends JFXApp3 {
       }
     }
     injector = Guice.createInjector(new GuiceModule())
-     val arcoManager: ArcoManager = injector.instance[ArcoManager]
+    val arcoManager: ArcoManager = injector.instance[ArcoManager]
 
 
     val secne: Scene = new Scene {
@@ -63,7 +63,7 @@ object RotatorControl extends JFXApp3 {
         items += editRotatorMenuItem
         items += metricsMenu
       }
-     val aboutMenu = new Menu("Help") {
+      val aboutMenu = new Menu("Help") {
         items += aboutDialogItem
       }
 
@@ -75,7 +75,7 @@ object RotatorControl extends JFXApp3 {
         //          center = tabPane
 
         val builtAt = TimeConverters.instantDisplayUTCLocal(Instant.ofEpochMilli(BuildInfo.builtAtMillis))
-        bottom = new Label{
+        bottom = new Label {
           text = s"Version ${BuildInfo.version}"
         }
       }
@@ -83,4 +83,3 @@ object RotatorControl extends JFXApp3 {
     stage.scene = secne
   }
 }
-
