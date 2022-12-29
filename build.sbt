@@ -40,7 +40,9 @@ val logbackVersion = "1.2.3"
 
 libraryDependencies ++= Seq(
   "com.wa9nnn" %% "util" % "0.1.9",
-  "org.scalafx" %% "scalafx" % "19.0.0-R30",
+  "org.scalafx" %% "scalafx" % "19.0.0-R30" excludeAll (
+    ExclusionRule(organization = "org", "openjfx"),
+    ),
   "org.scalafx" %% "scalafx-extras" % "0.7.0",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
 
@@ -69,6 +71,15 @@ import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 bashScriptExtraDefines += "umask 077"
 
 val ghRelease = taskKey[Unit]("send stuff to github")
+
+// removes all the org.openjfx.javafx jars. These are supplied by the
+Universal / mappings := {
+  val universalMappings: Seq[(File, String)] = (Universal / mappings).value
+
+  universalMappings filter {
+    case (file, name) => !name.contains("org.openjfx.javafx")
+  }
+}
 
 ghRelease := {
   val log = streams.value.log
@@ -102,10 +113,9 @@ ghRelease := {
     Process(cmd) ! log
     log.info(s"\tcmd: $cmd done")
   } catch {
-    case e:Exception =>
+    case e: Exception =>
       e.printStackTrace()
   }
-
 }
 
 releaseProcess := Seq[ReleaseStep](
@@ -115,24 +125,15 @@ releaseProcess := Seq[ReleaseStep](
   runTest, // : ReleaseStep
   setReleaseVersion, // : ReleaseStep
   commitReleaseVersion, // : ReleaseStep, performs the initial git checks
-//  tagRelease, // : ReleaseStep
+  //  tagRelease, // : ReleaseStep
   releaseStepTask(ghRelease),
   //  releaseStepTask(Universal / packageBin),
   //  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
-//  pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
+  //  pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
   setNextVersion, // : ReleaseStep
   commitNextVersion, // : ReleaseStep
   pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
 )
-
-
-//Universal / javaOptions ++= Seq(
-//  "-java-home ${app_home}/../jre"
-//)
-
-
-
-
 
 resolvers +=
   "ReposiliteXYZZY" at "http://127.0.0.1:8080/releases"
