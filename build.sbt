@@ -4,7 +4,6 @@ import sbtrelease.ReleasePlugin.autoImport.releaseStepTask
 import java.nio.file.{Files, Paths}
 import scala.language.postfixOps
 import scala.sys.process._
-
 ThisBuild / scalaVersion := "2.13.10"
 
 //lazy val root = (project in file("."))
@@ -15,12 +14,12 @@ ThisBuild / scalaVersion := "2.13.10"
 fork := false
 
 
-maintainer := "Dick Lieber <wa9nnn@u505.com>"
-packageSummary := "ARCO to HamLibs rotctld"
-packageDescription := """Adapts ARCO Rotator Controllers to rotctld protocol"""
+//maintainer := "Dick Lieber <wa9nnn@u505.com>"
+//packageSummary := "ARCO to HamLibs rotctld"
+//packageDescription := """Adapts ARCO Rotator Controllers to rotctld protocol"""
 
-enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, UniversalPlugin, UniversalDeployPlugin, LauncherJarPlugin)
-buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, maintainer,
+enablePlugins(JvmPlugin, GitPlugin, BuildInfoPlugin)
+buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion,
   git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion)
 buildInfoPackage := "com.wa9nnn.rotator"
 
@@ -29,14 +28,12 @@ buildInfoOptions ++= Seq(
   BuildInfoOption.BuildTime
 )
 
-jlinkIgnoreMissingDependency := JlinkIgnore.everything
-
 resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
   .withAllowInsecureProtocol(true)
 
 
 val logbackVersion = "1.2.3"
-
+//addDependencyTreePlugin
 
 libraryDependencies ++= Seq(
   "com.wa9nnn" %% "util" % "0.1.9",
@@ -68,18 +65,7 @@ publish / skip := true
 
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
-bashScriptExtraDefines += "umask 077"
-
 val ghRelease = taskKey[Unit]("send stuff to github")
-
-// removes all the org.openjfx.javafx jars. These are supplied by the
-Universal / mappings := {
-  val universalMappings: Seq[(File, String)] = (Universal / mappings).value
-
-  universalMappings filter {
-    case (file, name) => !name.contains("org.openjfx.javafx")
-  }
-}
 
 ghRelease := {
   val log = streams.value.log
@@ -96,7 +82,7 @@ ghRelease := {
     val relVersion = s"v${version.value}-$osName"
     log.info(s"relVersion: $relVersion")
 
-    val pubArtifact: File = (Universal / packageBin).value
+    val pubArtifact: File = (assembly).value
     log.info(s"pubArtifact: $pubArtifact")
 
     val github: java.nio.file.Path = Paths.get("github.sh")
@@ -138,3 +124,21 @@ releaseProcess := Seq[ReleaseStep](
 resolvers +=
   "ReposiliteXYZZY" at "http://127.0.0.1:8080/releases"
 
+/*
+ThisBuild / assemblyMergeStrategy := {
+  case PathList("org", "servlet", xs @ _*)         => MergeStrategy.first
+  case PathList(ps @ _*) if ps.last endsWith ".html" => MergeStrategy.first
+  case "application.conf"                            => MergeStrategy.concat
+  case "unwanted.txt"                                => MergeStrategy.discard
+  case x =>
+    val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
+    oldStrategy(x)
+}*/
+/*
+ThisBuild / assemblyMergeStrategy := {
+  case PathList("org.openjfx") =>
+    MergeStrategy.discard
+  case x =>
+    val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
+    oldStrategy(x)
+}*/
