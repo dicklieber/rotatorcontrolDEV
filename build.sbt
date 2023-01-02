@@ -77,7 +77,7 @@ ghRelease := {
 //    }
 //    log.info(s"osName: $osName")
 
-//    val relVersion = s"v${version.value}-$osName"
+//    val relVersion = s"v${version.value}"
 //    log.info(s"relVersion: $relVersion")
 
     val pubArtifact: File = (assembly).value
@@ -91,7 +91,7 @@ ghRelease := {
 
     log.info(s"pubArtifact: $pubArtifact")
 
-    val cmd = s"""gh release create --generate-notes $version.value $pubArtifact"""
+    val cmd = s"""gh release create --generate-notes ${version.value} $pubArtifact"""
     log.info((s"cmd: $cmd"))
     Process(cmd) ! log
     log.info(s"\tcmd: $cmd done")
