@@ -69,16 +69,6 @@ ghRelease := {
   val log = streams.value.log
   try {
     log.info("=========ghRelease=========")
-//    lazy val osName = System.getProperty("os.name") match {
-//      case n if n.startsWith("Linux") => "linux"
-//      case n if n.startsWith("Mac") => "mac"
-//      case n if n.startsWith("Windows") => "win"
-//      case _ => throw new Exception("Unknown platform!")
-//    }
-//    log.info(s"osName: $osName")
-
-//    val relVersion = s"v${version.value}"
-//    log.info(s"relVersion: $relVersion")
 
     val pubArtifact: File = (assembly).value
     log.info(s"pubArtifact: $pubArtifact")
@@ -91,7 +81,7 @@ ghRelease := {
 
     log.info(s"pubArtifact: $pubArtifact")
 
-    val cmd = s"""gh release create --generate-notes ${version.value} $pubArtifact"""
+    val cmd = s"""gh release create --generate-notes v${version.value} $pubArtifact"""
     log.info((s"cmd: $cmd"))
     Process(cmd) ! log
     log.info(s"\tcmd: $cmd done")
@@ -121,16 +111,6 @@ releaseProcess := Seq[ReleaseStep](
 resolvers +=
   "ReposiliteXYZZY" at "http://127.0.0.1:8080/releases"
 
-/*
-ThisBuild / assemblyMergeStrategy := {
-  case PathList("org", "servlet", xs @ _*)         => MergeStrategy.first
-  case PathList(ps @ _*) if ps.last endsWith ".html" => MergeStrategy.first
-  case "application.conf"                            => MergeStrategy.concat
-  case "unwanted.txt"                                => MergeStrategy.discard
-  case x =>
-    val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
-    oldStrategy(x)
-}*/
 ThisBuild / assemblyMergeStrategy := {
   case p if p.startsWith("javafx") =>
     MergeStrategy.discard
