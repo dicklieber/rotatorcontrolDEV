@@ -1,22 +1,20 @@
 import sbt.Keys.streams
+import sbtassembly.MergeStrategy
 import sbtrelease.ReleasePlugin.autoImport.releaseStepTask
 
 import java.nio.file.{Files, Paths}
 import scala.language.postfixOps
 import scala.sys.process._
+
 ThisBuild / scalaVersion := "2.13.10"
 
-//lazy val root = (project in file("."))
-//  .settings(
-//    name := "rotatorcontrol"
-//  )
+lazy val app = (project in file("."))
+  .settings(
+    assembly / assemblyJarName := "rotatorcontrol.jar",
+    // more settings here ...
+  )
 
 fork := false
-
-
-//maintainer := "Dick Lieber <wa9nnn@u505.com>"
-//packageSummary := "ARCO to HamLibs rotctld"
-//packageDescription := """Adapts ARCO Rotator Controllers to rotctld protocol"""
 
 enablePlugins(JvmPlugin, GitPlugin, BuildInfoPlugin)
 buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion,
@@ -134,11 +132,11 @@ ThisBuild / assemblyMergeStrategy := {
     val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
     oldStrategy(x)
 }*/
-/*
 ThisBuild / assemblyMergeStrategy := {
-  case PathList("org.openjfx") =>
+  case p if p.startsWith("javafx") =>
     MergeStrategy.discard
-  case x =>
-    val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
-    oldStrategy(x)
-}*/
+  case PathList("META-INF", xs@_*) =>
+    MergeStrategy.discard
+  case _ =>
+    MergeStrategy.first
+}
