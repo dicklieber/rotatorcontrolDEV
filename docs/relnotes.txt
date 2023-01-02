@@ -1,2 +1,9 @@
-To run execut:
+rotatorcontrol.jar This runs on any operating system as long as you have installed java for your OS.
+
+Install a version of java with javafx. I use Liberica from https://bell-sw.com/pages/downloads/
+Choose JDK 11 LTS or later.  Scroll down to Package, under your operating system.
+Then choose "Full JDK". The Full package has javafx baked in.
+Once you have java installed you can run:
+
 % java -jar rotatorcontrol.jar
+
