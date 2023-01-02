@@ -8,7 +8,7 @@ import scala.sys.process._
 
 ThisBuild / scalaVersion := "2.13.10"
 
-lazy val app = (project in file("."))
+lazy val rotatorcontrol = (project in file("."))
   .settings(
     assembly / assemblyJarName := "rotatorcontrol.jar",
     // more settings here ...
