@@ -29,9 +29,7 @@ buildInfoOptions ++= Seq(
 resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
   .withAllowInsecureProtocol(true)
 
-
 val logbackVersion = "1.2.3"
-//addDependencyTreePlugin
 
 libraryDependencies ++= Seq(
   "com.wa9nnn" %% "util" % "0.1.9",
@@ -81,7 +79,7 @@ ghRelease := {
 
     log.info(s"pubArtifact: $pubArtifact")
 
-    val cmd = s"""gh release create --generate-notes v${version.value} $pubArtifact"""
+    val cmd = s"""gh release create --generate-notes --notes "java -jar rotatorcontrol.jar" v${version.value} $pubArtifact"""
     log.info((s"cmd: $cmd"))
     Process(cmd) ! log
     log.info(s"\tcmd: $cmd done")
