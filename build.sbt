@@ -69,16 +69,16 @@ ghRelease := {
   val log = streams.value.log
   try {
     log.info("=========ghRelease=========")
-    lazy val osName = System.getProperty("os.name") match {
-      case n if n.startsWith("Linux") => "linux"
-      case n if n.startsWith("Mac") => "mac"
-      case n if n.startsWith("Windows") => "win"
-      case _ => throw new Exception("Unknown platform!")
-    }
-    log.info(s"osName: $osName")
+//    lazy val osName = System.getProperty("os.name") match {
+//      case n if n.startsWith("Linux") => "linux"
+//      case n if n.startsWith("Mac") => "mac"
+//      case n if n.startsWith("Windows") => "win"
+//      case _ => throw new Exception("Unknown platform!")
+//    }
+//    log.info(s"osName: $osName")
 
-    val relVersion = s"v${version.value}-$osName"
-    log.info(s"relVersion: $relVersion")
+//    val relVersion = s"v${version.value}-$osName"
+//    log.info(s"relVersion: $relVersion")
 
     val pubArtifact: File = (assembly).value
     log.info(s"pubArtifact: $pubArtifact")
@@ -89,10 +89,9 @@ ghRelease := {
     val abs: File = github.toAbsolutePath.toFile
     log.info(s"github abs: $abs")
 
-    log.info(s"relVersion: $relVersion")
     log.info(s"pubArtifact: $pubArtifact")
 
-    val cmd = s"""gh release create --generate-notes $relVersion $pubArtifact"""
+    val cmd = s"""gh release create --generate-notes $version.value $pubArtifact"""
     log.info((s"cmd: $cmd"))
     Process(cmd) ! log
     log.info(s"\tcmd: $cmd done")
