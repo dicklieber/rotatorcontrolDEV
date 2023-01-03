@@ -28,6 +28,8 @@ import scalafx.scene.Scene
 import scalafx.scene.control.{Label, Menu, MenuBar, MenuItem}
 import scalafx.scene.layout.BorderPane
 
+import java.awt.{Image, SystemTray, Taskbar, Toolkit, TrayIcon}
+
 /**
  * Main
  */
@@ -66,12 +68,21 @@ object RotatorControl extends JFXApp3 {
     val arcoManager: ArcoManager = injector.instance[ArcoManager]
     val imagePath: String = s"/images/docIcon.png"
 
-    import java.awt.Taskbar
+    val image: Image = Toolkit.getDefaultToolkit.getImage(getClass.getResource(imagePath))
     if (Taskbar.isTaskbarSupported) {
-      val taskbar: Taskbar = Taskbar.getTaskbar
-      import java.awt.{Image, Toolkit}
-      val image: Image = Toolkit.getDefaultToolkit.getImage(getClass.getResource(imagePath))
-      taskbar.setIconImage(image)
+      try {
+        val taskbar: Taskbar = Taskbar.getTaskbar
+        taskbar.setIconImage(image)
+      } catch {
+        case e:Throwable =>
+         e.printStackTrace()
+      }
+    }
+
+    if(SystemTray.isSupported) {
+      val trayIcon = new TrayIcon(image, "Rotator Control")
+      val systemTray = SystemTray.getSystemTray
+      systemTray.add(trayIcon)
     }
 
     val scene: Scene = new Scene {
