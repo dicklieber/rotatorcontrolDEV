@@ -67,12 +67,12 @@ object RotatorControl extends JFXApp3 {
     val imagePath: String = s"/images/docIcon.png"
 
     import java.awt.Taskbar
-    val taskbar: Taskbar = Taskbar.getTaskbar
-    import java.awt.{Image, Toolkit}
-
-    val image: Image = Toolkit.getDefaultToolkit.getImage(getClass.getResource(imagePath))
-    taskbar.setIconImage(image)
-
+    if (Taskbar.isTaskbarSupported) {
+      val taskbar: Taskbar = Taskbar.getTaskbar
+      import java.awt.{Image, Toolkit}
+      val image: Image = Toolkit.getDefaultToolkit.getImage(getClass.getResource(imagePath))
+      taskbar.setIconImage(image)
+    }
 
     val scene: Scene = new Scene {
       val cssUrl: String = getClass.getResource("/rotatormanager.css").toExternalForm
