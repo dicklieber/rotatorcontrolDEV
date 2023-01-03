@@ -27,7 +27,6 @@ import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Label, Menu, MenuBar, MenuItem}
 import scalafx.scene.image.Image
-import scalafx.scene.input.DataFormat.Image
 import scalafx.scene.layout.BorderPane
 
 import java.awt
@@ -76,13 +75,16 @@ object RotatorControl extends JFXApp3 {
     stage.icons += image // This does not set the icon in MacOS, does work with Windows.
 
     if (Taskbar.isTaskbarSupported) {
-      val url: URL = getClass.getResource(imagePath)
-      val image: awt.Image = Toolkit.getDefaultToolkit.getImage(url)
+      try {
+        val url: URL = getClass.getResource(imagePath)
+        val image: awt.Image = Toolkit.getDefaultToolkit.getImage(url)
 
-      val taskbar: Taskbar = Taskbar.getTaskbar
-      taskbar.setIconImage(image)
+        val taskbar: Taskbar = Taskbar.getTaskbar
+        taskbar.setIconImage(image)
+      } catch {
+        case _:Throwable =>
+      }
     }
-
 
     val scene: Scene = new Scene {
       val cssUrl: String = getClass.getResource("/rotatormanager.css").toExternalForm
@@ -91,11 +93,11 @@ object RotatorControl extends JFXApp3 {
       private val menuBar = new MenuBar {
         useSystemMenuBar = true
       }
-      val configMenu = new Menu("Config") {
+      private val configMenu = new Menu("Config") {
         items += editRotatorMenuItem
         items += metricsMenu
       }
-      val aboutMenu = new Menu("Help") {
+      private val aboutMenu = new Menu("Help") {
         items += aboutDialogItem
       }
 
