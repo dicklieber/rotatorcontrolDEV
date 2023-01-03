@@ -43,7 +43,7 @@ jobs:
       - name: Package jar as dmg installer
         run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class example.Main --main-jar ${{ env.pkg-assembly }}"
       - name: Upload dmg
-        uses: actions/upload-artifact@v10
+        uses: actions/upload-artifact@v1
         with:
           name: dmgs
           path: "${{ env.pkg-name }}-${{ env.pkg-version }}.dmg"
