@@ -9,6 +9,7 @@ env:
   pkg-assembly: 'rotatorcontrol.jar'
   pkg-name: 'rotatorcontrol'
   pkg-version: '0.0.0.1'
+  pkg-mainclass: "com.wa9nnn.rotator.RotatorControl"
 
 jobs:
   fat:
@@ -43,7 +44,7 @@ jobs:
         with:
           name: jars
       - name: Package jar as dmg installer
-        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class example.Main --main-jar ${{ env.pkg-assembly }} --verbose"
+        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class $((pkg-mainclass}} --app-version ${{pkg-version}} --main-jar ${{ env.pkg-assembly }} --verbose"
       - name: Upload dmg
         uses: actions/upload-artifact@v1
         with:
