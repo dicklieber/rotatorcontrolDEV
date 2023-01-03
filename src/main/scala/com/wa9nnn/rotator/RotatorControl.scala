@@ -26,9 +26,10 @@ import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Label, Menu, MenuBar, MenuItem}
+import scalafx.scene.image.Image
+import scalafx.scene.input.DataFormat.Image
 import scalafx.scene.layout.BorderPane
 
-import java.awt.{Image, SystemTray, Taskbar, Toolkit, TrayIcon}
 import java.net.URL
 
 /**
@@ -70,25 +71,26 @@ object RotatorControl extends JFXApp3 {
     val imagePath: String = s"/images/docIcon.png"
 
     val url: URL = getClass.getResource(imagePath)
-    val inputStream = url.openStream()
-    val bytes = inputStream.readAllBytes()
-    val content = url.getContent
-    val image: Image = Toolkit.getDefaultToolkit.createImage(bytes)
-    if (Taskbar.isTaskbarSupported) {
-      try {
-        val taskbar: Taskbar = Taskbar.getTaskbar
-        taskbar.setIconImage(image)
-      } catch {
-        case e:Throwable =>
-         e.printStackTrace()
-      }
-    }
 
-    if(SystemTray.isSupported) {
-      val trayIcon = new TrayIcon(image, "Rotator Control")
-      val systemTray = SystemTray.getSystemTray
-      systemTray.add(trayIcon)
-    }
+    val image = new Image(imagePath)
+
+
+    stage.icons += image
+//    if (Taskbar.isTaskbarSupported) {
+//      try {
+//        val taskbar: Taskbar = Taskbar.getTaskbar
+//        taskbar.setIconImage(image)
+//      } catch {
+//        case e:Throwable =>
+//         e.printStackTrace()
+//      }
+//    }
+//
+//    if(SystemTray.isSupported) {
+//      val trayIcon = new TrayIcon(image, "Rotator Control")
+//      val systemTray = SystemTray.getSystemTray
+//      systemTray.add(trayIcon)
+//    }
 
     val scene: Scene = new Scene {
       val cssUrl: String = getClass.getResource("/rotatormanager.css").toExternalForm
