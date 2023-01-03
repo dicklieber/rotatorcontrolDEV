@@ -30,6 +30,8 @@ import scalafx.scene.image.Image
 import scalafx.scene.input.DataFormat.Image
 import scalafx.scene.layout.BorderPane
 
+import java.awt
+import java.awt.{Taskbar, Toolkit}
 import java.net.URL
 
 /**
@@ -68,29 +70,19 @@ object RotatorControl extends JFXApp3 {
     }
     injector = Guice.createInjector(new GuiceModule())
     val arcoManager: ArcoManager = injector.instance[ArcoManager]
+
     val imagePath: String = s"/images/docIcon.png"
-
-    val url: URL = getClass.getResource(imagePath)
-
     val image = new Image(imagePath)
+    stage.icons += image // This does not set the icon in MacOS, does work with Windows.
 
+    if (Taskbar.isTaskbarSupported) {
+      val url: URL = getClass.getResource(imagePath)
+      val image: awt.Image = Toolkit.getDefaultToolkit.getImage(url)
 
-    stage.icons += image
-//    if (Taskbar.isTaskbarSupported) {
-//      try {
-//        val taskbar: Taskbar = Taskbar.getTaskbar
-//        taskbar.setIconImage(image)
-//      } catch {
-//        case e:Throwable =>
-//         e.printStackTrace()
-//      }
-//    }
-//
-//    if(SystemTray.isSupported) {
-//      val trayIcon = new TrayIcon(image, "Rotator Control")
-//      val systemTray = SystemTray.getSystemTray
-//      systemTray.add(trayIcon)
-//    }
+      val taskbar: Taskbar = Taskbar.getTaskbar
+      taskbar.setIconImage(image)
+    }
+
 
     val scene: Scene = new Scene {
       val cssUrl: String = getClass.getResource("/rotatormanager.css").toExternalForm
