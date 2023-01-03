@@ -1,0 +1,3 @@
+jpackage --input target/  --name xyzzy --main-jar scala-2.13/rotatorcontrol.jar \
+ --main-class com.wa9nnn.rotator.RotatorControl --type dmg
+

@@ -8,6 +8,16 @@ import scala.sys.process._
 
 ThisBuild / scalaVersion := "2.13.10"
 
+lazy val output = {
+  val jarsPath = Paths.get("target/jars").toAbsolutePath
+  if (Files.notExists(jarsPath)) {
+    val created = Files.createDirectories(jarsPath)
+    println(s"created: ${created.toFile}")
+  }
+  jarsPath.resolve("rotatorcontrol.jar")
+}
+
+
 lazy val rotatorcontrol = (project in file("."))
   .settings(
     assembly / assemblyJarName := "rotatorcontrol.jar",
@@ -60,6 +70,7 @@ publish / skip := true
 
 
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
+
 
 val ghRelease = taskKey[Unit]("send stuff to github")
 
