@@ -90,7 +90,7 @@ jobs:
         with:
           name: jars
       - name: Package jar as debian package
-        run: "jpackage --name ${{ env.pkg-name }} --type deb -i jars --main-class ${{env.pkg-mainclass} --main-jar ${{ env.pkg-assembly }}"
+        run: "jpackage --name ${{ env.pkg-name }} --type deb -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }}"
       - name: Upload deb
         uses: actions/upload-artifact@v1
         with:
