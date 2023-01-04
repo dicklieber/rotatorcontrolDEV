@@ -9,6 +9,7 @@ env:
   pkg-assembly: 'rotatorcontrol.jar'
   pkg-name: 'rotatorcontrol'
   pkg-version: '1.0.1'
+  gh-version: 'v${{ env.pkg-version }}'
   pkg-mainclass: "com.wa9nnn.rotator.RotatorControl"
 
 jobs:
@@ -33,7 +34,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-         tag_name: v${{ env.pkg-version }}
+         tag_name: ${{ env.gh-version }}
          release_name: Release ${{ env.pkg-name }}
          draft: false
          prerelease: false
@@ -57,7 +58,8 @@ jobs:
         run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --app-version ${{env.pkg-version}} --win-dir-chooser"
       - name: View artifacts
         run: dir
-
+      - name: Upload installer Asset
+        run "gh release upload ${{gh-version}} D:\a\rotatorcontrol\rotatorcontrol\rotatorcontrol-${{env.pkg-version}}.exe"
 
   #      - name: Upload installer
   #        uses: actions/upload-artifact@v1
