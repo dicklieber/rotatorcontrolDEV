@@ -69,28 +69,28 @@ jobs:
         with:
           name: msis
           path: "${{ env.pkg-name }}-${{ env.pkg-version }}.msi"
-#  osx:
-#    needs: fat
-#    runs-on: [ macos-latest ]
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: actions/setup-java@v2
-#        with:
-#          distribution: 'zulu'
-#          java-version: '11'
-#          java-package: jdk
-#          architecture: x64
-#      - name: Download fat jar
-#        uses: actions/download-artifact@v1
-#        with:
-#          name: jars
-#      - name: Package jar as dmg installer
-#        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }} --verbose"
-#      - name: Upload dmg
-#        uses: actions/upload-artifact@v1
-#        with:
-#          name: dmgs
-#          path: "${{ env.pkg-name }}-${{ env.pkg-version }}.dmg"
+  osx:
+    needs: fat
+    runs-on: [ macos-latest ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'liberica'
+          java-version: '17'
+          java-package: jdk+fx
+          architecture: x64
+      - name: Download fat jar
+        uses: actions/download-artifact@v1
+        with:
+          name: jars
+      - name: Package jar as dmg installer
+        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }} --verbose"
+      - name: Upload dmg
+        uses: actions/upload-artifact@v1
+        with:
+          name: dmgs
+          path: "${{ env.pkg-name }}-${{ env.pkg-version }}.dmg"
 #  linux:
 #    needs: fat
 #    runs-on: [ubuntu-latest]
