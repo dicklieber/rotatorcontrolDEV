@@ -9,7 +9,7 @@ env:
   pkg-assembly: 'rotatorcontrol.jar'
   pkg-name: 'rotatorcontrol'
   pkg-version: '1.0.1'
-  gh-version: 'v${{ env.pkg-version }}'
+  gh-version: 'v${{ pkg-version }}'
   pkg-mainclass: "com.wa9nnn.rotator.RotatorControl"
 
 jobs:
