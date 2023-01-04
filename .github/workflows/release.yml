@@ -37,15 +37,14 @@ jobs:
         with:
           distribution: 'liberica'
           java-version: '14'
-          java-package: jdk
+          java-package: jdk+fx
           architecture: x64
       - name: Download fat jar
         uses: actions/download-artifact@v1
         with:
           name: jars
       - name: Package jar as msi
-        run: "whereis jpackage"
-#        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --win-dir-chooser"
+        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --win-dir-chooser"
       - name: View artifacts
         run: dir
       - name: Upload installer
