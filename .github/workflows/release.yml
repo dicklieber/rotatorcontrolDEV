@@ -28,23 +28,17 @@ jobs:
         with:
           name: jars
           path: "target/scala-2.13/${{ env.pkg-assembly }}"
-  github-actions-environment-variables-ubuntu:
-    runs-on: ubuntu-latest
-    steps:
-      - name: List of the GitHub Actions environment variables on Windows
-        run: env
+      - name: Create Release
+          id: create_release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          with:
+            tag_name: v${{ env.pkg-version }}
+            release_name: Release ${{ env.pkg-name }}
+            draft: false
+            prerelease: false
 
-  github-actions-environment-variables-windows:
-    runs-on: windows-latest
-    steps:
-      - name: Ubuntu GitHub Actions environment variables List
-        run: env
-
-  github-actions-environment-variables-macos:
-    runs-on: macos-latest
-    steps:
-      - name: MacOs List of GitHub Actions environment variables
-        run: env
   windows:
     needs: fat
     runs-on: [ windows-latest ]
@@ -61,14 +55,16 @@ jobs:
         with:
           name: jars
       - name: Package jar as msi
-        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --win-dir-chooser"
+        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --app-version ${{env.pkg-version}} --win-dir-chooser"
       - name: View artifacts
         run: dir
-      - name: Upload installer
-        uses: actions/upload-artifact@v1
-        with:
-          name: msis
-          path: "${{ env.pkg-name }}-${{ env.pkg-version }}.msi"
+
+
+  #      - name: Upload installer
+  #        uses: actions/upload-artifact@v1
+  #        with:
+  #          name: msis
+  #          path: "${{ env.pkg-name }}-${{ env.pkg-version }}.msi"
   osx:
     needs: fat
     runs-on: [ macos-latest ]
@@ -85,32 +81,31 @@ jobs:
         with:
           name: jars
       - name: Package jar as dmg installer
-        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }} --verbose"
+        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }}"
       - name: Upload dmg
         uses: actions/upload-artifact@v1
         with:
           name: dmgs
           path: "${{ env.pkg-name }}-${{ env.pkg-version }}.dmg"
-#  linux:
-#    needs: fat
-#    runs-on: [ubuntu-latest]
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: actions/setup-java@v2
-#        with:
-#          distribution: 'zulu'
-#          java-version: '11'
-#          java-package: jdk
-#          architecture: x64
-#      - name: Download fat jar
-#        uses: actions/download-artifact@v1
-#        with:
-#          name: jars
-#      - name: Package jar as debian package
-#        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }} --verbose"
-#
-#      - name: Upload deb
-#        uses: actions/upload-artifact@v1
-#        with:
-#          name: debs
-#          path: "${{ env.pkg-name }}-${{ env.pkg-version }}.deb"
+  linux:
+    needs: fat
+    runs-on: [ ubuntu-latest ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'liberica'
+          java-version: '17'
+          java-package: jdk+fx
+          architecture: x64
+      - name: Download fat jar
+        uses: actions/download-artifact@v1
+        with:
+          name: jars
+      - name: Package jar as debian package
+        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }}"
+      - name: Upload deb
+        uses: actions/upload-artifact@v1
+        with:
+          name: debs
+          path: "${{ env.pkg-name }}-${{ env.pkg-version }}.deb"
