@@ -59,7 +59,7 @@ jobs:
       - name: View artifacts
         run: dir
       - name: Upload installer Asset
-        run "gh release upload ${{gh-version}} D:\a\rotatorcontrol\rotatorcontrol\rotatorcontrol-${{env.pkg-version}}.exe"
+        run: "gh release upload ${{gh-version}} D:\a\rotatorcontrol\rotatorcontrol\rotatorcontrol-${{env.pkg-version}}.exe"
 
   #      - name: Upload installer
   #        uses: actions/upload-artifact@v1
