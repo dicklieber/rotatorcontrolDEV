@@ -8,7 +8,7 @@ on: workflow_dispatch
 env:
   pkg-assembly: 'rotatorcontrol.jar'
   pkg-name: 'rotatorcontrol'
-  pkg-version: '0.0.1'
+  pkg-version: '1.0.1'
   pkg-mainclass: "com.wa9nnn.rotator.RotatorControl"
 
 jobs:
