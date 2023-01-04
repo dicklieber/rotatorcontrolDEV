@@ -44,7 +44,7 @@ jobs:
         with:
           name: jars
       - name: Package jar as dmg installer
-        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class $((pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }} --verbose"
+        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class $((env.pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }} --verbose"
       - name: Upload dmg
         uses: actions/upload-artifact@v1
         with:
