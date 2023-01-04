@@ -59,21 +59,21 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '11'
-        java-pacackage: jdk
-        architecture: x64
-        - name: Download fat jar
-          uses: actions/download-artifact@v1
-          with:
-            name: jars
-        - name: Package jar as msi
-          run: "jpackage --name ${{ env.pkg-name }} --type msi -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --win-dir-chooser"
-        - name: View artifacts
-          run: dir
-        - name: Upload installer
-          uses: actions/upload-artifact@v1
-          with:
-            name: msis
-            path: "${{ env.pkg-name }}-${{ env.pkg-version }}.msi"
+          java-pacackage: jdk
+          architecture: x64
+      - name: Download fat jar
+        uses: actions/download-artifact@v1
+        with:
+          name: jars
+      - name: Package jar as msi
+        run: "jpackage --name ${{ env.pkg-name }} --type msi -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --win-dir-chooser"
+      - name: View artifacts
+        run: dir
+      - name: Upload installer
+        uses: actions/upload-artifact@v1
+        with:
+          name: msis
+          path: "${{ env.pkg-name }}-${{ env.pkg-version }}.msi"
 #  linux:
 #    needs: fat
 #    runs-on: [ubuntu-latest]
