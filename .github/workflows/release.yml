@@ -28,6 +28,23 @@ jobs:
         with:
           name: jars
           path: "target/scala-2.13/${{ env.pkg-assembly }}"
+  github-actions-environment-variables-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: List of the GitHub Actions environment variables on Windows
+        run: env
+
+  github-actions-environment-variables-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Ubuntu GitHub Actions environment variables List
+        run: env
+
+  github-actions-environment-variables-macos:
+    runs-on: macos-latest
+    steps:
+      - name: MacOs List of GitHub Actions environment variables
+        run: env
   windows:
     needs: fat
     runs-on: [ windows-latest ]
@@ -36,7 +53,7 @@ jobs:
       - uses: actions/setup-java@v2
         with:
           distribution: 'liberica'
-          java-version: '14'
+          java-version: '17'
           java-package: jdk+fx
           architecture: x64
       - name: Download fat jar
