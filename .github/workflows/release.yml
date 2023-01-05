@@ -104,4 +104,4 @@ jobs:
       - name: View artifacts
         run: ls target/deb
       - name: Upload installer Asset
-        run: "gh release upload ${{env.gh-version}} target/deb/rotatorcontrol-${{env.pkg-version}}-1_amd64.deb.deb"
+        run: "gh release upload ${{env.gh-version}} target/deb/rotatorcontrol-${{env.pkg-version}}-1_amd64.deb"
