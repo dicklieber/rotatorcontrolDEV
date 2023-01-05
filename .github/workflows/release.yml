@@ -84,25 +84,24 @@ jobs:
       - name: Upload installer Asset
         run: "gh release upload ${{env.gh-version}} target/macos/rotatorcontrol-${{env.pkg-version}}.exe"
 
-
   linux:
-      needs: fat
-      runs-on: [ ubuntu-latest ]
-      steps:
-        - uses: actions/checkout@v2
-        - uses: actions/setup-java@v2
-          with:
-            distribution: 'liberica'
-            java-version: '17'
-            java-package: jdk+fx
-            architecture: x64
-        - name: Download fat jar
-          uses: actions/download-artifact@v1
-          with:
-            name: jars
-        - name: Package jar as debian package
-          run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }} -dest target/deb"
-        - name: View artifacts
-          run: ls target/macos
-        - name: Upload installer Asset
-          run: "gh release upload ${{env.gh-version}} target/deb/rotatorcontrol-${{env.pkg-version}}.deb"
+    needs: fat
+    runs-on: [ ubuntu-latest ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'liberica'
+          java-version: '17'
+          java-package: jdk+fx
+          architecture: x64
+      - name: Download fat jar
+        uses: actions/download-artifact@v1
+        with:
+          name: jars
+      - name: Package jar as debian package
+        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }} -dest target/deb"
+      - name: View artifacts
+        run: ls target/macos
+      - name: Upload installer Asset
+        run: "gh release upload ${{env.gh-version}} target/deb/rotatorcontrol-${{env.pkg-version}}.deb"
