@@ -64,8 +64,8 @@ jobs:
 
   osx:
     needs: fat
-      runs-on: [ macos-latest ]
-      steps:
+    runs-on: [ macos-latest ]
+    steps:
         - uses: actions/checkout@v2
         - uses: actions/setup-java@v2
           with:
