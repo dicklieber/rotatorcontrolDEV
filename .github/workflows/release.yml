@@ -82,7 +82,7 @@ jobs:
       - name: View artifacts
         run: ls target/macos
       - name: Upload installer Asset
-        run: "gh release upload ${{env.gh-version}} target/macos/rotatorcontrol-${{env.pkg-version}}.exe"
+        run: "gh release upload ${{env.gh-version}} target/macos/rotatorcontrol-${{env.pkg-version}}.dmg"
 
   linux:
     needs: fat
@@ -102,6 +102,6 @@ jobs:
       - name: Package jar as debian package
         run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }} --dest target/deb"
       - name: View artifacts
-        run: ls target/macos
+        run: ls target/deb
       - name: Upload installer Asset
         run: "gh release upload ${{env.gh-version}} target/deb/rotatorcontrol-${{env.pkg-version}}.deb"
