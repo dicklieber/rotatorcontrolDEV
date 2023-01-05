@@ -56,7 +56,7 @@ jobs:
         with:
           name: jars
       - name: Package jar as msi
-        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --app-version ${{env.pkg-version}} --dest target\windows --win-dir-chooser"
+        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --app-version ${{env.pkg-version}} --dest target\\windows --win-dir-chooser"
       - name: View artifacts
         run: dir target\windows
       - name: Upload installer Asset
