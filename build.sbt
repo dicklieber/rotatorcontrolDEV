@@ -8,6 +8,8 @@ import scala.sys.process._
 
 ThisBuild / scalaVersion := "2.13.10"
 
+logBuffered := false
+
 lazy val output = {
   val jarsPath = Paths.get("target/jars").toAbsolutePath
   if (Files.notExists(jarsPath)) {
