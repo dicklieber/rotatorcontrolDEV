@@ -109,7 +109,13 @@ buildFatJar := {
     log.info(s"pubArtifact: $pubArtifact")
     val versionFile = Paths.get("target").resolve("version")
     val sVersion = version.value
-    Files.writeString(versionFile, sVersion)
+    try {
+      Files.writeString(versionFile, sVersion)
+      log.info(s"$sVersion  written to $versionFile")
+    } catch {
+      case e:Exception =>
+        log.error(e.getMessage)
+    }
 
 //    val github: java.nio.file.Path = Paths.get("github.sh")
 //    log.info(s"github path: $github Executable: ${Files.isExecutable(github)}")
