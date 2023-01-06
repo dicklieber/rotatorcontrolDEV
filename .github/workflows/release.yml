@@ -25,7 +25,12 @@ jobs:
           java-version: 14
       - name: Remove -SNAPSHOT from version
       - run: sed -i 's/old-text/new-text/g' input.txt
-      - run: echo "Release Version$(cat version.txt)"
+      - name: Remove -SNAPSHOT from version
+          run: sed -i 's/old-text/new-text/g' input.txt
+      - name: Bump version
+          uses: remorses/bump-version@js
+          with:
+            version_file: ./version.txt
       - name: Build fat jar
         run: sbt assembly
       - name: Upload fat jar
@@ -33,22 +38,22 @@ jobs:
           with:
             name: jars
             path: "target/scala-2.13/${{ env.pkg-assembly }}"˚
-            - name: View artifacts
-              run: ls target
+                    - name: View artifacts
+                      run: ls target
 
-            - name: Create Release
-              uses: actions/create-release@v1
-              #        env:
-              #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-              with:
-                tag_name: ${{ env.gh-version }}
-                release_name: Release ${{ env.pkg-name }}
-                draft: false
-                prerelease: false
+                    - name: Create Release
+                      uses: actions/create-release@v1
+                      #        env:
+                      #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+                      with:
+                        tag_name: ${{ env.gh-version }}
+                        release_name: Release ${{ env.pkg-name }}
+                        draft: false
+                        prerelease: false
 
-            - name: Get version
-              id: version
-              run: echo "$(cat target/version.txt)" >> $GITHUB_OUTPUT
+                    - name: Get version
+                      id: version
+                      run: echo "$(cat target/version.txt)" >> $GITHUB_OUTPUT
 
         windows:
           needs: fat
