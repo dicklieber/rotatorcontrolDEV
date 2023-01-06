@@ -37,23 +37,23 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: jars
-           path: "target/scala-2.13/${{ env.pkg-assembly }}"˚
-                    - name: View artifacts
-                    run: ls target
+            path: "target/scala-2.13/${{ env.pkg-assembly }}"˚
+      - name: View artifacts
+          run: ls target
 
-                    - name: Create Release
-                      uses: actions/create-release@v1
-                      #        env:
-                      #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-                      with:
-                        tag_name: ${{ env.gh-version }}
-                        release_name: Release ${{ env.pkg-name }}
-                        draft: false
-                        prerelease: false
+            - name: Create Release
+              uses: actions/create-release@v1
+              #        env:
+              #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+              with:
+                tag_name: ${{ env.gh-version }}
+                release_name: Release ${{ env.pkg-name }}
+                draft: false
+                prerelease: false
 
-                    - name: Get version
-                      id: version
-                      run: echo "$(cat target/version.txt)" >> $GITHUB_OUTPUT
+            - name: Get version
+              id: version
+              run: echo "$(cat target/version.txt)" >> $GITHUB_OUTPUT
 
         windows:
           needs: fat
