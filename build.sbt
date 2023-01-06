@@ -1,10 +1,12 @@
-import sbt.Keys.streams
 import sbtassembly.MergeStrategy
-import sbtrelease.ReleasePlugin.autoImport.releaseStepTask
 
 import java.nio.file.{Files, Paths}
 import scala.language.postfixOps
-import scala.sys.process._
+
+ThisBuild / version := {
+  Files.readString(Paths.get("version.txt"))
+}
+
 
 ThisBuild / scalaVersion := "2.13.10"
 
@@ -66,92 +68,6 @@ libraryDependencies ++= Seq(
   "nl.grons" %% "metrics4-scala" % "4.2.9",
   "io.dropwizard.metrics" % "metrics-jmx" % "4.2.13",
   "com.typesafe" % "config" % "1.4.2",
-)
-
-publish / skip := true
-
-
-import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
-
-
-val ghRelease = taskKey[Unit]("send stuff to github")
-
-ghRelease := {
-  val log = streams.value.log
-  try {
-    log.info("=========ghRelease=========")
-
-    val pubArtifact: File = (assembly).value
-    log.info(s"pubArtifact: $pubArtifact")
-
-    val github: java.nio.file.Path = Paths.get("github.sh")
-    log.info(s"github path: $github Executable: ${Files.isExecutable(github)}")
-
-    val abs: File = github.toAbsolutePath.toFile
-    log.info(s"github abs: $abs")
-
-    log.info(s"pubArtifact: $pubArtifact")
-
-    val cmd = s"""gh release create --generate-notes --notes-file docs/relnotes.txt v${version.value} $pubArtifact"""
-    log.info((s"cmd: $cmd"))
-    Process(cmd) ! log
-    log.info(s"\tcmd: $cmd done")
-  } catch {
-    case e: Exception =>
-      e.printStackTrace()
-  }
-}
-val buildFatJar = taskKey[Unit]("Build fat jat and publish version string")
-buildFatJar := {
-  val log = streams.value.log
-  try {
-    log.info("=========buildFatJar=========")
-
-    val pubArtifact: File = (assembly).value
-    log.info(s"pubArtifact: $pubArtifact")
-    val versionFile = Paths.get("target").resolve("version.txt")
-    val sVersion = version.value
-    try {
-      Files.writeString(versionFile, sVersion)
-      log.info(s"$sVersion  written to $versionFile")
-    } catch {
-      case e:Exception =>
-        log.error(e.getMessage)
-    }
-
-//    val github: java.nio.file.Path = Paths.get("github.sh")
-//    log.info(s"github path: $github Executable: ${Files.isExecutable(github)}")
-//
-//    val abs: File = github.toAbsolutePath.toFile
-//    log.info(s"github abs: $abs")
-//
-//    log.info(s"pubArtifact: $pubArtifact")
-//
-//    val cmd = s"""gh release create --generate-notes --notes-file docs/relnotes.txt v${version.value} $pubArtifact"""
-//    log.info((s"cmd: $cmd"))
-//    Process(cmd) ! log
-//    log.info(s"\tcmd: $cmd done")
-  } catch {
-    case e: Exception =>
-      e.printStackTrace()
-  }
-}
-
-releaseProcess := Seq[ReleaseStep](
-  checkSnapshotDependencies, // : ReleaseStep
-  inquireVersions, // : ReleaseStep
-  runClean, // : ReleaseStep
-  runTest, // : ReleaseStep
-  setReleaseVersion, // : ReleaseStep
-  commitReleaseVersion, // : ReleaseStep, performs the initial git checks
-  //  tagRelease, // : ReleaseStep
-  releaseStepTask(buildFatJar),
-  //  releaseStepTask(Universal / packageBin),
-  //  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
-  //  pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
-  setNextVersion, // : ReleaseStep
-  commitNextVersion, // : ReleaseStep
-  pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
 )
 
 resolvers +=
