@@ -30,6 +30,9 @@ jobs:
         with:
           name: jars
           path: "target/scala-2.13/${{ env.pkg-assembly }}"
+      - name: View artifacts
+          run: ls target
+
       - name: Create Release
         uses: actions/create-release@v1
         #        env:
@@ -39,6 +42,10 @@ jobs:
           release_name: Release ${{ env.pkg-name }}
           draft: false
           prerelease: false
+
+      - name: Get version
+        id: version
+        run: echo "$(cat target/version)" >> $GITHUB_OUTPUT
 
   windows:
     needs: fat
