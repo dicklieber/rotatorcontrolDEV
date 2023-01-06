@@ -43,15 +43,10 @@ jobs:
         uses: actions/create-release@v1
         with:
             tag_name: ${{ env.gh-version }}
-                release_name: Release ${{ env.pkg-name }}
-                draft: false
-                prerelease: false
-
-            - name: Get version
-              id: version
-              run: echo "$(cat target/version.txt)" >> $GITHUB_OUTPUT
-
-        windows:
+            release_name: Release ${{ env.pkg-name }}
+            draft: false
+            prerelease: false
+    windows:
           needs: fat
           runs-on: [ windows-latest ]
           steps:
