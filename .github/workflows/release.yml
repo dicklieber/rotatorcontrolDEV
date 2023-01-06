@@ -34,10 +34,10 @@ jobs:
       - name: Build fat jar
         run: sbt assembly
       - name: Upload fat jar
-          uses: actions/upload-artifact@v1
-          with:
-            name: jars
-            path: "target/scala-2.13/${{ env.pkg-assembly }}"˚
+        uses: actions/upload-artifact@v1
+        with:
+          name: jars
+           path: "target/scala-2.13/${{ env.pkg-assembly }}"˚
                     - name: View artifacts
                     run: ls target
 
