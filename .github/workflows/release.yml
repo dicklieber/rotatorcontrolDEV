@@ -26,10 +26,10 @@ jobs:
       - name: Remove -SNAPSHOT from version
       - run: sed -i 's/old-text/new-text/g' input.txt
       - name: Remove -SNAPSHOT from version
-          run: sed -i 's/old-text/new-text/g' input.txt
+        run: sed -i 's/old-text/new-text/g' input.txt
       - name: Bump version
-          uses: remorses/bump-version@js
-          with:
+        uses: remorses/bump-version@js
+         with:
             version_file: ./version.txt
       - name: Build fat jar
         run: sbt assembly
