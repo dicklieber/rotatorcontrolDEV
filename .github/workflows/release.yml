@@ -24,8 +24,6 @@ jobs:
           distribution: 'zulu'
           java-version: 14
       - name: Remove -SNAPSHOT from version
-      - run: sed -i 's/old-text/new-text/g' input.txt
-      - name: Remove -SNAPSHOT from version
         run: sed -i 's/old-text/new-text/g' input.txt
       - name: Bump Version
         uses: remorses/bump-version@js
