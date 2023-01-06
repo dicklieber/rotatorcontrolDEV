@@ -30,7 +30,7 @@ jobs:
       - name: Bump Version
         uses: remorses/bump-version@js
         with:
-           version_file: ./version.txt
+          version_file: ./version.txt
       - name: Build fat jar
         run: sbt assembly
       - name: Upload fat jar
@@ -39,7 +39,7 @@ jobs:
             name: jars
             path: "target/scala-2.13/${{ env.pkg-assembly }}"˚
                     - name: View artifacts
-                      run: ls target
+                    run: ls target
 
                     - name: Create Release
                       uses: actions/create-release@v1
