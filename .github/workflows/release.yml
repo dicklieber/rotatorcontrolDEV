@@ -23,95 +23,96 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 14
+      - name: Remove -SNAPSHOT from version
+        - run: sed -i 's/old-text/new-text/g' input.txt
+        - run: echo "Release Version$(cat version.txt)"
       - name: Build fat jar
-        run: sbt release "with-defaults"
-
-
+        run: sbt assembly
       - name: Upload fat jar
-        uses: actions/upload-artifact@v1
-        with:
-          name: jars
-          path: "target/scala-2.13/${{ env.pkg-assembly }}"
-      - name: View artifacts
-        run: ls target
+          uses: actions/upload-artifact@v1
+          with:
+            name: jars
+            path: "target/scala-2.13/${{ env.pkg-assembly }}"
+            - name: View artifacts
+              run: ls target
 
-      - name: Create Release
-        uses: actions/create-release@v1
-        #        env:
-        #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: ${{ env.gh-version }}
-          release_name: Release ${{ env.pkg-name }}
-          draft: false
-          prerelease: false
+            - name: Create Release
+              uses: actions/create-release@v1
+              #        env:
+              #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+              with:
+                tag_name: ${{ env.gh-version }}
+                release_name: Release ${{ env.pkg-name }}
+                draft: false
+                prerelease: false
 
-      - name: Get version
-        id: version
-        run: echo "$(cat target/version.txt)" >> $GITHUB_OUTPUT
+            - name: Get version
+              id: version
+              run: echo "$(cat target/version.txt)" >> $GITHUB_OUTPUT
 
-  windows:
-    needs: fat
-    runs-on: [ windows-latest ]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v2
-        with:
-          distribution: 'liberica'
-          java-version: '17'
-          java-package: jdk+fx
-          architecture: x64
-      - name: Download fat jar
-        uses: actions/download-artifact@v1
-        with:
-          name: jars
-      - name: Package jar as msi
-        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --app-version ${{env.pkg-version}} --dest target/windows --win-dir-chooser"
-      - name: View artifacts
-        run: dir target\windows
-      - name: Upload installer Asset
-        run: "gh release upload ${{env.gh-version}} target/windows/rotatorcontrol-${{env.pkg-version}}.exe"
+        windows:
+          needs: fat
+          runs-on: [ windows-latest ]
+          steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-java@v2
+              with:
+                distribution: 'liberica'
+                java-version: '17'
+                java-package: jdk+fx
+                architecture: x64
+            - name: Download fat jar
+              uses: actions/download-artifact@v1
+              with:
+                name: jars
+            - name: Package jar as msi
+              run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --app-version ${{env.pkg-version}} --dest target/windows --win-dir-chooser"
+            - name: View artifacts
+              run: dir target\windows
+            - name: Upload installer Asset
+              run: "gh release upload ${{env.gh-version}} target/windows/rotatorcontrol-${{env.pkg-version}}.exe"
 
-  osx:
-    needs: fat
-    runs-on: [ macos-latest ]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v2
-        with:
-          distribution: 'liberica'
-          java-version: '17'
-          java-package: jdk+fx
-          architecture: x64
-      - name: Download fat jar
-        uses: actions/download-artifact@v1
-        with:
-          name: jars
-      - name: Package jar as dmg installer
-        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }} --dest target/macos"
-      - name: View artifacts
-        run: ls target/macos
-      - name: Upload installer Asset
-        run: "gh release upload ${{env.gh-version}} target/macos/rotatorcontrol-${{env.pkg-version}}.dmg"
+        osx:
+          needs: fat
+          runs-on: [ macos-latest ]
+          steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-java@v2
+              with:
+                distribution: 'liberica'
+                java-version: '17'
+                java-package: jdk+fx
+                architecture: x64
+            - name: Download fat jar
+              uses: actions/download-artifact@v1
+              with:
+                name: jars
+            - name: Package jar as dmg installer
+              run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }} --dest target/macos"
+            - name: View artifacts
+              run: ls target/macos
+            - name: Upload installer Asset
+              run: "gh release upload ${{env.gh-version}} target/macos/rotatorcontrol-${{env.pkg-version}}.dmg"
 
-  linux:
-    needs: fat
-    runs-on: [ ubuntu-latest ]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v2
-        with:
-          distribution: 'liberica'
-          java-version: '17'
-          java-package: jdk+fx
-          architecture: x64
-      - name: Download fat jar
-        uses: actions/download-artifact@v1
-        with:
-          name: jars
-      - name: Package jar as debian package
-        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }} --dest target/deb"
-      - name: View artifacts
-        run: ls target/deb
-      - name: Upload installer Asset
-        run: "gh release upload ${{env.gh-version}} target/deb/rotatorcontrol_${{env.pkg-version}}-1_amd64.deb"
+        linux:
+          needs: fat
+          runs-on: [ ubuntu-latest ]
+          steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-java@v2
+              with:
+                distribution: 'liberica'
+                java-version: '17'
+                java-package: jdk+fx
+                architecture: x64
+            - name: Download fat jar
+              uses: actions/download-artifact@v1
+              with:
+                name: jars
+            - name: Package jar as debian package
+              run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }} --dest target/deb"
+            - name: View artifacts
+              run: ls target/deb
+            - name: Upload installer Asset
+              run: "gh release upload ${{env.gh-version}} target/deb/rotatorcontrol_${{env.pkg-version}}-1_amd64.deb"
 
