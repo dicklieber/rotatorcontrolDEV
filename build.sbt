@@ -107,7 +107,7 @@ buildFatJar := {
 
     val pubArtifact: File = (assembly).value
     log.info(s"pubArtifact: $pubArtifact")
-    val versionFile = Paths.get("target").resolve("version")
+    val versionFile = Paths.get("target").resolve("version.txt")
     val sVersion = version.value
     try {
       Files.writeString(versionFile, sVersion)
