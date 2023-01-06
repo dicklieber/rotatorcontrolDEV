@@ -24,7 +24,7 @@ jobs:
           distribution: 'zulu'
           java-version: 14
       - name: Build fat jar
-        run: sbt  < "release with-defaults"
+        run: sbt release "with-defaults"
 
 
       - name: Upload fat jar
