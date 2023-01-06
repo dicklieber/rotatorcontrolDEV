@@ -99,6 +99,35 @@ ghRelease := {
       e.printStackTrace()
   }
 }
+val buildFatJar = taskKey[Unit]("Build fat jat and publish version string")
+buildFatJar := {
+  val log = streams.value.log
+  try {
+    log.info("=========buildFatJar=========")
+
+    val pubArtifact: File = (assembly).value
+    log.info(s"pubArtifact: $pubArtifact")
+    val versionFile = Paths.get("target").resolve("version")
+    val sVersion = version.value
+    Files.writeString(versionFile, sVersion)
+
+//    val github: java.nio.file.Path = Paths.get("github.sh")
+//    log.info(s"github path: $github Executable: ${Files.isExecutable(github)}")
+//
+//    val abs: File = github.toAbsolutePath.toFile
+//    log.info(s"github abs: $abs")
+//
+//    log.info(s"pubArtifact: $pubArtifact")
+//
+//    val cmd = s"""gh release create --generate-notes --notes-file docs/relnotes.txt v${version.value} $pubArtifact"""
+//    log.info((s"cmd: $cmd"))
+//    Process(cmd) ! log
+//    log.info(s"\tcmd: $cmd done")
+  } catch {
+    case e: Exception =>
+      e.printStackTrace()
+  }
+}
 
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies, // : ReleaseStep
@@ -108,7 +137,7 @@ releaseProcess := Seq[ReleaseStep](
   setReleaseVersion, // : ReleaseStep
   commitReleaseVersion, // : ReleaseStep, performs the initial git checks
   //  tagRelease, // : ReleaseStep
-  releaseStepTask(ghRelease),
+  releaseStepTask(buildFatJar),
   //  releaseStepTask(Universal / packageBin),
   //  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
   //  pushChanges, // : ReleaseStep, also checks that an upstream branch is properly configured
