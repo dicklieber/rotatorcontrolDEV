@@ -24,15 +24,15 @@ jobs:
           distribution: 'zulu'
           java-version: 14
       - name: Remove -SNAPSHOT from version
-        - run: sed -i 's/old-text/new-text/g' input.txt
-        - run: echo "Release Version$(cat version.txt)"
+      - run: sed -i 's/old-text/new-text/g' input.txt
+      - run: echo "Release Version$(cat version.txt)"
       - name: Build fat jar
         run: sbt assembly
       - name: Upload fat jar
           uses: actions/upload-artifact@v1
           with:
             name: jars
-            path: "target/scala-2.13/${{ env.pkg-assembly }}"
+            path: "target/scala-2.13/${{ env.pkg-assembly }}"˚
             - name: View artifacts
               run: ls target
 
