@@ -1,8 +1,8 @@
 name: PlayPen
 
-on: workflow_dispatch
-#on:
-#  push:
+#on: workflow_dispatch
+on:
+  push:
 #    branches: [ release/* ]
 
 env:
