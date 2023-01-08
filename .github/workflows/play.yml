@@ -66,4 +66,6 @@ jobs:
     runs-on: [ windows-latest ]
     steps:
       - name: look at version
-        echo b4 ${{needs.fat.steps.version.outputs.version}} after
+        run: |
+          echo b4 ${{fat.steps.version.outputs.version}} after
+          echo b4 ${{needs.fat.steps.version.outputs.version}} after
