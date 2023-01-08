@@ -63,7 +63,7 @@ jobs:
 
   xyzzy:
     needs: fat
-    runs-on: [ windows-latest ]
+    runs-on:  window-latest
     steps:
       - name: look at version
         run: |
