@@ -56,6 +56,7 @@ jobs:
 
 
   xyzzy:
+    needs: fat
     runs-on: [ windows-latest ]
     steps:
       - name: look at version
