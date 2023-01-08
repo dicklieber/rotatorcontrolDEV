@@ -26,7 +26,7 @@ jobs:
           distribution: 'zulu'
           java-version: 14
       - name: Build fat jar
-        run: sbt assembly
+        run: sbt buildFatJar
 
       - name: View artifacts
         run: ls target/result
