@@ -33,10 +33,7 @@ jobs:
 
       - name: Get version from file
         id: version
-        uses: pCYSl5EDgo/cat@master
-        with:
-          path: version.sbt
-#          path: target/result/version.txt
+        run: echo "version=$(cat version.sbt)" >> $GITHUB_OUTPUT
 
       - name: show version from step
 #        run: echo WFT
@@ -44,6 +41,7 @@ jobs:
           echo xyzzy
           echo "xyzzy"
           echo b4 ${{steps.version.output}} after
+          echo b4 ${{steps.version.outputs.version}} after
 #        run: echo "step: ${{steps.version.output}}"
 
 #      - name: Dump context
