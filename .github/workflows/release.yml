@@ -8,8 +8,8 @@ on: workflow_dispatch
 env:
   pkg-assembly: 'rotatorcontrol.jar'
   pkg-name: 'rotatorcontrol'
-#  pkg-version: '1.0.1'
-#  gh-version: 'v1.0.1'
+  #  pkg-version: '1.0.1'
+  #  gh-version: 'v1.0.1'
   pkg-mainclass: "com.wa9nnn.rotator.RotatorControl"
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
 
@@ -39,7 +39,7 @@ jobs:
 
       - name: show version from step
         run: echo b4 ${{steps.relVersion.outputs.version}} after
-  
+
 
       - name: Upload fat jar
         uses: actions/upload-artifact@v1
@@ -48,37 +48,38 @@ jobs:
           path: target/result/rotatorcontrol.jar
 
 
-      - name: Create Release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ env.gh-version }}
-          release_name: Release ${{ env.pkg-name }}
-          draft: false
-          prerelease: false
 
 
-  xyzzy:
+  release:
     needs: fat
     runs-on: [ windows-latest ]
     steps:
-      - name: look at version
+      - name: look at versions from fat
         run: |
           echo appVersion: ${{needs.fat.outputs.appVersion}}
           echo ghVersion: ${{needs.fat.outputs.ghVersion}}
+      - name: Create Release
+          uses: actions/create-release@v1
+          with:
+            tag_name: ${{ needs.fat.outputs.ghVersion }}
+            release_name: Release ${{ env.pkg-name }}
+            draft: false
+            prerelease: false
+
 
   windows:
     needs: fat
     runs-on: [ windows-latest ]
     steps:
       - uses: actions/checkout@v2
- 
+
       - uses: actions/setup-java@v2
         with:
           distribution: 'liberica'
           java-version: '17'
           java-package: jdk+fx
           architecture: x64
- 
+
       - name: Download fat jar
         uses: actions/download-artifact@v1
         with:
