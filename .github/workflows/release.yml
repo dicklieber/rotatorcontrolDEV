@@ -28,17 +28,18 @@ jobs:
       - name: Build fat jar
         run: sbt assembly
 
+      - name: Get version from file
+        id: version
+        run: cat target/result/version.txt  >> $GITHUB_OUTPUT
+
       - name: Upload fat jar
         uses: actions/upload-artifact@v1
         with:
           name: jars
           path: target/result/rotatorcontrol.jar
-      - name: View artifacts
-        run: ls target
 
-      - name: Get version from file
-        id: version
-        run: cat target/result/version.txt  >> $GITHUB_OUTPUT
+      - name: View artifacts
+        run: ls target/result
 
       - name: Create Release
         uses: actions/create-release@v1
