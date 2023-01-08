@@ -28,6 +28,9 @@ jobs:
       - name: Build fat jar
         run: sbt assembly
 
+      - name: View artifacts
+          run: ls target/result
+
       - name: Get version from file
         id: version
         run: cat target/result/version.txt  >> $GITHUB_OUTPUT
@@ -38,10 +41,7 @@ jobs:
           name: jars
           path: target/result/rotatorcontrol.jar
 
-      - name: View artifacts
-        run: ls target/result
-
-      - name: Create Release
+       - name: Create Release
         uses: actions/create-release@v1
         with:
           tag_name: ${{ env.gh-version }}
