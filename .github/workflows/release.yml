@@ -16,6 +16,8 @@ env:
 jobs:
   fat:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{steps.version.output}}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -43,6 +45,10 @@ jobs:
       - name: View artifacts
         run: ls target
 
+      - name: Get version from file
+        id: version
+        run: cat target/result/version.txt  >> $GITHUB_OUTPUT
+
       - name: Create Release
         uses: actions/create-release@v1
         with:
@@ -50,6 +56,8 @@ jobs:
           release_name: Release ${{ env.pkg-name }}
           draft: false
           prerelease: false
+
+
   windows:
     needs: fat
     runs-on: [ windows-latest ]
