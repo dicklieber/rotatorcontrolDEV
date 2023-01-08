@@ -61,14 +61,14 @@ jobs:
       - name: Create Release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ env.gh-version }}
+          tag_name:${{needs.fat.outputs.ghVersion}}
           release_name: Release ${{ env.pkg-name }}
           draft: false
           prerelease: false
 
 
   windows:
-    needs: fat
+    needs: release
     runs-on: [ windows-latest ]
     steps:
       - uses: actions/checkout@v2
@@ -95,7 +95,7 @@ jobs:
         run: "gh release upload ${{needs.fat.outputs.ghVersion}} target/windows/rotatorcontrol-${{env.pkg-version}}.exe"
 
   osx:
-    needs: fat
+    needs: release
     runs-on: [ macos-latest ]
     steps:
       - uses: actions/checkout@v2
@@ -117,7 +117,7 @@ jobs:
         run: "gh release upload ${{needs.fat.outputs.ghVersion}} target/macos/rotatorcontrol-${{needs.fat.outputs.appVersion}}.dmg"
 
   linux:
-    needs: fat
+    needs: release
     runs-on: [ ubuntu-latest ]
     steps:
       - uses: actions/checkout@v2
