@@ -38,7 +38,9 @@ jobs:
           path: target/result/version.txt
 
       - name: show version from step
-        run: echo "step: ${{steps.version.output}}"
+#        run: echo WFT
+        run: echo ${{steps.version.output}}
+#        run: echo "step: ${{steps.version.output}}"
 
 #      - name: Dump context
 #        uses: crazy-max/ghaction-dump-context@v1
