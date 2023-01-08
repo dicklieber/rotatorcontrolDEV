@@ -26,7 +26,7 @@ jobs:
           distribution: 'zulu'
           java-version: 14
       - name: Build fat jar
-        run: sbt buildFatJar
+        run: sbt release
 
       - name: View artifacts
         run: ls target/result
@@ -34,6 +34,9 @@ jobs:
       - name: Get version from file
         id: version
         run: echo "version=$(cat target/result/version.txt)" >> $GITHUB_OUTPUT
+
+      - name: Dump context
+        uses: crazy-max/ghaction-dump-context@v1
 
       - name: Upload fat jar
         uses: actions/upload-artifact@v1
