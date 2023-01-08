@@ -67,5 +67,5 @@ jobs:
     steps:
       - name: look at version
         run: |
-#          echo b4 ${{fat.steps.version.outputs.version}} after
+          echo b4 ${{fat.steps.version.outputs.version}} after
           echo b4 ${{needs.fat.steps.version.outputs.version}} after
