@@ -63,7 +63,7 @@ jobs:
 
   xyzzy:
     needs: fat
-    runs-on:  window-latest
+    runs-on: ubuntu-latest
     steps:
       - name: look at version
         run: |
