@@ -39,7 +39,10 @@ jobs:
 
       - name: show version from step
 #        run: echo WFT
-        run: echo ${{steps.version.output}}
+        run: |
+          echo xyzzy
+          echo "xyzzy"
+          echo ${{steps.version.output}}
 #        run: echo "step: ${{steps.version.output}}"
 
 #      - name: Dump context
