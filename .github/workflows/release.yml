@@ -33,7 +33,7 @@ jobs:
 
       - name: Get version from file
         id: version
-        run: echo "version=$(target/result/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "version=$(cat target/result/version.txt)" >> $GITHUB_OUTPUT
 
       - name: Upload fat jar
         uses: actions/upload-artifact@v1
