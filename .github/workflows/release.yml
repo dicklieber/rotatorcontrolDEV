@@ -35,7 +35,7 @@ jobs:
 
       - name: Get version from file
         id: relVersion
-        run: echo "version=$(cat version.sbt)" >> $GITHUB_OUTPUT
+        run: echo "version=$(cat target/result/version.txt)" >> $GITHUB_OUTPUT
 
       - name: show version from step
         run: echo b4 ${{steps.relVersion.outputs.version}} after
