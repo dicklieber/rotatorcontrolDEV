@@ -32,6 +32,9 @@ jobs:
           echo b4 ${{steps.version.outputs.version}} after
 #        run: echo "step: ${{steps.version.output}}"
 
+      -
+        name: Dump context
+        uses: crazy-max/ghaction-dump-context@v1
 
   xyzzy:
     needs: fat
@@ -40,3 +43,7 @@ jobs:
       - name: look at version
         run: |
           echo b4 ${{needs.fat.output.version}} after
+
+      -
+        name: Dump context
+        uses: crazy-max/ghaction-dump-context@v1
