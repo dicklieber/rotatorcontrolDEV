@@ -29,7 +29,7 @@ jobs:
         run: sbt assembly
 
       - name: View artifacts
-          run: ls target/result
+        run: ls target/result
 
       - name: Get version from file
         id: version
