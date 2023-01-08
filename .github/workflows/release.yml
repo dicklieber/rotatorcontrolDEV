@@ -38,7 +38,7 @@ jobs:
         run: echo "version=$(cat version.sbt)" >> $GITHUB_OUTPUT
 
       - name: show version from step
-          run: echo b4 ${{steps.relVersion.outputs.version}} after
+        run: echo b4 ${{steps.relVersion.outputs.version}} after
   
 
       - name: Upload fat jar
