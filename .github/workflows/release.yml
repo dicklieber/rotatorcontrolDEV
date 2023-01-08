@@ -58,8 +58,8 @@ jobs:
   xyzzy:
     runs-on: [ windows-latest ]
     steps:
-      - name look at version
-        run echo$ {{fat.steps.version.text}}
+      - name: look at version
+        run: echo$ {{fat.steps.version.text}}
 
   windows:
     needs: fat
