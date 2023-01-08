@@ -38,5 +38,4 @@ jobs:
     steps:
       - name: look at version
         run: |
-          echo b4 ${{fat.output.fatOutput}} after
           echo b4 ${{needs.fat.outputs.fatOutput}} after
