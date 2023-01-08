@@ -26,9 +26,13 @@ jobs:
       - name: Remove -SNAPSHOT from version
         run: sed -i 's/-SNAPSHOT//g' version.txt
       - name: Bump Version
-        uses: remorses/bump-version@js
+        uses: fwilhe2/bump-version@main
+        id: bump
         with:
-          version_file: ./version.txt
+          component: patch
+        -name: Put new version in context  
+          ${{ steps.bump.outputs.newVersion }}
+
       - name: Build fat jar
         run: sbt assembly
       - name: Upload fat jar
