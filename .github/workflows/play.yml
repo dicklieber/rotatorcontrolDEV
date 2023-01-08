@@ -16,9 +16,6 @@ env:
 jobs:
   fat:
     runs-on: ubuntu-latest
-    outputs:
-      fatOutput: ${{steps.relVersion.output.text}}
-
     steps:
       - uses: actions/checkout@v2
       - name: Get version from file
@@ -34,6 +31,10 @@ jobs:
       -
         name: Dump context
         uses: crazy-max/ghaction-dump-context@v1
+
+    outputs:
+      fatOutput: ${{steps.relVersion.output.text}}
+
 
   xyzzy:
     needs: fat
