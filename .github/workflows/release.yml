@@ -47,9 +47,6 @@ jobs:
           name: jars
           path: target/result/rotatorcontrol.jar
 
-
-
-
   release:
     needs: fat
     runs-on: [ windows-latest ]
@@ -61,11 +58,10 @@ jobs:
       - name: Create Release
         uses: actions/create-release@v1
         with:
-          tag_name:${{needs.fat.outputs.ghVersion}}
+          tag_name: ${{needs.fat.outputs.ghVersion}}
           release_name: Release ${{ env.pkg-name }}
           draft: false
           prerelease: false
-
 
   windows:
     needs: release
