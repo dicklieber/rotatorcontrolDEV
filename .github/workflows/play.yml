@@ -16,6 +16,9 @@ env:
 jobs:
   fat:
     runs-on: ubuntu-latest
+    outputs:
+      fatOutput: ${{steps.relVersion.outputs.eVversion}}
+
     steps:
       - uses: actions/checkout@v2
       - name: Get version from file
@@ -28,8 +31,6 @@ jobs:
         run: echo b4 ${{steps.relVersion.outputs.eVversion}} after
 #        run: echo "step: ${{steps.version.output}}"
 
-    outputs:
-      fatOutput: ${{steps.relVersion.outputs.eVversion}}
 
   xyzzy:
     needs: fat
