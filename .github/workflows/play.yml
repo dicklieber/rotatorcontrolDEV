@@ -47,19 +47,19 @@ jobs:
 #      - name: Dump context
 #        uses: crazy-max/ghaction-dump-context@v1
 
-      - name: Upload fat jar
-        uses: actions/upload-artifact@v1
-        with:
-          name: jars
-          path: target/result/rotatorcontrol.jar
+#      - name: Upload fat jar
+#        uses: actions/upload-artifact@v1
+#        with:
+#          name: jars
+#          path: target/result/rotatorcontrol.jar
 
-      - name: Create Release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ env.gh-version }}
-          release_name: Release ${{ env.pkg-name }}
-          draft: false
-          prerelease: false
+#      - name: Create Release
+#        uses: actions/create-release@v1
+#        with:
+#          tag_name: ${{ env.gh-version }}
+#          release_name: Release ${{ env.pkg-name }}
+#          draft: false
+#          prerelease: false
 
   xyzzy:
     needs: fat
