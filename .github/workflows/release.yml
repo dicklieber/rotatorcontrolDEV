@@ -33,10 +33,12 @@ jobs:
 
       - name: Get version from file
         id: version
-        run: echo "version=$(cat target/result/version.txt)" >> $GITHUB_OUTPUT
+        uses: pCYSl5EDgo/cat@master
+        with:
+          path: target/result/version.txt
 
-      - name: Dump context
-        uses: crazy-max/ghaction-dump-context@v1
+#      - name: Dump context
+#        uses: crazy-max/ghaction-dump-context@v1
 
       - name: Upload fat jar
         uses: actions/upload-artifact@v1
@@ -52,6 +54,10 @@ jobs:
           draft: false
           prerelease: false
 
+
+  xyzzy:
+    steps:
+      - echo${{fat.steps.version.text}}
 
   windows:
     needs: fat
