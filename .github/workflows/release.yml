@@ -32,7 +32,7 @@ jobs:
         id: bump
         with:
           component: patch
-        -name: Put new version in context  
+      -name: Put new version in context  
           ${{ steps.bump.outputs.newVersion }}
 
       - name: Build fat jar
