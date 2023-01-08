@@ -40,7 +40,7 @@ jobs:
         run: |
           echo xyzzy
           echo "xyzzy"
-          echo b4 ${{steps.version.output}} after
+          echo b4 ${{steps.version.outputs}} after
           echo b4 ${{steps.version.outputs.version}} after
 #        run: echo "step: ${{steps.version.output}}"
 
