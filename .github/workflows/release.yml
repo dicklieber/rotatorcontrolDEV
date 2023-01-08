@@ -8,8 +8,8 @@ on: workflow_dispatch
 env:
   pkg-assembly: 'rotatorcontrol.jar'
   pkg-name: 'rotatorcontrol'
-  pkg-version: '1.0.1'
-  gh-version: 'v1.0.1'
+#  pkg-version: '1.0.1'
+#  gh-version: 'v1.0.1'
   pkg-mainclass: "com.wa9nnn.rotator.RotatorControl"
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
 
@@ -17,7 +17,8 @@ jobs:
   fat:
     runs-on: ubuntu-latest
     outputs:
-      fatOutput: ${{steps.relVersion.outputs.eVversion}}
+      appVersion: ${{steps.relVersion.outputs.version}}
+      ghVersion: "v${{steps.relVersion.outputs.version}}"
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -34,16 +35,18 @@ jobs:
 
       - name: Get version from file
           id: relVersion
-          run: echo "eVversion=$(cat version.sbt)" >> $GITHUB_OUTPUT
+          run: echo "version=$(cat version.sbt)" >> $GITHUB_OUTPUT
 
       - name: show version from step
-          run: echo b4 ${{steps.relVersion.outputs.eVversion}} after
+          run: echo b4 ${{steps.relVersion.outputs.version}} after
+  
 
       - name: Upload fat jar
         uses: actions/upload-artifact@v1
         with:
           name: jars
           path: target/result/rotatorcontrol.jar
+
 
       - name: Create Release
         uses: actions/create-release@v1
@@ -59,29 +62,36 @@ jobs:
     runs-on: [ windows-latest ]
     steps:
       - name: look at version
-        run: echo ${{needs.fat.outputs.version}}
+        run: |
+        echo appVersion: ${{needs.fat.outputs.appVersion}}
+        echo ghVersion: ${{needs.fat.outputs.ghVersion}}
 
   windows:
     needs: fat
     runs-on: [ windows-latest ]
     steps:
       - uses: actions/checkout@v2
+ 
       - uses: actions/setup-java@v2
         with:
           distribution: 'liberica'
           java-version: '17'
           java-package: jdk+fx
           architecture: x64
+ 
       - name: Download fat jar
         uses: actions/download-artifact@v1
         with:
           name: jars
+
       - name: Package jar as msi
-        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --app-version ${{env.pkg-version}} --dest target/windows --win-dir-chooser"
+        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --app-version ${{needs.fat.outputs.appVersion}} --dest target/windows --win-dir-chooser"
+
       - name: View artifacts
         run: dir target\windows
+
       - name: Upload installer Asset
-        run: "gh release upload ${{env.gh-version}} target/windows/rotatorcontrol-${{env.pkg-version}}.exe"
+        run: "gh release upload ${{needs.fat.outputs.ghVersion}} target/windows/rotatorcontrol-${{env.pkg-version}}.exe"
 
   osx:
     needs: fat
@@ -99,11 +109,11 @@ jobs:
         with:
           name: jars
       - name: Package jar as dmg installer
-        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }} --dest target/macos"
+        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{needs.fat.outputs.appVersion}} --main-jar ${{ env.pkg-assembly }} --dest target/macos"
       - name: View artifacts
         run: ls target/macos
       - name: Upload installer Asset
-        run: "gh release upload ${{env.gh-version}} target/macos/rotatorcontrol-${{env.pkg-version}}.dmg"
+        run: "gh release upload ${{needs.fat.outputs.ghVersion}} target/macos/rotatorcontrol-${{needs.fat.outputs.appVersion}}.dmg"
 
   linux:
     needs: fat
@@ -121,9 +131,9 @@ jobs:
         with:
           name: jars
       - name: Package jar as debian package
-        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{env.pkg-version}} --main-jar ${{ env.pkg-assembly }} --dest target/deb"
+        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{needs.fat.outputs.appVersion}} --main-jar ${{ env.pkg-assembly }} --dest target/deb"
       - name: View artifacts
         run: ls target/deb
       - name: Upload installer Asset
-        run: "gh release upload ${{env.gh-version}} target/deb/rotatorcontrol_${{env.pkg-version}}-1_amd64.deb"
+        run: "gh release upload ${{needs.fat.outputs.ghVersion}} target/deb/rotatorcontrol_${{env.pkg-version}}-1_amd64.deb"
 
