@@ -60,7 +60,7 @@ jobs:
     runs-on: [ windows-latest ]
     steps:
       - name: look at version
-        echo ${{needs.fat.outputs.version}}
+        run: echo ${{needs.fat.outputs.version}}
 
   windows:
     needs: fat
