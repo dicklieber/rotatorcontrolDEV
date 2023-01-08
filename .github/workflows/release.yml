@@ -57,7 +57,8 @@ jobs:
 
   xyzzy:
     steps:
-      - run echo$ {{fat.steps.version.text}}
+      - name look at version
+        run echo$ {{fat.steps.version.text}}
 
   windows:
     needs: fat
