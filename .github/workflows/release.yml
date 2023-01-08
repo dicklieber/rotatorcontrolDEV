@@ -32,9 +32,6 @@ jobs:
         id: bump
         with:
           component: patch
-      -name: Put new version in context  
-          ${{ steps.bump.outputs.newVersion }}
-
       - name: Build fat jar
         run: sbt assembly
       - name: Upload fat jar
