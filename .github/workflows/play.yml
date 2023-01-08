@@ -17,7 +17,7 @@ jobs:
   fat:
     runs-on: ubuntu-latest
     outputs:
-      fatOutput: ${{steps.version.output.text}}
+      fatOutput: ${{steps.relVersion.output.text}}
 
     steps:
       - uses: actions/checkout@v2
@@ -28,8 +28,7 @@ jobs:
           echo "eVversion=$(cat version.sbt)" >> $GITHUB_OUTPUT
 
       - name: show version from step
-        run: |
-          echo b4 ${{steps.relVersion.outputs.eVversion}} after
+        run: echo b4 ${{steps.relVersion.outputs.eVversion}} after
 #        run: echo "step: ${{steps.version.output}}"
 
       -
