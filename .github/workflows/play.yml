@@ -18,8 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       fatOutput: ${{steps.version.output.text}}
-    steps:
 
+    steps:
+      - uses: actions/checkout@v2
       - name: Get version from file
         id: relVersion
         run: |
