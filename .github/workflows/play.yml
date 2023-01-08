@@ -19,24 +19,12 @@ jobs:
     outputs:
       version: ${{steps.version.output.text}}
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'zulu'
-          java-version: 14
-#      - name: Build fat jar
-#        run: sbt "release with-defaults"
-
-#      - name: View artifacts
-#        run: ls target/result
 
       - name: Get version from file
         id: version
         run: echo "version=$(cat version.sbt)" >> $GITHUB_OUTPUT
 
       - name: show version from step
-#        run: echo WFT
         run: |
           echo xyzzy
           echo "xyzzy"
@@ -44,22 +32,6 @@ jobs:
           echo b4 ${{steps.version.outputs.version}} after
 #        run: echo "step: ${{steps.version.output}}"
 
-#      - name: Dump context
-#        uses: crazy-max/ghaction-dump-context@v1
-
-#      - name: Upload fat jar
-#        uses: actions/upload-artifact@v1
-#        with:
-#          name: jars
-#          path: target/result/rotatorcontrol.jar
-
-#      - name: Create Release
-#        uses: actions/create-release@v1
-#        with:
-#          tag_name: ${{ env.gh-version }}
-#          release_name: Release ${{ env.pkg-name }}
-#          draft: false
-#          prerelease: false
 
   xyzzy:
     needs: fat
@@ -67,4 +39,4 @@ jobs:
     steps:
       - name: look at version
         run: |
-          echo b4 ${{needs.fat.steps.version.outputs.version}} after
+          echo b4 ${{needs.fat.output.version}} after
