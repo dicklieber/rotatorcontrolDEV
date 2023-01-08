@@ -41,13 +41,13 @@ jobs:
           name: jars
           path: target/result/rotatorcontrol.jar
 
-       - name: Create Release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ env.gh-version }}
-          release_name: Release ${{ env.pkg-name }}
-          draft: false
-          prerelease: false
+      - name: Create Release
+      uses: actions/create-release@v1
+      with:
+        tag_name: ${{ env.gh-version }}
+        release_name: Release ${{ env.pkg-name }}
+        draft: false
+        prerelease: false
 
 
   windows:
