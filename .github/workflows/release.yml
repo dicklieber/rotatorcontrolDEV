@@ -63,8 +63,8 @@ jobs:
     steps:
       - name: look at version
         run: |
-        echo appVersion: ${{needs.fat.outputs.appVersion}}
-        echo ghVersion: ${{needs.fat.outputs.ghVersion}}
+          echo appVersion: ${{needs.fat.outputs.appVersion}}
+          echo ghVersion: ${{needs.fat.outputs.ghVersion}}
 
   windows:
     needs: fat
