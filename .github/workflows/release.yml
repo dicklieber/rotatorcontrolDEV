@@ -57,91 +57,90 @@ jobs:
           echo appVersion: ${{needs.fat.outputs.appVersion}}
           echo ghVersion: ${{needs.fat.outputs.ghVersion}}
 
-#      - name: Create Release
-#        uses: actions/create-release@v1
-#        with:
-#          tag_name: ${{needs.fat.outputs.ghVersion}}
-#          release_name: Release ${{ env.pkg-name }}
-#          draft: false
-#          prerelease: false
+      - name: Create Release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{needs.fat.outputs.ghVersion}}
+          release_name: Release ${{ env.pkg-name }}
+          draft: false
+          prerelease: false
 
       - name: Download fat jar
         uses: actions/download-artifact@v1
         with:
           name: jars
 
-      -
-        run: ls
+      - run: ls
 
 
-#  windows:
-#    needs: release
-#    runs-on: [ windows-latest ]
-#    steps:
-#      - uses: actions/checkout@v2
-#
-#      - uses: actions/setup-java@v2
-#        with:
-#          distribution: 'liberica'
-#          java-version: '17'
-#          java-package: jdk+fx
-#          architecture: x64
-#
-#      - name: Download fat jar
-#        uses: actions/download-artifact@v1
-#        with:
-#          name: jars
-#
-#      - name: Package jar as msi
-#        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --app-version ${{needs.fat.outputs.appVersion}} --dest target --win-dir-chooser"
-#
-#      - name: View artifacts
-#        run: dir target\windows
-#
-#      - name: Upload installer Asset
-#        run: "gh release upload ${{needs.fat.outputs.ghVersion}} target/rotatorcontrol-${{env.pkg-version}}.exe"
-#
-#  osx:
-#    needs: release
-#    runs-on: [ macos-latest ]
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: actions/setup-java@v2
-#        with:
-#          distribution: 'liberica'
-#          java-version: '17'
-#          java-package: jdk+fx
-#          architecture: x64
-#      - name: Download fat jar
-#        uses: actions/download-artifact@v1
-#        with:
-#          name: jars
-#      - name: Package jar as dmg installer
-#        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{needs.fat.outputs.appVersion}} --main-jar ${{ env.pkg-assembly }} --dest target/macos"
-#      - name: View artifacts
-#        run: ls target/macos
-#      - name: Upload installer Asset
-#        run: "gh release upload ${{needs.fat.outputs.ghVersion}} target/macos/rotatorcontrol-${{needs.fat.outputs.appVersion}}.dmg"
-#
-#  linux:
-#    needs: release
-#    runs-on: [ ubuntu-latest ]
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: actions/setup-java@v2
-#        with:
-#          distribution: 'liberica'
-#          java-version: '17'
-#          java-package: jdk+fx
-#          architecture: x64
-#      - name: Download fat jar
-#        uses: actions/download-artifact@v1
-#        with:
-#          name: jars
-#      - name: Package jar as debian package
-#        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{needs.fat.outputs.appVersion}} --main-jar ${{ env.pkg-assembly }} --dest target/deb"
-#      - name: View artifacts
-#        run: ls target/deb
-#      - name: Upload installer Asset
-#        run: "gh release upload ${{needs.fat.outputs.ghVersion}} target/deb/rotatorcontrol_${{env.pkg-version}}-1_amd64.deb"
-#
+  windows:
+    needs: release
+    runs-on: [ windows-latest ]
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'liberica'
+          java-version: '17'
+          java-package: jdk+fx
+          architecture: x64
+
+      - name: Download fat jar
+        uses: actions/download-artifact@v1
+        with:
+          name: jars
+
+      - name: Package jar as msi
+        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --app-version ${{needs.fat.outputs.appVersion}} --dest target --win-dir-chooser"
+
+      - name: View artifacts
+        run: dir target\windows
+
+      - name: Upload installer Asset
+        run: "gh release upload ${{needs.fat.outputs.ghVersion}} target/rotatorcontrol-${{env.pkg-version}}.exe"
+
+  osx:
+    needs: release
+    runs-on: [ macos-latest ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'liberica'
+          java-version: '17'
+          java-package: jdk+fx
+          architecture: x64
+      - name: Download fat jar
+        uses: actions/download-artifact@v1
+        with:
+          name: jars
+      - name: Package jar as dmg installer
+        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{needs.fat.outputs.appVersion}} --main-jar ${{ env.pkg-assembly }} --dest target/macos"
+      - name: View artifacts
+        run: ls target/macos
+      - name: Upload installer Asset
+        run: "gh release upload ${{needs.fat.outputs.ghVersion}} target/macos/rotatorcontrol-${{needs.fat.outputs.appVersion}}.dmg"
+
+  linux:
+    needs: release
+    runs-on: [ ubuntu-latest ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'liberica'
+          java-version: '17'
+          java-package: jdk+fx
+          architecture: x64
+      - name: Download fat jar
+        uses: actions/download-artifact@v1
+        with:
+          name: jars
+      - name: Package jar as debian package
+        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --app-version ${{needs.fat.outputs.appVersion}} --main-jar ${{ env.pkg-assembly }} --dest target/deb"
+      - name: View artifacts
+        run: ls target/deb
+      - name: Upload installer Asset
+        run: "gh release upload ${{needs.fat.outputs.ghVersion}} target/deb/rotatorcontrol_${{env.pkg-version}}-1_amd64.deb"
+
