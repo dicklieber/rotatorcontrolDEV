@@ -57,13 +57,13 @@ jobs:
           echo appVersion: ${{needs.fat.outputs.appVersion}}
           echo ghVersion: ${{needs.fat.outputs.ghVersion}}
 
-      - name: Create Release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{needs.fat.outputs.ghVersion}}
-          release_name: Release ${{ env.pkg-name }}
-          draft: false
-          prerelease: false
+#      - name: Create Release
+#        uses: actions/create-release@v1
+#        with:
+#          tag_name: ${{needs.fat.outputs.ghVersion}}
+#          release_name: Release ${{ env.pkg-name }}
+#          draft: false
+#          prerelease: false
 
       - name: Download fat jar
         uses: actions/download-artifact@v1
