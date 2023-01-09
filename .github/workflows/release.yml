@@ -92,13 +92,13 @@ jobs:
           name: jars
 
       - name: Package jar as msi
-        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --app-version ${{needs.fat.outputs.appVersion}} --dest target --win-dir-chooser"
+        run: "jpackage --name ${{ env.pkg-name }} -i jars --main-class ${{env.pkg-mainclass}} --main-jar ${{ env.pkg-assembly }} --app-version ${{needs.fat.outputs.appVersion}} --win-dir-chooser"
 
       - name: View artifacts
-        run: dir target\windows
+        run: dir
 
       - name: Upload installer Asset
-        run: "gh release upload ${{needs.fat.outputs.ghVersion}} target/rotatorcontrol-${{env.pkg-version}}.exe"
+        run: "gh release upload ${{needs.fat.outputs.ghVersion}} rotatorcontrol-${{env.pkg-version}}.exe"
 
   osx:
     needs: release
