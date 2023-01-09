@@ -47,34 +47,17 @@ jobs:
           name: jars
           path: target/result/rotatorcontrol.jar
 
-  release:
-    needs: fat
-    runs-on: [ windows-latest ]
-
-    steps:
-      - name: look at versions from fat
-        run: |
-          echo appVersion: ${{needs.fat.outputs.appVersion}}
-          echo ghVersion: ${{needs.fat.outputs.ghVersion}}
-
       - name: Create Release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{needs.fat.outputs.ghVersion}}
-          release_name: Release ${{ env.pkg-name }}
-          draft: false
-          prerelease: false
-
-      - name: Download fat jar
-        uses: actions/download-artifact@v1
-        with:
-          name: jars
-
-      - run: ls
+          uses: actions/create-release@v1
+          with:
+            tag_name: ${{needs.fat.outputs.ghVersion}}
+            release_name: Release ${{ env.pkg-name }}
+            draft: false
+            prerelease: false
 
 
   windows:
-    needs: release
+    needs: fat
     runs-on: [ windows-latest ]
     steps:
       - uses: actions/checkout@v2
@@ -101,7 +84,7 @@ jobs:
         run: "gh release upload ${{needs.fat.outputs.ghVersion}} rotatorcontrol-${{env.pkg-version}}.exe"
 
   osx:
-    needs: release
+    needs: fat
     runs-on: [ macos-latest ]
     steps:
       - uses: actions/checkout@v2
@@ -123,7 +106,7 @@ jobs:
         run: "gh release upload ${{needs.fat.outputs.ghVersion}} target/macos/rotatorcontrol-${{needs.fat.outputs.appVersion}}.dmg"
 
   linux:
-    needs: release
+    needs: fat
     runs-on: [ ubuntu-latest ]
     steps:
       - uses: actions/checkout@v2
