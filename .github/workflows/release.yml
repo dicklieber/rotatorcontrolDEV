@@ -81,7 +81,7 @@ jobs:
         run: dir
 
       - name: Upload installer Asset
-        run: "gh release upload ${{needs.fat.outputs.ghVersion}} rotatorcontrol-${{env.pkg-version}}.exe"
+        run: "gh release upload ${{needs.fat.outputs.ghVersion}} rotatorcontrol-${{needs.fat.outputs.appVersion}}.exe"
 
   osx:
     needs: fat
@@ -125,5 +125,5 @@ jobs:
       - name: View artifacts
         run: ls target/deb
       - name: Upload installer Asset
-        run: "gh release upload ${{needs.fat.outputs.ghVersion}} target/deb/rotatorcontrol_${{env.pkg-version}}-1_amd64.deb"
+        run: "gh release upload ${{needs.fat.outputs.ghVersion}} target/deb/rotatorcontrol_${{needs.fat.outputs.appVersion}}-1_amd64.deb"
 
