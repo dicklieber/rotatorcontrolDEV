@@ -49,7 +49,7 @@ buildInfoOptions ++= Seq(
 resolvers += ("Reposilite" at "http://194.113.64.105:8080/releases")
   .withAllowInsecureProtocol(true)
 
-val logbackVersion = "1.2.3"
+val logbackVersion = "1.4.5"
 
 libraryDependencies ++= Seq(
   "com.wa9nnn" %% "util" % "0.1.9",
