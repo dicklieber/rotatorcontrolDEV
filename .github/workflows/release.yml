@@ -119,7 +119,7 @@ jobs:
           distribution: 'liberica'
           java-version: '17'
           java-package: jdk+fx
-          architecture: arm
+          architecture: armv7
       - name: Download fat jar
         uses: actions/download-artifact@v1
         with:
