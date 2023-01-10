@@ -50,7 +50,7 @@ jobs:
       - name: Create Release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{needs.fat.outputs.ghVersion}}
+          tag_name: ${{"v${{steps.relVersion.outputs.version}}"}}
           release_name: Release ${{ env.pkg-name }}
           draft: false
           prerelease: false
